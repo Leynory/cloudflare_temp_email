@@ -6,8 +6,8 @@ packages:
 
 strictDepBuilds: false
 
-onlyBuiltDependencies:
-  - core-js-pure
-  - esbuild
-  - workerd
-  - es5-ext
+allowBuilds:
+  core-js-pure: true
+  esbuild: true
+  workerd: true
+  es5-ext: true
