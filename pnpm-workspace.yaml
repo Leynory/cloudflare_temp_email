@@ -1,1 +1,10 @@
-strictDepBuilds: false
+packages:
+  - "frontend"
+  - "worker"
+  - "pages"
+  - "db"
+
+onlyBuiltDependencies:
+  - core-js-pure
+  - esbuild
+  - workerd
