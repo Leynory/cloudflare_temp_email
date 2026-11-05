@@ -4,7 +4,10 @@ packages:
   - "pages"
   - "db"
 
+strictDepBuilds: false
+
 onlyBuiltDependencies:
   - core-js-pure
   - esbuild
   - workerd
+  - es5-ext
