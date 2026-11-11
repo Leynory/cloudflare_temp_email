@@ -308,8 +308,6 @@ onMounted(async () => {
     </div>
 </template>
 
-<style scoped>
-/* Стили для картинок и раскладки */
 .login-layout {
     display: flex;
     align-items: center;
@@ -318,6 +316,15 @@ onMounted(async () => {
     width: 100%;
     overflow: hidden;
     position: relative;
+    
+    /* Тот самый фон с сеткой и градиентом */
+    background-color: #0f0f13; 
+    background-image: 
+        radial-gradient(circle at 50% 50%, rgba(30, 30, 35, 1) 0%, rgba(15, 15, 19, 1) 100%),
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 100% 100%, 40px 40px, 40px 40px;
+    background-position: center;
 }
 
 /* Стили для самой формы (черная плашка) */
