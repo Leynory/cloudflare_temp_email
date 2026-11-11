@@ -4,6 +4,9 @@ import { useScopedI18n } from '@/i18n/app'
 import { useRouter } from 'vue-router'
 import { NewLabelOutlined, EmailOutlined, RedeemOutlined } from '@vicons/material'
 
+// ИМПОРТ КАРТИНКИ ИЗ ПАПКИ ASSETS
+import ccImage from '@/assets/cc.png'
+
 import AdminContact from '../common/AdminContact.vue'
 import Turnstile from '../../components/Turnstile.vue'
 
@@ -55,8 +58,6 @@ const loginTurnstileRef = ref(null)
 const loginMethod = ref('credential')
 const loginAddress = ref('')
 const loginPassword = ref('')
-
-const baseUrl = import.meta.env.BASE_URL
 
 const initLoginMethod = () => {
     if (openSettings.value?.enableAddressPassword) {
@@ -188,9 +189,9 @@ onMounted(async () => {
 <template>
     <div class="login-layout">
         <!-- Левая C.C. -->
-        <img :src="`${baseUrl}cc-left.png`" class="cc-character left" alt="C.C." />
+        <img :src="ccImage" class="cc-character left" alt="C.C." />
 
-        <!-- Форма входа -->
+        <!-- Обертка для формы, чтобы она была по центру -->
         <div class="login-form-wrapper">
             <n-alert v-if="userSettings.user_email" :show-icon="false" :bordered="false" closable>
                 <span>{{ t('bindUserInfo') }}</span>
@@ -303,12 +304,12 @@ onMounted(async () => {
         </div>
 
         <!-- Правая C.C. -->
-        <img :src="`${baseUrl}cc-left.png`" class="cc-character right" alt="C.C." />
+        <img :src="ccImage" class="cc-character right" alt="C.C." />
     </div>
 </template>
 
 <style scoped>
-/* --- Стили для картинок и общей раскладки --- */
+/* Стили для картинок и раскладки */
 .login-layout {
     display: flex;
     align-items: center;
@@ -319,7 +320,7 @@ onMounted(async () => {
     position: relative;
 }
 
-/* ДОБАВИЛ ФОН И ОТСТУПЫ ДЛЯ ФОРМЫ, ЧТОБЫ ОНА БЫЛА ВИДНА */
+/* Стили для самой формы (черная плашка) */
 .login-form-wrapper {
     width: 100%;
     max-width: 420px; 
@@ -337,23 +338,27 @@ onMounted(async () => {
     width: auto;
     object-fit: contain;
     z-index: 1;
-    pointer-events: none;
+    pointer-events: none; /* Чтобы картинка не мешала кликать по форме */
 }
 
+/* Левая картинка */
 .cc-character.left {
-    margin-right: -25px; /* Прижимаем к форме */
+    margin-right: -25px; 
 }
 
+/* Правая картинка отзеркалена */
 .cc-character.right {
     margin-left: -25px;
     transform: scaleX(-1);
 }
 
+/* На мобильных устройствах прячем картинки */
 @media (max-width: 850px) {
     .cc-character { display: none; }
+    .login-form-wrapper { max-width: 90%; }
 }
 
-/* --- Твои изначальные стили --- */
+/* Твои изначальные стили */
 .n-alert { margin-top: 10px; margin-bottom: 10px; text-align: center; }
 .n-form .n-button { margin-top: 10px; }
 .redeem-entry-section { margin-top: 18px; }
