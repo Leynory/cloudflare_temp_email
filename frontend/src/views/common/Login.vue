@@ -343,7 +343,7 @@ onMounted(async () => {
     position: relative;
 }
 
-/* --- Картинки C.C. --- */
+/* --- Картинки C.C. с неоновой обводкой --- */
 .cc-character {
     height: auto;
     max-height: 55vh; 
@@ -353,7 +353,32 @@ onMounted(async () => {
     z-index: 1;
     pointer-events: none; 
     
-    filter: drop-shadow(0px 0px 15px rgba(144, 238, 144, 0.2)); 
+    /* НЕОНОВАЯ ОБВОДКА */
+    filter: 
+        drop-shadow(0 0 2px #00ff88)
+        drop-shadow(0 0 10px #00ff88)
+        drop-shadow(0 0 25px #00ff88)
+        drop-shadow(0 0 50px #00ff88);
+        
+    /* Плавная пульсация */
+    animation: neon-pulse 3s infinite alternate;
+}
+
+/* Анимация дыхания неона */
+@keyframes neon-pulse {
+    0% {
+        filter: 
+            drop-shadow(0 0 2px #00ff88)
+            drop-shadow(0 0 10px #00ff88)
+            drop-shadow(0 0 25px #00ff88);
+    }
+    100% {
+        filter: 
+            drop-shadow(0 0 4px #00ff88)
+            drop-shadow(0 0 15px #00ff88)
+            drop-shadow(0 0 40px #00ff88)
+            drop-shadow(0 0 70px rgba(0, 255, 136, 0.5));
+    }
 }
 
 .cc-character.left {
