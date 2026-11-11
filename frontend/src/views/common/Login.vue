@@ -294,7 +294,6 @@ onMounted(async () => {
                         </n-form>
                     </n-spin>
                 </n-tab-pane>
-                
                 <n-tab-pane name="help" :tab="t('help')">
                     <n-alert :show-icon="false" :bordered="false">
                         <span>{{ t('pleaseGetNewEmail') }}</span>
@@ -315,7 +314,8 @@ onMounted(async () => {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 85vh; /* Растягиваем на большую часть экрана */
+    min-height: 80vh;
+    height: 100%; 
     width: 100%;
     overflow: hidden;
     position: relative;
@@ -338,7 +338,7 @@ onMounted(async () => {
     padding: 35px 30px;
     border-radius: 12px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8); 
-    border: 1px solid rgba(144, 238, 144, 0.15); /* Легкая зеленая рамка */
+    border: 1px solid rgba(144, 238, 144, 0.15);
     z-index: 10; 
     position: relative;
 }
@@ -346,15 +346,14 @@ onMounted(async () => {
 /* --- Картинки C.C. --- */
 .cc-character {
     height: auto;
-    max-height: 55vh; /* Чтобы они не были слишком огромными и не обрезались */
+    max-height: 55vh; 
     width: auto;
     max-width: 25vw;
     object-fit: contain;
     z-index: 1;
     pointer-events: none; 
     
-    /* Убрал отсюда mix-blend-mode! */
-    filter: drop-shadow(0px 0px 15px rgba(144, 238, 144, 0.2)); /* Легкое свечение */
+    filter: drop-shadow(0px 0px 15px rgba(144, 238, 144, 0.2)); 
 }
 
 .cc-character.left {
