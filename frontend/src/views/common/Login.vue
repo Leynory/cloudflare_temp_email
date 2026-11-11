@@ -4,7 +4,7 @@ import { useScopedI18n } from '@/i18n/app'
 import { useRouter } from 'vue-router'
 import { NewLabelOutlined, EmailOutlined, RedeemOutlined } from '@vicons/material'
 
-// ИМПОРТ КАРТИНКИ ИЗ ПАПКИ ASSETS
+// ИМПОРТ КАРТИНКИ
 import ccImage from '@/assets/cc.png'
 
 import AdminContact from '../common/AdminContact.vue'
@@ -191,7 +191,7 @@ onMounted(async () => {
         <!-- Левая C.C. -->
         <img :src="ccImage" class="cc-character left" alt="C.C." />
 
-        <!-- Обертка для формы, чтобы она была по центру -->
+        <!-- Форма входа -->
         <div class="login-form-wrapper">
             <n-alert v-if="userSettings.user_email" :show-icon="false" :bordered="false" closable>
                 <span>{{ t('bindUserInfo') }}</span>
@@ -294,6 +294,7 @@ onMounted(async () => {
                         </n-form>
                     </n-spin>
                 </n-tab-pane>
+                
                 <n-tab-pane name="help" :tab="t('help')">
                     <n-alert :show-icon="false" :bordered="false">
                         <span>{{ t('pleaseGetNewEmail') }}</span>
@@ -308,6 +309,8 @@ onMounted(async () => {
     </div>
 </template>
 
+<style scoped>
+/* --- Стили для фона и раскладки --- */
 .login-layout {
     display: flex;
     align-items: center;
@@ -317,7 +320,7 @@ onMounted(async () => {
     overflow: hidden;
     position: relative;
     
-    /* Тот самый фон с сеткой и градиентом */
+    /* Фон с сеткой и градиентом */
     background-color: #0f0f13; 
     background-image: 
         radial-gradient(circle at 50% 50%, rgba(30, 30, 35, 1) 0%, rgba(15, 15, 19, 1) 100%),
@@ -327,45 +330,49 @@ onMounted(async () => {
     background-position: center;
 }
 
-/* Стили для самой формы (черная плашка) */
+/* --- Стили для самой формы (черная плашка) --- */
 .login-form-wrapper {
     width: 100%;
     max-width: 420px; 
-    background-color: #1e1e1e; /* Темный фон карточки */
+    background-color: #1e1e1e; 
     padding: 30px;
     border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4); /* Тень */
-    border: 1px solid rgba(255, 255, 255, 0.05); /* Легкая рамка */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6); 
+    border: 1px solid rgba(255, 255, 255, 0.05); 
     z-index: 10; 
     position: relative;
 }
 
+/* --- Стили для картинок --- */
 .cc-character {
-    height: 65vh;
+    height: 60vh; 
+    max-height: 600px;
     width: auto;
     object-fit: contain;
     z-index: 1;
-    pointer-events: none; /* Чтобы картинка не мешала кликать по форме */
+    pointer-events: none; 
+    
+    /* Зеленоватое свечение вокруг C.C. */
+    filter: drop-shadow(0px 0px 30px rgba(144, 238, 144, 0.15));
 }
 
-/* Левая картинка */
 .cc-character.left {
-    margin-right: -25px; 
+    margin-right: -15px; 
+    margin-top: 20px;
 }
 
-/* Правая картинка отзеркалена */
 .cc-character.right {
-    margin-left: -25px;
+    margin-left: -15px;
+    margin-top: 20px;
     transform: scaleX(-1);
 }
 
-/* На мобильных устройствах прячем картинки */
 @media (max-width: 850px) {
     .cc-character { display: none; }
     .login-form-wrapper { max-width: 90%; }
 }
 
-/* Твои изначальные стили */
+/* --- Твои изначальные стили --- */
 .n-alert { margin-top: 10px; margin-bottom: 10px; text-align: center; }
 .n-form .n-button { margin-top: 10px; }
 .redeem-entry-section { margin-top: 18px; }
