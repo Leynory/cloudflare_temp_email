@@ -320,7 +320,6 @@ onMounted(async () => {
     overflow: hidden;
     position: relative;
     
-    /* Тот самый фон с сеткой */
     background-color: #0f0f13; 
     background-image: 
         radial-gradient(circle at 50% 50%, rgba(35, 35, 45, 1) 0%, rgba(15, 15, 19, 1) 100%),
@@ -329,6 +328,92 @@ onMounted(async () => {
     background-size: 100% 100%, 40px 40px, 40px 40px;
     background-position: center;
 }
+
+/* --- Обертка, которая держит форму и картинки вместе --- */
+.login-content-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+}
+
+/* --- Форма входа (карточка) --- */
+.login-form-wrapper {
+    width: 420px; /* Жесткая ширина */
+    flex-shrink: 0; /* Запрещаем форме сжиматься, если экран маленький */
+    background-color: #1a1a1a; 
+    padding: 35px 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8); 
+    border: 1px solid rgba(144, 238, 144, 0.15);
+    z-index: 10; 
+    position: relative;
+}
+
+/* --- Картинки C.C. с неоновой обводкой --- */
+.cc-character {
+    /* Теперь размер зависит только от высоты, ширина подстраивается сама */
+    height: 65vh; 
+    max-height: 700px;
+    min-height: 400px;
+    width: auto; 
+    flex-shrink: 0; /* Запрещаем картинкам сплющиваться */
+    object-fit: contain;
+    z-index: 1;
+    pointer-events: none; 
+    
+    /* Неоновая обводка */
+    filter: 
+        drop-shadow(0 0 2px rgba(0, 255, 136, 0.8))
+        drop-shadow(0 0 10px rgba(0, 255, 136, 0.6))
+        drop-shadow(0 0 25px rgba(0, 255, 136, 0.4));
+        
+    animation: neon-pulse 3s infinite alternate;
+}
+
+@keyframes neon-pulse {
+    0% {
+        filter: 
+            drop-shadow(0 0 2px rgba(0, 255, 136, 0.8))
+            drop-shadow(0 0 10px rgba(0, 255, 136, 0.6))
+            drop-shadow(0 0 25px rgba(0, 255, 136, 0.4));
+    }
+    100% {
+        filter: 
+            drop-shadow(0 0 5px rgba(0, 255, 136, 1))
+            drop-shadow(0 0 15px rgba(0, 255, 136, 0.8))
+            drop-shadow(0 0 40px rgba(0, 255, 136, 0.6))
+            drop-shadow(0 0 60px rgba(0, 255, 136, 0.3));
+    }
+}
+
+.cc-character.left {
+    margin-right: -25px; /* Прижимаем к форме */
+}
+
+.cc-character.right {
+    margin-left: -25px;
+    transform: scaleX(-1);
+}
+
+/* --- Мобильная версия / Узкие экраны --- */
+@media (max-width: 1100px) {
+    /* Если экран становится слишком узким (меньше 1100px), 
+       картинки будут сильно перекрывать форму, поэтому мы их прячем */
+    .cc-character { display: none; }
+    .login-form-wrapper { width: 90%; max-width: 420px; }
+}
+
+/* --- Твои изначальные стили --- */
+.n-alert { margin-top: 10px; margin-bottom: 10px; text-align: center; }
+.n-form .n-button { margin-top: 10px; }
+.redeem-entry-section { margin-top: 18px; }
+.redeem-entry-section :deep(.n-divider) { margin: 0 0 14px; }
+.redeem-entry-tip { display: block; font-size: 13px; line-height: 1.6; text-align: center; }
+.switch-login-button { display: flex; justify-content: center; margin: 10px 0; }
+.n-form { text-align: left; }
+
+</style>
 
 /* --- Форма входа (карточка) --- */
 .login-form-wrapper {
