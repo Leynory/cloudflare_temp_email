@@ -66,7 +66,6 @@ onMounted(async () => {
     (window.adsbygoogle = window.adsbygoogle || []).push({});
   }
 
-
   // check if telegram is enabled
   const enableTelegram = APP_CONFIG.IS_TELEGRAM;
   if (
@@ -103,7 +102,8 @@ onMounted(async () => {
             <n-gi :span="!showSideMargin ? gridMaxCols : (gridMaxCols - 2)">
               <div class="main">
                 <n-space vertical>
-                  <n-layout style="min-height: 80vh;">
+                  <!-- ВОТ ЗДЕСЬ МЫ СДЕЛАЛИ ФОН ПРОЗРАЧНЫМ -->
+                  <n-layout style="min-height: 80vh; background-color: transparent;">
                     <Header />
                     <router-view></router-view>
                   </n-layout>
@@ -125,8 +125,14 @@ onMounted(async () => {
   </n-config-provider>
 </template>
 
-
 <style>
+/* Добавили цвет для всего body, чтобы при прозрачности не было белых вспышек */
+body {
+  background-color: #0f0f13;
+  margin: 0;
+  padding: 0;
+}
+
 .n-switch {
   margin-left: 10px;
   margin-right: 10px;
