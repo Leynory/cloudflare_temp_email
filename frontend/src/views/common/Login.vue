@@ -56,6 +56,9 @@ const loginMethod = ref('credential') // 'credential' or 'password'
 const loginAddress = ref('')
 const loginPassword = ref('')
 
+// ВЫНОСИМ BASE_URL В ПЕРЕМЕННУЮ, ЧТОБЫ VUE НЕ РУГАЛСЯ
+const baseUrl = import.meta.env.BASE_URL
+
 // 根据 openSettings 初始化登录方式
 const initLoginMethod = () => {
     if (openSettings.value?.enableAddressPassword) {
@@ -257,8 +260,8 @@ onMounted(async () => {
 
 <template>
     <div class="login-layout">
-        <!-- Левая C.C. - ИСПОЛЬЗУЕМ import.meta.env.BASE_URL -->
-        <img :src="`${import.meta.env.BASE_URL}cc-left.png`" class="cc-character left" alt="C.C." />
+        <!-- Левая C.C. - используем переменную baseUrl -->
+        <img :src="`${baseUrl}cc-left.png`" class="cc-character left" alt="C.C." />
 
         <!-- Обертка для самой формы входа -->
         <div class="login-form-wrapper">
@@ -392,8 +395,8 @@ onMounted(async () => {
             </n-tabs>
         </div>
 
-        <!-- Правая C.C. - ИСПОЛЬЗУЕМ import.meta.env.BASE_URL -->
-        <img :src="`${import.meta.env.BASE_URL}cc-left.png`" class="cc-character right" alt="C.C." />
+        <!-- Правая C.C. - используем переменную baseUrl -->
+        <img :src="`${baseUrl}cc-left.png`" class="cc-character right" alt="C.C." />
     </div>
 </template>
 
