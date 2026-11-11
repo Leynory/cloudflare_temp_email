@@ -310,63 +310,63 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-/* --- Стили для фона и раскладки --- */
+/* --- Фон на весь экран --- */
 .login-layout {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 80vh;
+    min-height: 85vh; /* Растягиваем на большую часть экрана */
     width: 100%;
     overflow: hidden;
     position: relative;
     
-    /* Фон с сеткой и градиентом */
+    /* Тот самый фон с сеткой */
     background-color: #0f0f13; 
     background-image: 
-        radial-gradient(circle at 50% 50%, rgba(30, 30, 35, 1) 0%, rgba(15, 15, 19, 1) 100%),
-        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+        radial-gradient(circle at 50% 50%, rgba(35, 35, 45, 1) 0%, rgba(15, 15, 19, 1) 100%),
+        linear-gradient(rgba(144, 238, 144, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(144, 238, 144, 0.05) 1px, transparent 1px);
     background-size: 100% 100%, 40px 40px, 40px 40px;
     background-position: center;
 }
 
-/* --- Стили для самой формы (черная плашка) --- */
+/* --- Форма входа (карточка) --- */
 .login-form-wrapper {
     width: 100%;
     max-width: 420px; 
-    background-color: #1e1e1e; 
-    padding: 30px;
+    background-color: #1a1a1a; 
+    padding: 35px 30px;
     border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6); 
-    border: 1px solid rgba(255, 255, 255, 0.05); 
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8); 
+    border: 1px solid rgba(144, 238, 144, 0.15); /* Легкая зеленая рамка */
     z-index: 10; 
     position: relative;
 }
 
-/* --- Стили для картинок --- */
+/* --- Картинки C.C. --- */
 .cc-character {
-    height: 60vh; 
-    max-height: 600px;
+    height: auto;
+    max-height: 55vh; /* Чтобы они не были слишком огромными и не обрезались */
     width: auto;
+    max-width: 25vw;
     object-fit: contain;
     z-index: 1;
     pointer-events: none; 
     
-    /* Зеленоватое свечение вокруг C.C. */
-    filter: drop-shadow(0px 0px 30px rgba(144, 238, 144, 0.15));
+    /* Убрал отсюда mix-blend-mode! */
+    filter: drop-shadow(0px 0px 15px rgba(144, 238, 144, 0.2)); /* Легкое свечение */
 }
 
 .cc-character.left {
-    margin-right: -15px; 
-    margin-top: 20px;
+    margin-right: -10px; 
 }
 
 .cc-character.right {
-    margin-left: -15px;
-    margin-top: 20px;
+    margin-left: -10px;
     transform: scaleX(-1);
 }
 
+/* Скрываем картинки на мобилках */
 @media (max-width: 850px) {
     .cc-character { display: none; }
     .login-form-wrapper { max-width: 90%; }
