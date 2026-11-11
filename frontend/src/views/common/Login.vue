@@ -188,13 +188,20 @@ onMounted(async () => {
 
 <template>
     <div class="login-layout">
-        <!-- Картинка-фон (вписывается идеально без обрезки) -->
+        <!-- Киберпанк-сетка на фоне -->
+        <div class="cyber-grid"></div>
+        
+        <!-- Светящиеся сферы (дополняют пустоту) -->
+        <div class="glow-sphere sphere-1"></div>
+        <div class="glow-sphere sphere-2"></div>
+
+        <!-- УМЕНЬШЕННАЯ картинка с C.C. (теперь она по центру) -->
         <img :src="bgImage" class="bg-image" alt="Background" />
 
         <!-- Контент поверх фона -->
         <div class="content-wrapper">
             
-            <!-- Стильный баннер -->
+            <!-- УМЕНЬШЕННЫЙ баннер -->
             <div class="welcome-banner">
                 <div class="lines top-lines"></div>
                 <h1 class="welcome-text">
@@ -209,7 +216,7 @@ onMounted(async () => {
                 <p class="welcome-subtext">GACHA SUKI MAIL</p>
             </div>
 
-            <!-- Форма входа -->
+            <!-- УМЕНЬШЕННАЯ форма входа -->
             <div class="login-form-wrapper">
                 <n-alert v-if="userSettings.user_email" :show-icon="false" :bordered="false" closable>
                     <span>{{ t('bindUserInfo') }}</span>
@@ -325,7 +332,7 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-/* --- Контейнер на весь экран --- */
+/* --- ГЛОБАЛЬНЫЙ ФОН И РАЗМЕТКА --- */
 .login-layout {
     position: relative;
     width: 100vw;
@@ -334,29 +341,65 @@ onMounted(async () => {
     margin-left: -50vw;
     margin-right: -50vw;
     min-height: 100vh;
-    background-color: #0f0f13;
-    overflow: hidden; /* Скрываем вылезающие края */
+    background-color: #07070a; /* Более глубокий темный фон */
+    overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-/* --- Фоновая картинка (тег img) --- */
-.bg-image {
+/* --- КИБЕРПАНК СЕТКА --- */
+.cyber-grid {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: contain; /* Вписывает картинку БЕЗ искажений и обрезки */
-    object-position: center; /* Центрируем */
-    z-index: 1;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: 
+        linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    z-index: 0;
 }
 
-/* --- Слой с контентом (баннер и форма) --- */
+/* --- СВЕТЯЩИЕСЯ СФЕРЫ (заполняют пустоту) --- */
+.glow-sphere {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    z-index: 1;
+    opacity: 0.4;
+}
+.sphere-1 {
+    width: 400px; height: 400px;
+    background: rgba(0, 255, 136, 0.4);
+    top: 10%; left: 10%;
+}
+.sphere-2 {
+    width: 500px; height: 500px;
+    background: rgba(255, 105, 180, 0.2); /* Розовый отсвет */
+    bottom: 5%; right: 10%;
+}
+
+/* --- УМЕНЬШЕННАЯ КАРТИНКА С C.C. --- */
+.bg-image {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    
+    /* Вот тут мы её уменьшаем */
+    width: 75vw; 
+    max-width: 1100px;
+    height: 80vh;
+    object-fit: contain; 
+    
+    z-index: 2;
+    opacity: 0.8; /* Делаем её слегка призрачной, чтобы она не доминировала */
+    filter: drop-shadow(0 0 20px rgba(0, 255, 136, 0.2));
+}
+
+/* --- СЛОЙ С КОНТЕНТОМ --- */
 .content-wrapper {
     position: relative;
-    z-index: 10; /* Контент поверх картинки */
+    z-index: 10; 
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -365,11 +408,11 @@ onMounted(async () => {
     padding: 20px;
 }
 
-/* --- Стильный баннер (WELCOME) --- */
+/* --- УМЕНЬШЕННЫЙ БАННЕР --- */
 .welcome-banner {
     position: relative;
     text-align: center;
-    margin-bottom: 30px; 
+    margin-bottom: 20px; 
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -377,27 +420,27 @@ onMounted(async () => {
 
 .welcome-text {
     font-family: 'Playfair Display', 'Times New Roman', serif;
-    font-size: 5rem;
+    font-size: 3.5rem; /* Уменьшили */
     font-weight: 900;
     margin: 0;
     color: #ffffff;
-    letter-spacing: -4px; 
+    letter-spacing: -2px; /* Уменьшили наезд */
     line-height: 1;
-    text-shadow: 0 0 20px rgba(0, 255, 136, 0.3); 
+    text-shadow: 0 0 15px rgba(0, 255, 136, 0.5); 
 }
 
 .lines {
-    width: 250px;
+    width: 180px; /* Уменьшили */
     height: 2px;
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
     position: relative;
-    margin: 10px 0;
+    margin: 8px 0;
 }
 .top-lines::before, .top-lines::after,
 .bottom-lines::before, .bottom-lines::after {
     content: '';
     position: absolute;
-    width: 50px;
+    width: 30px;
     height: 1px;
     background: rgba(255, 255, 255, 0.5);
     top: 50%;
@@ -410,49 +453,52 @@ onMounted(async () => {
     top: 40%;
     left: 20%;
     width: 60%;
-    height: 40px;
+    height: 30px;
     border-top: 2px solid #ff69b4; 
     border-radius: 50%;
     transform: rotate(-5deg);
     pointer-events: none;
-    opacity: 0.8;
+    opacity: 0.6;
 }
 
 .welcome-subtext {
     color: #a0a0a0;
     font-family: sans-serif;
-    letter-spacing: 5px;
+    letter-spacing: 4px;
     text-transform: uppercase;
-    font-size: 0.8rem;
-    margin-top: 10px;
+    font-size: 0.7rem;
+    margin-top: 8px;
 }
 
-/* --- Форма входа (карточка) --- */
+/* --- УМЕНЬШЕННАЯ ФОРМА ВХОДА --- */
 .login-form-wrapper {
-    width: 420px; 
+    width: 360px; /* Было 420, стало компактнее */
     flex-shrink: 0; 
-    background-color: rgba(26, 26, 26, 0.85); 
-    backdrop-filter: blur(10px); 
-    padding: 35px 30px;
-    border-radius: 12px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9); 
-    border: 1px solid rgba(144, 238, 144, 0.3); 
+    background-color: rgba(20, 20, 24, 0.7); /* Ещё прозрачнее */
+    backdrop-filter: blur(15px); /* Сильнее размытие */
+    padding: 25px 20px; /* Уменьшили отступы */
+    border-radius: 16px;
+    box-shadow: 
+        0 10px 40px rgba(0, 0, 0, 0.9), 
+        inset 0 0 0 1px rgba(144, 238, 144, 0.2); /* Внутренняя рамка вместо border */
+    z-index: 10;
 }
 
 /* --- Мобильная версия --- */
 @media (max-width: 850px) {
-    .login-form-wrapper { width: 90%; max-width: 420px; }
-    .welcome-text { font-size: 3rem; letter-spacing: -2px; }
+    .login-form-wrapper { width: 90%; max-width: 360px; }
+    .welcome-text { font-size: 2.5rem; letter-spacing: -1px; }
     .swoosh { display: none; }
-    .lines { width: 150px; }
+    .lines { width: 120px; }
+    .bg-image { width: 95vw; } /* На телефонах картинка чуть больше */
 }
 
 /* --- Твои изначальные стили --- */
 .n-alert { margin-top: 10px; margin-bottom: 10px; text-align: center; }
 .n-form .n-button { margin-top: 10px; }
-.redeem-entry-section { margin-top: 18px; }
-.redeem-entry-section :deep(.n-divider) { margin: 0 0 14px; }
-.redeem-entry-tip { display: block; font-size: 13px; line-height: 1.6; text-align: center; }
-.switch-login-button { display: flex; justify-content: center; margin: 10px 0; }
+.redeem-entry-section { margin-top: 15px; }
+.redeem-entry-section :deep(.n-divider) { margin: 0 0 12px; }
+.redeem-entry-tip { display: block; font-size: 12px; line-height: 1.5; text-align: center; }
+.switch-login-button { display: flex; justify-content: center; margin: 8px 0; }
 .n-form { text-align: left; }
 </style>
