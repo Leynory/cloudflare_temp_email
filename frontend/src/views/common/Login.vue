@@ -187,9 +187,10 @@ onMounted(async () => {
 </script>
 
 <template>
+    <!-- Привязываем картинку как фон -->
     <div class="login-layout" :style="{ backgroundImage: `url(${bgImage})` }">
         
-        <!-- Стильный баннер (Типографика) -->
+        <!-- Стильный баннер -->
         <div class="welcome-banner">
             <div class="lines top-lines"></div>
             <h1 class="welcome-text">
@@ -318,22 +319,28 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-/* --- Фон на весь экран --- */
+/* --- МАГИЯ ДЛЯ РАСТЯГИВАНИЯ НА ВЕСЬ ЭКРАН --- */
 .login-layout {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 80vh;
-    height: 100%; 
-    width: 100%;
-    overflow: hidden;
-    position: relative;
     
+    /* Пробиваем ограничения сетки сайта */
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    min-height: calc(100vh - 120px); /* Высота экрана минус хедер/футер */
+    
+    /* Настройки фона */
     background-color: #0f0f13; 
-    background-size: cover;
-    background-position: center;
+    background-size: cover; /* Заполняет весь экран без искажений */
+    background-position: center center; /* Центрируем картинку */
     background-repeat: no-repeat;
+    overflow: hidden;
 }
 
 /* =========================================
@@ -342,7 +349,7 @@ onMounted(async () => {
 .welcome-banner {
     position: relative;
     text-align: center;
-    margin-bottom: 30px; /* Отступ до формы */
+    margin-bottom: 30px; 
     z-index: 5;
     display: flex;
     flex-direction: column;
@@ -355,12 +362,11 @@ onMounted(async () => {
     font-weight: 900;
     margin: 0;
     color: #ffffff;
-    letter-spacing: -4px; /* Пересечение букв */
+    letter-spacing: -4px; 
     line-height: 1;
-    text-shadow: 0 0 20px rgba(0, 255, 136, 0.3); /* Легкое зеленое свечение */
+    text-shadow: 0 0 20px rgba(0, 255, 136, 0.3); 
 }
 
-/* Эффект тонких линий сверху и снизу */
 .lines {
     width: 250px;
     height: 2px;
@@ -380,14 +386,13 @@ onMounted(async () => {
 .top-lines::before, .bottom-lines::before { right: 100%; margin-right: 10px; }
 .top-lines::after, .bottom-lines::after { left: 100%; margin-left: 10px; }
 
-/* Изящная розовая/зеленая дуга (как на референсе) */
 .swoosh {
     position: absolute;
     top: 40%;
     left: 20%;
     width: 60%;
     height: 40px;
-    border-top: 2px solid #ff69b4; /* Розовый, можно поменять на #00ff88 */
+    border-top: 2px solid #ff69b4; 
     border-radius: 50%;
     transform: rotate(-5deg);
     pointer-events: none;
@@ -422,6 +427,7 @@ onMounted(async () => {
     .login-form-wrapper { width: 90%; max-width: 420px; }
     .welcome-text { font-size: 3rem; letter-spacing: -2px; }
     .swoosh { display: none; }
+    .lines { width: 150px; }
 }
 
 /* --- Твои изначальные стили --- */
