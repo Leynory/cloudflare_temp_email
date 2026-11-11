@@ -187,7 +187,6 @@ onMounted(async () => {
 </script>
 
 <template>
-    <!-- Привязываем картинку как фон -->
     <div class="login-layout" :style="{ backgroundImage: `url(${bgImage})` }">
         
         <!-- Стильный баннер -->
@@ -326,19 +325,20 @@ onMounted(async () => {
     align-items: center;
     justify-content: center;
     
-    /* Пробиваем ограничения сетки сайта */
     width: 100vw;
     position: relative;
     left: 50%;
     right: 50%;
     margin-left: -50vw;
     margin-right: -50vw;
-    min-height: calc(100vh - 120px); /* Высота экрана минус хедер/футер */
+    min-height: 100vh; /* Занимает всю высоту экрана */
     
     /* Настройки фона */
     background-color: #0f0f13; 
-    background-size: cover; /* Заполняет весь экран без искажений */
-    background-position: center center; /* Центрируем картинку */
+    
+    /* КЛЮЧЕВОЕ ИЗМЕНЕНИЕ: contain вместо cover */
+    background-size: contain; 
+    background-position: center center; 
     background-repeat: no-repeat;
     overflow: hidden;
 }
