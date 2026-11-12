@@ -331,6 +331,13 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+/* --- ДЕКЛАРАЦИЯ ПЕРЕМЕННОЙ ДЛЯ АНИМАЦИИ ГРАДИЕНТА --- */
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
 /* --- ГЛОБАЛЬНЫЙ ФОН И РАЗМЕТКА --- */
 .login-layout {
     position: relative;
@@ -468,7 +475,7 @@ onMounted(async () => {
     margin-top: 8px;
 }
 
-/* --- УМЕНЬШЕННАЯ ФОРМА ВХОДА --- */
+/* --- ФОРМА ВХОДА --- */
 .login-form-wrapper {
     width: 300px; 
     flex-shrink: 0; 
