@@ -187,7 +187,7 @@ onMounted(async () => {
 
 <template>
     <div class="login-layout">
-        <!-- Киберпанк-сетка на фоне -->
+        <!-- Улучшенная киберпанк-сетка на фоне -->
         <div class="cyber-grid"></div>
         
         <!-- Светящиеся сферы -->
@@ -200,7 +200,7 @@ onMounted(async () => {
         <!-- Контент поверх фона -->
         <div class="content-wrapper">
             
-            <!-- Баннер (без розовой дуги) -->
+            <!-- Баннер -->
             <div class="welcome-banner">
                 <div class="lines top-lines"></div>
                 <h1 class="welcome-text">
@@ -214,7 +214,7 @@ onMounted(async () => {
                 <p class="welcome-subtext">GACHA SUKI MAIL</p>
             </div>
 
-            <!-- Форма входа -->
+            <!-- Форма входа (с эффектом мерцания) -->
             <div class="login-form-wrapper">
                 <n-alert v-if="userSettings.user_email" :show-icon="false" :bordered="false" closable>
                     <span>{{ t('bindUserInfo') }}</span>
@@ -346,21 +346,32 @@ onMounted(async () => {
     margin-left: -50vw;
     margin-right: -50vw;
     min-height: 100vh;
-    background-color: #07070a; 
+    
+    /* УЛУЧШЕННЫЙ ФОН: Глубокий черный с легким радиальным свечением в центре */
+    background-color: #050508; 
+    background-image: radial-gradient(circle at center, #11181a 0%, #050508 70%);
     overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-/* --- КИБЕРПАНК СЕТКА --- */
+/* --- УЛУЧШЕННАЯ КИБЕРПАНК СЕТКА --- */
 .cyber-grid {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
+    
+    /* Сделали сетку чуть ярче (0.06) и крупнее (50px) */
     background-image: 
-        linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
+        linear-gradient(rgba(0, 255, 136, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 136, 0.06) 1px, transparent 1px);
+    background-size: 50px 50px;
+    
+    /* МАСКА: Скрываем сетку в центре, чтобы она не мешала картинке, 
+       и делаем её видимой только по краям */
+    mask-image: radial-gradient(circle at center, transparent 30%, black 80%);
+    -webkit-mask-image: radial-gradient(circle at center, transparent 30%, black 80%);
+    
     z-index: 0;
 }
 
@@ -476,7 +487,6 @@ onMounted(async () => {
     z-index: 10;
 }
 
-/* Псевдоэлемент для бегущего блика */
 .login-form-wrapper::before {
     content: "";
     position: absolute;
