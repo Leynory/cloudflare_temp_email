@@ -196,23 +196,18 @@ onMounted(async () => {
         <div class="glow-sphere sphere-1"></div>
         <div class="glow-sphere sphere-2"></div>
 
-        <!-- Контейнер для картинки и бегающих огоньков -->
+        <!-- Контейнер с картинкой и неоновой рамкой -->
         <div class="image-container">
             <img :src="bgImage" class="bg-image" alt="Background" />
-            
-            <!-- Бегающие неоновые огоньки по периметру -->
-            <div class="light-runner runner-1"></div>
-            <div class="light-runner runner-2"></div>
-            <div class="light-runner runner-3"></div>
-            <div class="light-runner runner-4"></div>
+            <!-- Переливающаяся неоновая рамка (ЗЕЛЕНЫЕ ОТТЕНКИ) -->
+            <div class="neon-border"></div>
         </div>
 
-        <!-- Киберпанк-сетка (поверх картинки) -->
+        <!-- Киберпанк-сетка -->
         <div class="cyber-grid"></div>
 
-        <!-- Контент поверх фона -->
+        <!-- Контент -->
         <div class="content-wrapper">
-            <!-- Баннер -->
             <div class="welcome-banner">
                 <div class="lines top-lines"></div>
                 <h1 class="welcome-text">
@@ -227,7 +222,6 @@ onMounted(async () => {
                 <p class="welcome-subtext">GACHA SUKI MAIL</p>
             </div>
 
-            <!-- Форма входа -->
             <div class="login-form-wrapper">
                 <n-alert v-if="userSettings.user_email" :show-icon="false" :bordered="false" closable>
                     <span>{{ t('bindUserInfo') }}</span>
@@ -357,7 +351,6 @@ onMounted(async () => {
    ФОНОВЫЕ СЛОИ
    ========================================= */
 
-/* 1. Размытая копия для краев */
 .ambient-bg {
     position: fixed; 
     top: -10%; left: -10%; right: -10%; bottom: -10%; 
@@ -367,7 +360,6 @@ onMounted(async () => {
     z-index: -3; 
 }
 
-/* 2. Сферы свечения */
 .glow-sphere {
     position: fixed;
     border-radius: 50%;
@@ -387,7 +379,7 @@ onMounted(async () => {
 }
 
 /* =========================================
-   КОНТЕЙНЕР С КАРТИНКОЙ И ОГОНЬКАМИ
+   КАРТИНКА И НЕОНОВАЯ РАМКА
    ========================================= */
 .image-container {
     position: fixed;
@@ -395,12 +387,12 @@ onMounted(async () => {
     left: 50%;
     transform: translate(-50%, -50%);
     
-    /* УМЕНЬШАЕМ КАРТИНКУ ЗДЕСЬ (было 100vw, ставим 85vw) */
-    width: 85vw; 
-    height: 85vh; 
+    width: 75vw; 
+    height: 75vh; 
+    max-width: 1200px;
+    max-height: 700px;
     
     z-index: -1;
-    /* Добавим немного магии для центрирования картинки внутри контейнера */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -412,48 +404,35 @@ onMounted(async () => {
     object-fit: contain; 
 }
 
-/* =========================================
-   БЕГАЮЩИЕ НЕОНОВЫЕ ОГОНЬКИ
-   ========================================= */
-.light-runner {
+/* --- НЕОНОВАЯ РАМКА (ТОЛЬКО ЗЕЛЕНЫЕ ОТТЕНКИ) --- */
+.neon-border {
     position: absolute;
-    width: 8px;
-    height: 8px;
-    background-color: #00ff88;
-    border-radius: 50%;
-    box-shadow: 
-        0 0 10px #00ff88, 
-        0 0 20px #00ff88, 
-        0 0 30px #00ff88;
-    z-index: 5;
+    top: -8px; left: -8px; right: -8px; bottom: -8px; 
     
-    /* Запускаем анимацию по периметру контейнера */
-    animation: orbit 8s linear infinite;
+    /* Градиент из разных оттенков зеленого:
+       #00ff88 (яркий), #008f4c (темный), #33ffaa (светлый), #005c26 (глубокий) */
+    background: linear-gradient(45deg, #00ff88, #005c26, #33ffaa, #008f4c, #00ff88);
+    background-size: 300% 300%;
+    animation: neon-anim 4s linear infinite;
+    
+    z-index: 5;
+    border-radius: 16px; 
+    pointer-events: none;
+    
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    
+    padding: 5px; 
+    
+    /* Зеленое свечение */
+    filter: drop-shadow(0 0 10px #00ff88) drop-shadow(0 0 20px #008f4c);
 }
 
-/* Разные задержки, чтобы огоньки летели друг за другом */
-.runner-2 { animation-delay: -2s; }
-.runner-3 { animation-delay: -4s; }
-.runner-4 { animation-delay: -6s; }
-
-@keyframes orbit {
-    0%   { top: 0; left: 0; opacity: 1; }
-    24%  { top: 0; left: 100%; opacity: 1; }
-    25%  { top: 0; left: 100%; opacity: 0; } /* Исчезает на углу */
-    26%  { top: 100%; left: 100%; opacity: 0; } /* Появляется на другой стороне */
-    27%  { top: 100%; left: 100%; opacity: 1; }
-    
-    49%  { top: 100%; left: 100%; opacity: 1; }
-    50%  { top: 100%; left: 100%; opacity: 0; }
-    51%  { top: 100%; left: 0; opacity: 0; }
-    52%  { top: 100%; left: 0; opacity: 1; }
-    
-    74%  { top: 100%; left: 0; opacity: 1; }
-    75%  { top: 100%; left: 0; opacity: 0; }
-    76%  { top: 0; left: 0; opacity: 0; }
-    77%  { top: 0; left: 0; opacity: 1; }
-    
-    100% { top: 0; left: 0; opacity: 1; }
+@keyframes neon-anim {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 /* =========================================
@@ -564,7 +543,7 @@ onMounted(async () => {
     .welcome-text { font-size: 2.5rem; letter-spacing: -1px; }
     .swoosh { display: none; }
     .lines { width: 120px; }
-    .image-container { width: 100vw; height: 100vh; } /* На телефоне возвращаем на весь экран */
+    .image-container { width: 90vw; height: 90vh; }
 }
 
 /* --- Твои изначальные стили --- */
