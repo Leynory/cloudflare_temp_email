@@ -404,7 +404,7 @@ onMounted(async () => {
     position: relative;
     width: 85vw; 
     max-width: 1300px; 
-    height: 85vh; /* Вернули нормальную высоту */
+    height: 85vh; 
     background-color: rgba(5, 10, 8, 0.5); 
     z-index: 5;
     display: flex;
@@ -413,12 +413,12 @@ onMounted(async () => {
 }
 
 /* =========================================
-   C.C. (РАСТЯНУТЫ, НО ПРЯЧУТСЯ ПОД ПАНЕЛЬЮ)
+   C.C.
    ========================================= */
 .cc-character {
     position: absolute;
     bottom: 0; 
-    height: 95%; /* Сделали большими, чтобы скрыть верх под панелью */
+    height: 95%; 
     width: auto; 
     object-fit: contain;
     object-position: bottom;
@@ -449,28 +449,36 @@ onMounted(async () => {
     pointer-events: none;
 }
 
-/* ТОЛСТАЯ ПАНЕЛЬ СВЕРХУ, КОТОРАЯ ПРЯЧЕТ ГОЛОВЫ */
 .frame-top-line {
     width: 100%;
-    height: 80px; /* Увеличили высоту до 80px */
-    background-color: #0a0e0c; /* Сделали сплошным (без прозрачности) */
+    height: 80px; 
+    background-color: #0a0e0c; 
     border-bottom: 2px solid #00ff88;
     box-shadow: 0 2px 10px rgba(0, 255, 136, 0.3);
 }
 
 /* =========================================
-   КОНТЕНТ (Форма и Баннер)
+   КОНТЕНТ (ИСПОЛЬЗУЕМ GRID ДЛЯ ИДЕАЛЬНОГО ЦЕНТРИРОВАНИЯ)
    ========================================= */
 .content-wrapper {
-    position: relative;
+    position: absolute; /* Абсолютное позиционирование, чтобы сетка не влияла */
+    top: 80px; /* Отступ под верхнюю панель */
+    left: 0;
+    right: 0;
+    bottom: 0;
     z-index: 20; 
+    display: grid;
+    place-items: center; /* Центрирует всё и по горизонтали, и по вертикали */
+    padding: 20px;
+}
+
+/* Внутренняя обертка, чтобы баннер и форма стояли друг под другом */
+.content-inner {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: calc(100% - 80px); /* Отнимаем высоту панели */
-    padding: 20px;
 }
 
 /* --- БАННЕР --- */
@@ -481,6 +489,8 @@ onMounted(async () => {
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .welcome-text {
@@ -534,6 +544,10 @@ onMounted(async () => {
     padding: 25px 20px; 
     border-radius: 8px; 
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9); 
+    
+    /* Принудительное центрирование на всякий случай */
+    margin-left: auto; 
+    margin-right: auto;
 }
 
 .login-form-wrapper::before {
@@ -573,7 +587,7 @@ onMounted(async () => {
     .cc-character { height: 90%; opacity: 0.15; } 
     .neon-frame { width: 95vw; height: 85vh; }
     .frame-top-line { height: 60px; }
-    .content-wrapper { height: calc(100% - 60px); }
+    .content-wrapper { top: 60px; }
 }
 
 /* --- Твои изначальные стили --- */
