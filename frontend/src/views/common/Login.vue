@@ -197,10 +197,10 @@ onMounted(async () => {
         <!-- УВЕЛИЧЕННАЯ РАМКА -->
         <div class="neon-frame">
             
-            <!-- C.C. Слева (УМЕНЬШЕНА) -->
+            <!-- C.C. Слева -->
             <img :src="ccImage" class="cc-character left" alt="C.C." />
             
-            <!-- C.C. Справа (УМЕНЬШЕНА) -->
+            <!-- C.C. Справа -->
             <img :src="ccImage" class="cc-character right" alt="C.C." />
 
             <!-- СЛОЙ С ЛИНИЯМИ РАМКИ -->
@@ -225,7 +225,7 @@ onMounted(async () => {
                     <p class="welcome-subtext">GACHA SUKI MAIL</p>
                 </div>
 
-                <!-- УВЕЛИЧЕННАЯ Форма входа -->
+                <!-- Форма входа -->
                 <div class="login-form-wrapper">
                     <n-alert v-if="userSettings.user_email" :show-icon="false" :bordered="false" closable>
                         <span>{{ t('bindUserInfo') }}</span>
@@ -408,32 +408,34 @@ onMounted(async () => {
     z-index: 5;
     display: flex;
     flex-direction: column;
+    overflow: hidden; /* ВОТ ЭТО НЕ ДАСТ C.C. ВЫЛЕЗТИ ЗА РАМКУ */
 }
 
 /* =========================================
-   C.C. (УМЕНЬШЕНЫ)
+   C.C. (СТРОГО ВНУТРИ РАМКИ)
    ========================================= */
 .cc-character {
     position: absolute;
-    bottom: -5%; 
-    height: 65%; /* УМЕНЬШИЛИ С 85% ДО 65% */
-    width: auto;
+    bottom: 0; /* Прижали к самому низу */
+    height: calc(100% - 45px); /* Занимают всю высоту, кроме верхней линии */
+    width: 45%; /* Ограничили ширину, чтобы не залезали на форму */
     object-fit: contain;
+    object-position: bottom;
     z-index: 2; 
     pointer-events: none;
 }
 
 .cc-character.left {
-    left: -5%; /* Немного вернули к центру, так как стали меньше */
+    left: 0; 
 }
 
 .cc-character.right {
-    right: -5%; 
+    right: 0; 
     transform: scaleX(-1); 
 }
 
 /* =========================================
-   ЛИНИИ РАМКИ (ПОВЕРХ C.C.)
+   ЛИНИИ РАМКИ
    ========================================= */
 .frame-lines-overlay {
     position: absolute;
@@ -518,7 +520,7 @@ onMounted(async () => {
 }
 
 /* =========================================
-   УВЕЛИЧЕННАЯ ФОРМА ВХОДА
+   ФОРМА ВХОДА
    ========================================= */
 .login-form-wrapper {
     position: relative; 
@@ -565,7 +567,7 @@ onMounted(async () => {
     .login-form-wrapper { width: 90%; max-width: 340px; }
     .welcome-text { font-size: 2.2rem; letter-spacing: -1px; }
     .lines { width: 120px; }
-    .cc-character { height: 50%; opacity: 0.2; bottom: -5%; left: -2%; right: -2%; } 
+    .cc-character { height: 60%; opacity: 0.2; width: 30%; } 
     .neon-frame { width: 95vw; height: 85vh; }
 }
 
