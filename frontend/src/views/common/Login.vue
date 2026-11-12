@@ -194,7 +194,7 @@ onMounted(async () => {
         <div class="glow-sphere sphere-1"></div>
         <div class="glow-sphere sphere-2"></div>
 
-        <!-- УВЕЛИЧЕННАЯ картинка с C.C. (чтобы отодвинуть лица от центра) -->
+        <!-- УВЕЛИЧЕННАЯ картинка с C.C. -->
         <img :src="bgImage" class="bg-image" alt="Background" />
 
         <!-- Контент поверх фона -->
@@ -377,21 +377,20 @@ onMounted(async () => {
     bottom: 5%; right: 10%;
 }
 
-/* --- КАРТИНКА С C.C. (УВЕЛИЧЕНА, ЧТОБЫ ОТОДВИНУТЬ ЛИЦА) --- */
+/* --- КАРТИНКА С C.C. (ОБНОВЛЕНО) --- */
 .bg-image {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     
-    /* УВЕЛИЧИЛИ С 75VW ДО 90VW */
-    width: 90vw; 
-    max-width: 1400px;
+    width: 85vw; 
+    max-width: 1600px;
     height: 85vh;
     object-fit: contain; 
     
     z-index: 2;
-    opacity: 0.8; 
+    opacity: 0.9; 
     filter: drop-shadow(0 0 20px rgba(0, 255, 136, 0.2));
 }
 
@@ -471,12 +470,11 @@ onMounted(async () => {
 
 /* --- УМЕНЬШЕННАЯ ФОРМА ВХОДА --- */
 .login-form-wrapper {
-    /* УМЕНЬШИЛИ С 360PX ДО 300PX */
     width: 300px; 
     flex-shrink: 0; 
     background-color: rgba(20, 20, 24, 0.8); 
     backdrop-filter: blur(15px); 
-    padding: 20px 15px; /* Уменьшили отступы */
+    padding: 20px 15px; 
     border-radius: 16px;
     box-shadow: 
         0 10px 40px rgba(0, 0, 0, 0.9), 
@@ -490,7 +488,7 @@ onMounted(async () => {
     .welcome-text { font-size: 2.5rem; letter-spacing: -1px; }
     .swoosh { display: none; }
     .lines { width: 120px; }
-    .bg-image { width: 120vw; } /* На телефонах картинку еще сильнее увеличиваем */
+    .bg-image { width: 120vw; }
 }
 
 /* --- Твои изначальные стили --- */
