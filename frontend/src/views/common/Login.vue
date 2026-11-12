@@ -336,7 +336,6 @@ onMounted(async () => {
     justify-content: center;
     align-items: center;
     background-color: #0a0a0a; 
-    overflow: hidden;
     padding: 20px 0;
 }
 
@@ -346,11 +345,9 @@ onMounted(async () => {
 
 .main-card {
     position: relative;
-    /* Ширина 65vw — оптимально для десктопа */
     width: 65vw; 
     min-width: 600px; 
     max-width: 1100px; 
-    /* Убрали aspect-ratio, теперь картинка задает высоту */
     display: flex;
     justify-content: center;
     border-radius: 12px;
@@ -358,7 +355,9 @@ onMounted(async () => {
 
 .bg-image {
     width: 100%;
-    height: auto; /* Сохраняем оригинальные пропорции картинки */
+    height: auto; 
+    max-height: 80vh; /* Предохранитель: картинка не будет выше экрана */
+    object-fit: contain; /* Если высота ограничена, картинка впишется целиком */
     display: block;
     border-radius: 12px;
     z-index: 1;
@@ -403,7 +402,7 @@ onMounted(async () => {
    ========================================= */
 .welcome-banner {
     position: absolute;
-    top: 15%; /* Сдвигаем вниз от верхнего края картинки */
+    top: 15%; 
     left: 50%;
     transform: translateX(-50%);
     z-index: 10;
@@ -471,12 +470,12 @@ onMounted(async () => {
    ========================================= */
 .login-form-wrapper {
     position: absolute;
-    top: 55%; /* Чуть ниже центра, чтобы не наезжать на WELCOME */
+    top: 55%; 
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 10;
     
-    width: 300px; /* Сделали компактнее */
+    width: 300px; 
     background-color: rgba(10, 12, 10, 0.85); 
     backdrop-filter: blur(15px); 
     padding: 20px 15px; 
