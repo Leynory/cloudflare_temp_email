@@ -189,22 +189,26 @@ onMounted(async () => {
 <template>
     <div class="login-layout">
         
-        <!-- Размытый фон (Ambient) для заполнения пустых краев -->
+        <!-- Размытый фон (Ambient) -->
         <div class="ambient-bg" :style="{ backgroundImage: `url(${bgImage})` }"></div>
         
         <!-- Светящиеся сферы -->
         <div class="glow-sphere sphere-1"></div>
         <div class="glow-sphere sphere-2"></div>
 
-        <!-- Четкая картинка с C.C. (теперь по центру, без искажений) -->
-        <img :src="bgImage" class="bg-image" alt="Background" />
+        <!-- Контейнер для картинки и бегающих огоньков -->
+        <div class="image-container">
+            <img :src="bgImage" class="bg-image" alt="Background" />
+            
+            <!-- Бегающие неоновые огоньки по периметру -->
+            <div class="light-runner runner-1"></div>
+            <div class="light-runner runner-2"></div>
+            <div class="light-runner runner-3"></div>
+            <div class="light-runner runner-4"></div>
+        </div>
 
-        <!-- Киберпанк-сетка (теперь ПОВЕРХ картинки, чтобы ее было видно) -->
+        <!-- Киберпанк-сетка (поверх картинки) -->
         <div class="cyber-grid"></div>
-
-        <!-- Декоративные HUD-линии по краям -->
-        <div class="hud-line left-hud"></div>
-        <div class="hud-line right-hud"></div>
 
         <!-- Контент поверх фона -->
         <div class="content-wrapper">
@@ -350,10 +354,10 @@ onMounted(async () => {
 }
 
 /* =========================================
-   ФОНОВЫЕ СЛОИ (ВСЕ FIXED, ЧТОБЫ ЗАПОЛНИТЬ ЭКРАН)
+   ФОНОВЫЕ СЛОИ
    ========================================= */
 
-/* 1. Самый нижний слой: размытая копия для краев */
+/* 1. Размытая копия для краев */
 .ambient-bg {
     position: fixed; 
     top: -10%; left: -10%; right: -10%; bottom: -10%; 
@@ -382,23 +386,80 @@ onMounted(async () => {
     bottom: 5%; right: 10%;
 }
 
-/* 3. ОСНОВНАЯ КАРТИНКА (Четкая, с сохранением пропорций) */
-.bg-image {
-    position: fixed; 
+/* =========================================
+   КОНТЕЙНЕР С КАРТИНКОЙ И ОГОНЬКАМИ
+   ========================================= */
+.image-container {
+    position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     
-    /* Используем contain, чтобы картинка не искажалась */
-    width: 100vw; 
-    height: 100vh;
-    object-fit: contain; 
+    /* УМЕНЬШАЕМ КАРТИНКУ ЗДЕСЬ (было 100vw, ставим 85vw) */
+    width: 85vw; 
+    height: 85vh; 
     
     z-index: -1;
-    /* Никакой прозрачности и размытия */
+    /* Добавим немного магии для центрирования картинки внутри контейнера */
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-/* 4. КИБЕРПАНК СЕТКА (ПОВЕРХ КАРТИНКИ) */
+.bg-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; 
+}
+
+/* =========================================
+   БЕГАЮЩИЕ НЕОНОВЫЕ ОГОНЬКИ
+   ========================================= */
+.light-runner {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background-color: #00ff88;
+    border-radius: 50%;
+    box-shadow: 
+        0 0 10px #00ff88, 
+        0 0 20px #00ff88, 
+        0 0 30px #00ff88;
+    z-index: 5;
+    
+    /* Запускаем анимацию по периметру контейнера */
+    animation: orbit 8s linear infinite;
+}
+
+/* Разные задержки, чтобы огоньки летели друг за другом */
+.runner-2 { animation-delay: -2s; }
+.runner-3 { animation-delay: -4s; }
+.runner-4 { animation-delay: -6s; }
+
+@keyframes orbit {
+    0%   { top: 0; left: 0; opacity: 1; }
+    24%  { top: 0; left: 100%; opacity: 1; }
+    25%  { top: 0; left: 100%; opacity: 0; } /* Исчезает на углу */
+    26%  { top: 100%; left: 100%; opacity: 0; } /* Появляется на другой стороне */
+    27%  { top: 100%; left: 100%; opacity: 1; }
+    
+    49%  { top: 100%; left: 100%; opacity: 1; }
+    50%  { top: 100%; left: 100%; opacity: 0; }
+    51%  { top: 100%; left: 0; opacity: 0; }
+    52%  { top: 100%; left: 0; opacity: 1; }
+    
+    74%  { top: 100%; left: 0; opacity: 1; }
+    75%  { top: 100%; left: 0; opacity: 0; }
+    76%  { top: 0; left: 0; opacity: 0; }
+    77%  { top: 0; left: 0; opacity: 1; }
+    
+    100% { top: 0; left: 0; opacity: 1; }
+}
+
+/* =========================================
+   ОСТАЛЬНЫЕ ЭЛЕМЕНТЫ
+   ========================================= */
+
 .cyber-grid {
     position: fixed; 
     top: 0; left: 0; right: 0; bottom: 0;
@@ -406,32 +467,13 @@ onMounted(async () => {
         linear-gradient(rgba(0, 255, 136, 0.07) 1px, transparent 1px),
         linear-gradient(90deg, rgba(0, 255, 136, 0.07) 1px, transparent 1px);
     background-size: 40px 40px;
-    z-index: 1; /* Ставим выше картинки, чтобы сетка ложилась поверх C.C. */
-    pointer-events: none; /* Клики проходят сквозь сетку */
+    z-index: 1; 
+    pointer-events: none; 
 }
-
-/* 5. Боковые линии HUD */
-.hud-line {
-    position: fixed;
-    top: 20%;
-    bottom: 20%;
-    width: 2px;
-    background: linear-gradient(to bottom, transparent, #00ff88, transparent);
-    z-index: 2;
-    opacity: 0.4;
-    box-shadow: 0 0 10px #00ff88;
-    pointer-events: none;
-}
-.left-hud { left: 5vw; }
-.right-hud { right: 5vw; }
-
-/* =========================================
-   КОНТЕНТ И ФОРМА
-   ========================================= */
 
 .content-wrapper {
     position: relative;
-    z-index: 10; /* Форма всегда выше всех фонов */
+    z-index: 10; 
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -522,7 +564,7 @@ onMounted(async () => {
     .welcome-text { font-size: 2.5rem; letter-spacing: -1px; }
     .swoosh { display: none; }
     .lines { width: 120px; }
-    .hud-line { display: none; }
+    .image-container { width: 100vw; height: 100vh; } /* На телефоне возвращаем на весь экран */
 }
 
 /* --- Твои изначальные стили --- */
