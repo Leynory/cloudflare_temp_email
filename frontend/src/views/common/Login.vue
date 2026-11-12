@@ -196,14 +196,17 @@ onMounted(async () => {
 
         <!-- УМЕНЬШЕННАЯ РАМКА -->
         <div class="neon-frame">
-            <!-- Верхняя линия-разделитель -->
-            <div class="frame-top-line"></div>
-
+            
             <!-- C.C. Слева (вылезает за рамку) -->
             <img :src="ccImage" class="cc-character left" alt="C.C." />
             
-            <!-- C.C. Справа (отзеркалена и вылезает) -->
+            <!-- C.C. Справа (отзеркалена) -->
             <img :src="ccImage" class="cc-character right" alt="C.C." />
+
+            <!-- СЛОЙ С ЛИНИЯМИ РАМКИ (Поверх C.C.) -->
+            <div class="frame-lines-overlay">
+                <div class="frame-top-line"></div>
+            </div>
 
             <!-- Контент (Баннер и Форма) -->
             <div class="content-wrapper">
@@ -367,7 +370,6 @@ onMounted(async () => {
 .cyber-grid {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    /* Сделали линии заметно ярче (0.15) и меньше размер ячейки (30px) */
     background-image: 
         linear-gradient(rgba(0, 255, 136, 0.15) 1px, transparent 1px),
         linear-gradient(90deg, rgba(0, 255, 136, 0.15) 1px, transparent 1px);
@@ -395,22 +397,53 @@ onMounted(async () => {
 }
 
 /* =========================================
-   УМЕНЬШЕННАЯ CSS-РАМКА
+   РАМКА (БЕЗ ГРАНИЦ, ЧТОБЫ C.C. ВЫЛЕЗАЛИ)
    ========================================= */
 .neon-frame {
     position: relative;
-    width: 65vw; /* Уменьшили с 90vw */
-    max-width: 1000px; 
-    height: 70vh; /* Уменьшили с 85vh */
-    border: 3px solid #00ff88;
-    background-color: rgba(5, 10, 8, 0.4); /* Сделали чуть прозрачнее, чтобы вылезающие C.C. смотрелись лучше */
-    box-shadow: 
-        0 0 20px rgba(0, 255, 136, 0.2), 
-        inset 0 0 20px rgba(0, 255, 136, 0.1);
+    width: 70vw; 
+    max-width: 1100px; 
+    height: 75vh; 
+    background-color: rgba(5, 10, 8, 0.5); /* Полупрозрачный фон внутри */
     z-index: 5;
     display: flex;
     flex-direction: column;
-    /* Убрали overflow: hidden, чтобы C.C. могли вылезать */
+}
+
+/* =========================================
+   C.C. (РАСПОЛОЖЕНЫ ПОД ЛИНИЯМИ РАМКИ)
+   ========================================= */
+.cc-character {
+    position: absolute;
+    bottom: -8%; /* Спускаем ниже края рамки */
+    height: 95%; /* Высота персонажа */
+    width: auto;
+    object-fit: contain;
+    z-index: 2; /* Ниже слоя с линиями (10), но выше фона */
+    pointer-events: none;
+}
+
+.cc-character.left {
+    left: -5%; 
+}
+
+.cc-character.right {
+    right: -5%; 
+    transform: scaleX(-1); 
+}
+
+/* =========================================
+   ЛИНИИ РАМКИ (ПОВЕРХ C.C.)
+   ========================================= */
+.frame-lines-overlay {
+    position: absolute;
+    inset: 0;
+    border: 3px solid #00ff88;
+    box-shadow: 
+        0 0 20px rgba(0, 255, 136, 0.2), 
+        inset 0 0 20px rgba(0, 255, 136, 0.1);
+    z-index: 10; /* Выше C.C. */
+    pointer-events: none;
 }
 
 /* Верхняя линия внутри рамки */
@@ -419,37 +452,14 @@ onMounted(async () => {
     height: 45px;
     border-bottom: 2px solid #00ff88;
     box-shadow: 0 2px 10px rgba(0, 255, 136, 0.3);
-    flex-shrink: 0;
 }
 
 /* =========================================
-   C.C. ВЫЛЕЗАЮТ ЗА РАМКУ
-   ========================================= */
-.cc-character {
-    position: absolute;
-    bottom: -5%; /* Спускаем вниз за рамку */
-    height: 100%; /* Увеличиваем, чтобы точно вылезли */
-    width: auto;
-    object-fit: contain;
-    z-index: 4; /* Ниже контента (10), но выше фона рамки */
-    pointer-events: none;
-}
-
-.cc-character.left {
-    left: -15%; /* Сдвигаем влево за пределы рамки */
-}
-
-.cc-character.right {
-    right: -15%; /* Сдвигаем вправо за пределы рамки */
-    transform: scaleX(-1); 
-}
-
-/* =========================================
-   КОНТЕНТ (Баннер и Форма)
+   КОНТЕНТ (Форма и Баннер)
    ========================================= */
 .content-wrapper {
     position: relative;
-    z-index: 10; 
+    z-index: 20; /* Самый верхний слой */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -471,7 +481,7 @@ onMounted(async () => {
 
 .welcome-text {
     font-family: 'Playfair Display', 'Times New Roman', serif;
-    font-size: 2.5rem; /* Чуть уменьшили, так как рамка стала меньше */
+    font-size: 2.5rem; 
     font-weight: 900;
     margin: 0;
     color: #ffffff;
@@ -520,7 +530,6 @@ onMounted(async () => {
     padding: 20px 15px; 
     border-radius: 8px; 
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9); 
-    z-index: 10;
 }
 
 .login-form-wrapper::before {
@@ -557,8 +566,8 @@ onMounted(async () => {
     .login-form-wrapper { width: 90%; max-width: 280px; }
     .welcome-text { font-size: 2rem; letter-spacing: -1px; }
     .lines { width: 100px; }
-    .cc-character { height: 80%; opacity: 0.2; bottom: 0; left: -5%; right: -5%; } 
-    .neon-frame { width: 90vw; height: 75vh; }
+    .cc-character { height: 80%; opacity: 0.2; bottom: -5%; left: 0; right: 0; } 
+    .neon-frame { width: 90vw; height: 80vh; }
 }
 
 /* --- Твои изначальные стили --- */
