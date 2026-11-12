@@ -4,7 +4,6 @@ import { useScopedI18n } from '@/i18n/app'
 import { useRouter } from 'vue-router'
 import { NewLabelOutlined, EmailOutlined, RedeemOutlined } from '@vicons/material'
 
-// ИМПОРТ ФОНА
 import bgImage from '@/assets/bg.png' 
 
 import AdminContact from '../common/AdminContact.vue'
@@ -15,22 +14,13 @@ import { api } from '../../api'
 import { getRouterPathWithLang, hashPassword } from '../../utils'
 
 const props = defineProps({
-    bindUserAddress: {
-        type: Function,
-        default: async () => { await api.bindUserAddress(); },
-        required: true
-    },
+    bindUserAddress: { type: Function, default: async () => { await api.bindUserAddress(); }, required: true },
     newAddressPath: {
         type: Function,
         default: async (address_name, domain, cf_token, enableRandomSubdomain) => {
             return await api.fetch("/api/new_address", {
                 method: "POST",
-                body: JSON.stringify({
-                    name: address_name,
-                    domain: domain,
-                    cf_token: cf_token,
-                    enableRandomSubdomain: enableRandomSubdomain,
-                }),
+                body: JSON.stringify({ name: address_name, domain, cf_token, enableRandomSubdomain }),
             });
         },
         required: true
@@ -42,8 +32,7 @@ const notification = useNotification()
 const router = useRouter()
 
 const {
-    jwt, loading, openSettings,
-    showAddressCredential, userSettings, addressPassword
+    jwt, loading, openSettings, showAddressCredential, userSettings, addressPassword
 } = useGlobalState()
 
 const tabValue = ref('signin')
@@ -76,11 +65,7 @@ const login = async () => {
         try {
             const res = await api.fetch('/api/address_login', {
                 method: 'POST',
-                body: JSON.stringify({
-                    email: loginAddress.value,
-                    password: await hashPassword(loginPassword.value),
-                    cf_token: loginCfToken.value
-                })
+                body: JSON.stringify({ email: loginAddress.value, password: await hashPassword(loginPassword.value), cf_token: loginCfToken.value })
             });
             jwt.value = res.jwt;
             await api.getSettings();
@@ -112,7 +97,6 @@ const login = async () => {
 }
 
 const { locale, t } = useScopedI18n('views.common.Login')
-
 const loginAndBindTag = computed(() => userSettings.value.user_email ? t('loginAndBind') : t('login'))
 
 const addressRegex = computed(() => {
@@ -152,14 +136,12 @@ const newEmail = async () => {
 };
 
 const openRedeemPage = async () => { await router.push(getRouterPathWithLang('/redeem', locale.value)); };
-
 const addressPrefix = computed(() => userSettings.value?.user_role ? userSettings.value.user_role.prefix || "" : openSettings.value.prefix);
 
 const canUseRandomSubdomain = computed(() => {
     if (!emailDomain.value) return false;
     return (openSettings.value.randomSubdomainDomains || []).includes(emailDomain.value);
 });
-
 watch(canUseRandomSubdomain, (enabled) => { if (!enabled) subdomainMode.value = "normal"; });
 
 const domainsOptions = computed(() => {
@@ -187,19 +169,11 @@ onMounted(async () => {
 </script>
 
 <template>
-    <!-- Черный фон для пустых краев -->
     <div class="login-layout">
-        
-        <!-- Центральная карточка (50% ширины экрана) -->
         <div class="main-card">
-            
-            <!-- Картинка с C.C. -->
             <img :src="bgImage" class="bg-image" alt="Background" />
-            
-            <!-- Переливающаяся неоновая рамка -->
             <div class="neon-border"></div>
 
-            <!-- Баннер (сверху) -->
             <div class="welcome-banner">
                 <div class="lines top-lines"></div>
                 <h1 class="welcome-text">
@@ -214,7 +188,6 @@ onMounted(async () => {
                 <p class="welcome-subtext">GACHA SUKI MAIL</p>
             </div>
 
-            <!-- Форма входа (по центру) -->
             <div class="login-form-wrapper">
                 <n-alert v-if="userSettings.user_email" :show-icon="false" :bordered="false" closable>
                     <span>{{ t('bindUserInfo') }}</span>
@@ -330,7 +303,6 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-/* --- Общий контейнер (только черный фон, без сеток) --- */
 .login-layout {
     position: relative;
     width: 100%;
@@ -338,58 +310,42 @@ onMounted(async () => {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #0a0a0a; /* Темный фон для краев */
+    background-color: #0a0a0a;
     overflow: hidden;
 }
 
-/* =========================================
-   ЦЕНТРАЛЬНАЯ КАРТОЧКА (Ровно 50% ширины)
-   ========================================= */
-
 .main-card {
     position: relative;
-    width: 50vw; /* Ровно половина экрана */
-    min-width: 600px; /* Чтобы на маленьких экранах не сжималось в точку */
-    max-width: 1000px; /* Ограничитель для огромных мониторов */
+    width: 55vw; /* Сделали чуть больше половины экрана */
+    min-width: 700px;
+    max-width: 1200px;
+    aspect-ratio: 16 / 9; /* Жестко задали пропорции */
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-/* Картинка (задает высоту всей карточки) */
 .bg-image {
     width: 100%;
-    height: auto; /* Сохраняем оригинальные пропорции */
+    height: 100%;
+    object-fit: fill;
     display: block;
     border-radius: 12px;
     z-index: 1;
 }
 
-/* =========================================
-   НЕОНОВАЯ РАМКА
-   ========================================= */
 .neon-border {
     position: absolute;
     inset: -6px;
     border-radius: 16px;
     pointer-events: none;
     z-index: 2;
-    
-    background: linear-gradient(
-        135deg, 
-        #001a09 0%, 
-        #008f33 25%, 
-        #004d1a 50%, 
-        #008f33 75%, 
-        #001a09 100%
-    );
+    background: linear-gradient(135deg, #001a09 0%, #008f33 25%, #004d1a 50%, #008f33 75%, #001a09 100%);
     background-size: 300% 300%; 
     animation: travel 3s linear infinite;
-    
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
-    
     padding: 4px; 
     filter: drop-shadow(0 0 8px rgba(0, 143, 51, 0.5));
 }
@@ -399,14 +355,9 @@ onMounted(async () => {
     100% { background-position: 100% 100%; }
 }
 
-/* =========================================
-   БАННЕР И ФОРМА (ЖЕСТКО ПО ЦЕНТРУ КАРТИНКИ)
-   ========================================= */
-
-/* --- Баннер (WELCOME) --- */
 .welcome-banner {
     position: absolute;
-    top: 12%; /* Чуть выше формы */
+    top: 10%; 
     left: 50%;
     transform: translateX(-50%);
     z-index: 10;
@@ -469,43 +420,35 @@ onMounted(async () => {
     margin-top: 8px;
 }
 
-/* --- Форма входа --- */
 .login-form-wrapper {
     position: absolute;
-    top: 55%; /* Центрируем по вертикали */
+    top: 55%; 
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 10;
-    
-    width: 340px; /* Ширина формы */
+    width: 340px; 
     background-color: rgba(10, 12, 10, 0.85); 
     backdrop-filter: blur(15px); 
     padding: 25px 20px; 
     border-radius: 12px;
-    box-shadow: 
-        0 10px 40px rgba(0, 0, 0, 0.9), 
-        inset 0 0 0 1px rgba(0, 143, 51, 0.3); 
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9), inset 0 0 0 1px rgba(0, 143, 51, 0.3); 
 }
 
-/* --- Мобильная версия --- */
 @media (max-width: 850px) {
     .main-card {
         width: 95vw;
         min-width: unset;
+        aspect-ratio: auto;
+        height: 80vh; /* На мобилках занимаем по высоте больше */
     }
-    .login-form-wrapper { 
-        width: 90%; 
-        max-width: 340px; 
-        padding: 15px; 
-        top: 58%; 
-    }
+    .bg-image { object-fit: cover; }
+    .login-form-wrapper { width: 90%; max-width: 340px; padding: 15px; top: 55%; }
     .welcome-banner { top: 8%; }
     .welcome-text { font-size: 2.5rem; letter-spacing: -1px; }
     .swoosh { display: none; }
     .lines { width: 120px; }
 }
 
-/* --- Твои изначальные стили --- */
 .n-alert { margin-top: 10px; margin-bottom: 10px; text-align: center; }
 .n-form .n-button { margin-top: 8px; }
 .redeem-entry-section { margin-top: 12px; }
