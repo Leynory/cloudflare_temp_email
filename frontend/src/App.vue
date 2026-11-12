@@ -5,6 +5,7 @@ import {
 import { computed, onMounted, watchEffect } from 'vue'
 import { useHead } from '@unhead/vue'
 import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router' // ДОБАВИЛИ ИМПОРТ
 import { useGlobalState } from './store'
 import { useIsMobile } from './utils/composables'
 import Header from './views/Header.vue';
@@ -13,6 +14,8 @@ import { api } from './api'
 import { getNaiveLocaleConfig } from './i18n/naive-locale'
 import { DEFAULT_LOCALE, isSupportedLocale } from './i18n/utils'
 import { APP_CONFIG } from './config'
+
+const route = useRoute() // ПОЛУЧАЕМ ТЕКУЩИЙ ПУТЬ
 
 const {
   isDark, loading, useSideMargin, telegramApp, isTelegram
@@ -26,6 +29,9 @@ const isMobile = useIsMobile()
 const showSideMargin = computed(() => !isMobile.value && useSideMargin.value);
 const showAd = computed(() => !isMobile.value && adClient && adSlot);
 const gridMaxCols = computed(() => showAd.value ? 8 : 12);
+
+// ПРОВЕРКА: если мы на главной (или /login), то мы убираем сетку
+const isLoginPage = computed(() => route.path === '/' || route.path === '/login')
 
 watchEffect(() => {
   if (typeof document === 'undefined') return
@@ -60,13 +66,11 @@ onMounted(async () => {
     document.body.appendChild(script);
   }
 
-  // check if google ad is enabled
   if (showAd.value) {
     (window.adsbygoogle = window.adsbygoogle || []).push({});
     (window.adsbygoogle = window.adsbygoogle || []).push({});
   }
 
-  // check if telegram is enabled
   const enableTelegram = APP_CONFIG.IS_TELEGRAM;
   if (
     (typeof enableTelegram === 'boolean' && enableTelegram === true)
@@ -92,7 +96,16 @@ onMounted(async () => {
     <n-spin description="loading..." :show="loading">
       <n-notification-provider container-style="margin-top: 60px;">
         <n-message-provider container-style="margin-top: 20px;">
-          <n-grid x-gap="12" :cols="gridMaxCols">
+          
+          <Header />
+
+          <!-- Если это страница входа, рендерим её на всю ширину без сетки -->
+          <div v-if="isLoginPage" style="width: 100%; min-height: 80vh;">
+            <router-view></router-view>
+          </div>
+
+          <!-- Для остальных страниц используем старую сетку -->
+          <n-grid v-else x-gap="12" :cols="gridMaxCols">
             <n-gi v-if="showSideMargin" span="1">
               <div class="side" v-if="showAd">
                 <ins class="adsbygoogle" style="display:block" :data-ad-client="adClient" :data-ad-slot="adSlot"
@@ -102,12 +115,9 @@ onMounted(async () => {
             <n-gi :span="!showSideMargin ? gridMaxCols : (gridMaxCols - 2)">
               <div class="main">
                 <n-space vertical>
-                  <!-- ВОТ ЗДЕСЬ МЫ СДЕЛАЛИ ФОН ПРОЗРАЧНЫМ -->
                   <n-layout style="min-height: 80vh; background-color: transparent;">
-                    <Header />
                     <router-view></router-view>
                   </n-layout>
-                  <Footer />
                 </n-space>
               </div>
             </n-gi>
@@ -118,6 +128,8 @@ onMounted(async () => {
               </div>
             </n-gi>
           </n-grid>
+
+          <Footer />
           <n-back-top />
         </n-message-provider>
       </n-notification-provider>
@@ -126,7 +138,6 @@ onMounted(async () => {
 </template>
 
 <style>
-/* Добавили цвет для всего body, чтобы при прозрачности не было белых вспышек */
 body {
   background-color: #0f0f13;
   margin: 0;
@@ -142,7 +153,6 @@ body {
   :where(input, textarea, select, [contenteditable="true"]) {
     font-size: 16px !important;
   }
-
   :where(.n-input, .n-input-number, .n-base-selection, .n-input-group-label) {
     --n-font-size: 16px !important;
   }
@@ -150,24 +160,9 @@ body {
 </style>
 
 <style scoped>
-.side {
-  height: 100vh;
-}
-
-.main {
-  height: 100vh;
-  text-align: center;
-}
-
-.n-grid {
-  height: 100%;
-}
-
-.n-gi {
-  height: 100%;
-}
-
-.n-space {
-  height: 100%;
-}
+.side { height: 100vh; }
+.main { height: 100vh; text-align: center; }
+.n-grid { height: 100%; }
+.n-gi { height: 100%; }
+.n-space { height: 100%; }
 </style>
