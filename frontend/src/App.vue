@@ -30,7 +30,6 @@ const showSideMargin = computed(() => !isMobile.value && useSideMargin.value);
 const showAd = computed(() => !isMobile.value && adClient && adSlot);
 const gridMaxCols = computed(() => showAd.value ? 8 : 12);
 
-// Проверка на страницу входа
 const isLoginPage = computed(() => {
     const path = route.path.toLowerCase();
     return path === '/' || path === '' || path.includes('login') || path.includes('index');
@@ -102,7 +101,7 @@ onMounted(async () => {
           <Header />
 
           <!-- Если это страница входа, рендерим её на всю ширину без сетки -->
-          <div v-if="isLoginPage" class="login-full-width">
+          <div v-if="isLoginPage" style="width: 100%; display: flex; justify-content: center; background-color: #0a0a0a;">
             <router-view></router-view>
           </div>
 
@@ -153,19 +152,6 @@ body {
 </style>
 
 <style scoped>
-/* Магия, которая заставляет контейнер входа игнорировать отступы сетки */
-.login-full-width {
-  width: 100vw;
-  position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
-  display: flex;
-  justify-content: center;
-  overflow: hidden;
-}
-
 .side { height: 100vh; }
 .main { height: 100vh; text-align: center; }
 .n-grid { height: 100%; }
