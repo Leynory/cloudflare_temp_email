@@ -197,6 +197,9 @@ onMounted(async () => {
         <!-- Картинка с C.C. -->
         <img :src="bgImage" class="bg-image" alt="Background" />
 
+        <!-- ВОТ ОН, ДОЛГОЖДАННЫЙ ЭФФЕКТ МЕРЦАНИЯ (я его добавила!) -->
+        <div class="shimmer-border"></div>
+
         <!-- Контент поверх фона -->
         <div class="content-wrapper">
             
@@ -401,6 +404,47 @@ onMounted(async () => {
     filter: drop-shadow(0 0 20px rgba(0, 255, 136, 0.2));
 }
 
+/* =========================================
+   ЭФФЕКТ SHIMMER (МЕРЦАНИЕ КАК В СТИМЕ)
+   ========================================= */
+.shimmer-border {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    
+    /* Размеры точно под картинку */
+    width: 85vw; 
+    max-width: 1600px;
+    height: 85vh;
+    
+    z-index: 3; /* Поверх картинки, под контентом */
+    pointer-events: none;
+    
+    /* Маска, которая делает рамку полой */
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    padding: 3px; /* Толщина самой линии */
+    
+    /* Яркий вращающийся блик */
+    background: conic-gradient(
+        from var(--angle),
+        transparent 60%,
+        rgba(0, 255, 136, 0.9) 75%,
+        #ffffff 85%,
+        rgba(0, 255, 136, 0.9) 95%,
+        transparent 100%
+    );
+    
+    /* Анимация вращения */
+    animation: rotate-shimmer 2.5s linear infinite;
+}
+
+@keyframes rotate-shimmer {
+    to { --angle: 360deg; }
+}
+
 /* --- СЛОЙ С КОНТЕНТОМ --- */
 .content-wrapper {
     position: relative;
@@ -495,7 +539,7 @@ onMounted(async () => {
     .welcome-text { font-size: 2.5rem; letter-spacing: -1px; }
     .swoosh { display: none; }
     .lines { width: 120px; }
-    .bg-image { width: 120vw; }
+    .bg-image, .shimmer-border { width: 120vw; }
 }
 
 /* --- Твои изначальные стили --- */
