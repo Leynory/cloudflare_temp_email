@@ -197,9 +197,6 @@ onMounted(async () => {
         <!-- Картинка с C.C. -->
         <img :src="bgImage" class="bg-image" alt="Background" />
 
-        <!-- ВОТ ОН, ДОЛГОЖДАННЫЙ ЭФФЕКТ МЕРЦАНИЯ (я его добавила!) -->
-        <div class="shimmer-border"></div>
-
         <!-- Контент поверх фона -->
         <div class="content-wrapper">
             
@@ -218,7 +215,7 @@ onMounted(async () => {
                 <p class="welcome-subtext">GACHA SUKI MAIL</p>
             </div>
 
-            <!-- Форма входа -->
+            <!-- Форма входа (на которую мы и повесили эффект) -->
             <div class="login-form-wrapper">
                 <n-alert v-if="userSettings.user_email" :show-icon="false" :bordered="false" closable>
                     <span>{{ t('bindUserInfo') }}</span>
@@ -334,7 +331,7 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-/* --- ДЕКЛАРАЦИЯ ПЕРЕМЕННОЙ ДЛЯ АНИМАЦИИ ГРАДИЕНТА --- */
+/* --- ДЕКЛАРАЦИЯ ПЕРЕМЕННОЙ ДЛЯ АНИМАЦИИ --- */
 @property --angle {
   syntax: "<angle>";
   initial-value: 0deg;
@@ -402,47 +399,6 @@ onMounted(async () => {
     z-index: 2;
     opacity: 0.9; 
     filter: drop-shadow(0 0 20px rgba(0, 255, 136, 0.2));
-}
-
-/* =========================================
-   ЭФФЕКТ SHIMMER (МЕРЦАНИЕ КАК В СТИМЕ)
-   ========================================= */
-.shimmer-border {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    
-    /* Размеры точно под картинку */
-    width: 85vw; 
-    max-width: 1600px;
-    height: 85vh;
-    
-    z-index: 3; /* Поверх картинки, под контентом */
-    pointer-events: none;
-    
-    /* Маска, которая делает рамку полой */
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    padding: 3px; /* Толщина самой линии */
-    
-    /* Яркий вращающийся блик */
-    background: conic-gradient(
-        from var(--angle),
-        transparent 60%,
-        rgba(0, 255, 136, 0.9) 75%,
-        #ffffff 85%,
-        rgba(0, 255, 136, 0.9) 95%,
-        transparent 100%
-    );
-    
-    /* Анимация вращения */
-    animation: rotate-shimmer 2.5s linear infinite;
-}
-
-@keyframes rotate-shimmer {
-    to { --angle: 360deg; }
 }
 
 /* --- СЛОЙ С КОНТЕНТОМ --- */
@@ -519,18 +475,52 @@ onMounted(async () => {
     margin-top: 8px;
 }
 
-/* --- ФОРМА ВХОДА --- */
+/* =========================================
+   ФОРМА ВХОДА С ЭФФЕКТОМ SHIMMER
+   ========================================= */
 .login-form-wrapper {
+    position: relative; /* Важно для позиционирования псевдоэлемента */
     width: 300px; 
     flex-shrink: 0; 
     background-color: rgba(20, 20, 24, 0.8); 
     backdrop-filter: blur(15px); 
     padding: 20px 15px; 
     border-radius: 16px;
-    box-shadow: 
-        0 10px 40px rgba(0, 0, 0, 0.9), 
-        inset 0 0 0 1px rgba(144, 238, 144, 0.2); 
+    /* Оставляем базовую тень, чтобы форма читалась, когда блик с другой стороны */
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9); 
     z-index: 10;
+}
+
+/* Псевдоэлемент, который и создает бегущий блик */
+.login-form-wrapper::before {
+    content: "";
+    position: absolute;
+    inset: 0; /* Растягиваем по размеру формы */
+    border-radius: 16px; /* Скругление как у формы */
+    padding: 2px; /* Толщина линии */
+    
+    /* Тот самый крутящийся градиент */
+    background: conic-gradient(
+        from var(--angle),
+        transparent 60%,
+        rgba(0, 255, 136, 0.9) 75%,
+        #ffffff 85%,
+        rgba(0, 255, 136, 0.9) 95%,
+        transparent 100%
+    );
+    
+    /* Маска, которая делает центр прозрачным, оставляя только рамку */
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    
+    animation: rotate-shimmer 2.5s linear infinite;
+    pointer-events: none;
+    z-index: 11; /* Поверх фона формы */
+}
+
+@keyframes rotate-shimmer {
+    to { --angle: 360deg; }
 }
 
 /* --- Мобильная версия --- */
@@ -539,7 +529,7 @@ onMounted(async () => {
     .welcome-text { font-size: 2.5rem; letter-spacing: -1px; }
     .swoosh { display: none; }
     .lines { width: 120px; }
-    .bg-image, .shimmer-border { width: 120vw; }
+    .bg-image { width: 120vw; }
 }
 
 /* --- Твои изначальные стили --- */
