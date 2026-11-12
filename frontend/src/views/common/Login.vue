@@ -194,21 +194,21 @@ onMounted(async () => {
         <div class="glow-sphere sphere-1"></div>
         <div class="glow-sphere sphere-2"></div>
 
-        <!-- УМЕНЬШЕННАЯ РАМКА -->
+        <!-- УВЕЛИЧЕННАЯ РАМКА -->
         <div class="neon-frame">
             
-            <!-- C.C. Слева (вылезает за рамку) -->
+            <!-- C.C. Слева (УМЕНЬШЕНА) -->
             <img :src="ccImage" class="cc-character left" alt="C.C." />
             
-            <!-- C.C. Справа (отзеркалена) -->
+            <!-- C.C. Справа (УМЕНЬШЕНА) -->
             <img :src="ccImage" class="cc-character right" alt="C.C." />
 
-            <!-- СЛОЙ С ЛИНИЯМИ РАМКИ (Поверх C.C.) -->
+            <!-- СЛОЙ С ЛИНИЯМИ РАМКИ -->
             <div class="frame-lines-overlay">
                 <div class="frame-top-line"></div>
             </div>
 
-            <!-- Контент (Баннер и Форма) -->
+            <!-- Контент -->
             <div class="content-wrapper">
                 
                 <!-- Баннер -->
@@ -225,15 +225,15 @@ onMounted(async () => {
                     <p class="welcome-subtext">GACHA SUKI MAIL</p>
                 </div>
 
-                <!-- Форма входа -->
+                <!-- УВЕЛИЧЕННАЯ Форма входа -->
                 <div class="login-form-wrapper">
                     <n-alert v-if="userSettings.user_email" :show-icon="false" :bordered="false" closable>
                         <span>{{ t('bindUserInfo') }}</span>
                     </n-alert>
                     
-                    <n-tabs v-if="openSettings.fetched" v-model:value="tabValue" size="small" justify-content="space-evenly">
+                    <n-tabs v-if="openSettings.fetched" v-model:value="tabValue" size="medium" justify-content="space-evenly">
                         <n-tab-pane name="signin" :tab="loginAndBindTag">
-                            <n-form size="small">
+                            <n-form size="medium">
                                 <div v-if="loginMethod === 'password'">
                                     <n-form-item-row :label="t('email')" required>
                                         <n-input v-model:value="loginAddress" />
@@ -254,23 +254,23 @@ onMounted(async () => {
                                 <div class="switch-login-button">
                                     <n-button v-if="openSettings?.enableAddressPassword && !openSettings.addressPasswordLoginOnly"
                                         @click="loginMethod === 'password' ? loginMethod = 'credential' : loginMethod = 'password'"
-                                        type="info" quaternary size="tiny">
+                                        type="info" quaternary size="small">
                                         {{ loginMethod === 'password' ? t('credentialLogin') : t('passwordLogin') }}
                                     </n-button>
                                 </div>
 
-                                <n-button @click="login" :loading="loading" type="primary" block secondary strong size="small">
+                                <n-button @click="login" :loading="loading" type="primary" block secondary strong size="medium">
                                     <template #icon><n-icon :component="EmailOutlined" /></template>
                                     {{ loginAndBindTag }}
                                 </n-button>
-                                <n-button v-if="showNewAddressTab" @click="tabValue = 'register'" block secondary strong size="small">
+                                <n-button v-if="showNewAddressTab" @click="tabValue = 'register'" block secondary strong size="medium">
                                     <template #icon><n-icon :component="NewLabelOutlined" /></template>
                                     {{ t('getNewEmail') }}
                                 </n-button>
                                 <div v-if="openSettings.enableRedeemCode" class="redeem-entry-section">
                                     <n-divider />
                                     <n-text type="info" class="redeem-entry-tip">{{ t('redeemEntryTip') }}</n-text>
-                                    <n-button data-testid="redeem-entry" block secondary strong size="small" @click="openRedeemPage">
+                                    <n-button data-testid="redeem-entry" block secondary strong size="medium" @click="openRedeemPage">
                                         <template #icon><n-icon :component="RedeemOutlined" /></template>
                                         {{ t('useRedeemCode') }}
                                     </n-button>
@@ -280,7 +280,7 @@ onMounted(async () => {
                         
                         <n-tab-pane v-if="showNewAddressTab" name="register" :tab="t('getNewEmail')">
                             <n-spin :show="generateNameLoading">
-                                <n-form size="small">
+                                <n-form size="medium">
                                     <span>
                                         <p v-if="!openSettings.disableCustomAddressName">{{ t("getNewEmailTip1") + addressRegex.source }}</p>
                                         <p v-if="!openSettings.disableCustomAddressName">{{ t("getNewEmailTip2") }}</p>
@@ -313,14 +313,14 @@ onMounted(async () => {
                                         </div>
                                     </n-form-item-row>
                                     <Turnstile v-model:value="cfToken" />
-                                    <n-button type="primary" block secondary strong size="small" @click="newEmail" :loading="loading" :disabled="subdomainMode === 'custom' && !customSubdomain.trim()">
+                                    <n-button type="primary" block secondary strong size="medium" @click="newEmail" :loading="loading" :disabled="subdomainMode === 'custom' && !customSubdomain.trim()">
                                         <template #icon><n-icon :component="NewLabelOutlined" /></template>
                                         {{ t('getNewEmail') }}
                                     </n-button>
                                     <div v-if="openSettings.enableRedeemCode" class="redeem-entry-section">
                                         <n-divider />
                                         <n-text type="info" class="redeem-entry-tip">{{ t('redeemEntryTip') }}</n-text>
-                                        <n-button data-testid="redeem-entry-register" block secondary strong size="small" @click="openRedeemPage">
+                                        <n-button data-testid="redeem-entry-register" block secondary strong size="medium" @click="openRedeemPage">
                                             <template #icon><n-icon :component="RedeemOutlined" /></template>
                                             {{ t('useRedeemCode') }}
                                         </n-button>
@@ -397,34 +397,34 @@ onMounted(async () => {
 }
 
 /* =========================================
-   РАМКА (БЕЗ ГРАНИЦ, ЧТОБЫ C.C. ВЫЛЕЗАЛИ)
+   УВЕЛИЧЕННАЯ РАМКА
    ========================================= */
 .neon-frame {
     position: relative;
-    width: 70vw; 
-    max-width: 1100px; 
-    height: 75vh; 
-    background-color: rgba(5, 10, 8, 0.5); /* Полупрозрачный фон внутри */
+    width: 85vw; 
+    max-width: 1300px; 
+    height: 80vh; 
+    background-color: rgba(5, 10, 8, 0.5); 
     z-index: 5;
     display: flex;
     flex-direction: column;
 }
 
 /* =========================================
-   C.C. (РАСПОЛОЖЕНЫ ПОД ЛИНИЯМИ РАМКИ)
+   C.C. (УМЕНЬШЕНЫ)
    ========================================= */
 .cc-character {
     position: absolute;
-    bottom: -8%; /* Спускаем ниже края рамки */
-    height: 95%; /* Высота персонажа */
+    bottom: -5%; 
+    height: 65%; /* УМЕНЬШИЛИ С 85% ДО 65% */
     width: auto;
     object-fit: contain;
-    z-index: 2; /* Ниже слоя с линиями (10), но выше фона */
+    z-index: 2; 
     pointer-events: none;
 }
 
 .cc-character.left {
-    left: -5%; 
+    left: -5%; /* Немного вернули к центру, так как стали меньше */
 }
 
 .cc-character.right {
@@ -442,11 +442,10 @@ onMounted(async () => {
     box-shadow: 
         0 0 20px rgba(0, 255, 136, 0.2), 
         inset 0 0 20px rgba(0, 255, 136, 0.1);
-    z-index: 10; /* Выше C.C. */
+    z-index: 10; 
     pointer-events: none;
 }
 
-/* Верхняя линия внутри рамки */
 .frame-top-line {
     width: 100%;
     height: 45px;
@@ -459,7 +458,7 @@ onMounted(async () => {
    ========================================= */
 .content-wrapper {
     position: relative;
-    z-index: 20; /* Самый верхний слой */
+    z-index: 20; 
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -473,7 +472,7 @@ onMounted(async () => {
 .welcome-banner {
     position: relative;
     text-align: center;
-    margin-bottom: 15px; 
+    margin-bottom: 20px; 
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -481,7 +480,7 @@ onMounted(async () => {
 
 .welcome-text {
     font-family: 'Playfair Display', 'Times New Roman', serif;
-    font-size: 2.5rem; 
+    font-size: 3rem; 
     font-weight: 900;
     margin: 0;
     color: #ffffff;
@@ -491,7 +490,7 @@ onMounted(async () => {
 }
 
 .lines {
-    width: 140px; 
+    width: 160px; 
     height: 2px;
     background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.8), transparent);
     position: relative;
@@ -501,7 +500,7 @@ onMounted(async () => {
 .bottom-lines::before, .bottom-lines::after {
     content: '';
     position: absolute;
-    width: 20px;
+    width: 25px;
     height: 1px;
     background: rgba(0, 255, 136, 0.5);
     top: 50%;
@@ -514,20 +513,20 @@ onMounted(async () => {
     font-family: sans-serif;
     letter-spacing: 4px;
     text-transform: uppercase;
-    font-size: 0.6rem; 
+    font-size: 0.65rem; 
     margin-top: 6px;
 }
 
 /* =========================================
-   ФОРМА ВХОДА
+   УВЕЛИЧЕННАЯ ФОРМА ВХОДА
    ========================================= */
 .login-form-wrapper {
     position: relative; 
-    width: 280px; 
+    width: 340px; 
     flex-shrink: 0; 
     background-color: rgba(10, 15, 12, 0.9); 
     backdrop-filter: blur(15px); 
-    padding: 20px 15px; 
+    padding: 25px 20px; 
     border-radius: 8px; 
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9); 
 }
@@ -563,11 +562,11 @@ onMounted(async () => {
 
 /* --- Мобильная версия --- */
 @media (max-width: 850px) {
-    .login-form-wrapper { width: 90%; max-width: 280px; }
-    .welcome-text { font-size: 2rem; letter-spacing: -1px; }
-    .lines { width: 100px; }
-    .cc-character { height: 80%; opacity: 0.2; bottom: -5%; left: 0; right: 0; } 
-    .neon-frame { width: 90vw; height: 80vh; }
+    .login-form-wrapper { width: 90%; max-width: 340px; }
+    .welcome-text { font-size: 2.2rem; letter-spacing: -1px; }
+    .lines { width: 120px; }
+    .cc-character { height: 50%; opacity: 0.2; bottom: -5%; left: -2%; right: -2%; } 
+    .neon-frame { width: 95vw; height: 85vh; }
 }
 
 /* --- Твои изначальные стили --- */
