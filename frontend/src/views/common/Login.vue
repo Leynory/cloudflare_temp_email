@@ -4,7 +4,8 @@ import { useScopedI18n } from '@/i18n/app'
 import { useRouter } from 'vue-router'
 import { NewLabelOutlined, EmailOutlined, RedeemOutlined } from '@vicons/material'
 
-import bgImage from '@/assets/bg.png' 
+// ОБНОВЛЕННЫЙ ИМПОРТ ДЛЯ JPG
+import bgImage from '@/assets/bg.jpg' 
 
 import AdminContact from '../common/AdminContact.vue'
 import Turnstile from '../../components/Turnstile.vue'
@@ -187,14 +188,14 @@ onMounted(async () => {
 
 <template>
     <div class="login-layout">
-        <!-- Улучшенная киберпанк-сетка на фоне -->
+        <!-- Киберпанк-сетка на фоне -->
         <div class="cyber-grid"></div>
         
         <!-- Светящиеся сферы -->
         <div class="glow-sphere sphere-1"></div>
         <div class="glow-sphere sphere-2"></div>
 
-        <!-- Картинка с C.C. (уменьшена и сделана четкой) -->
+        <!-- Картинка с C.C. -->
         <img :src="bgImage" class="bg-image" alt="Background" />
 
         <!-- Контент поверх фона -->
@@ -386,24 +387,21 @@ onMounted(async () => {
     bottom: 5%; right: 10%;
 }
 
-/* --- КАРТИНКА С C.C. (ИСПРАВЛЕНО ДЛЯ ЧЕТКОСТИ) --- */
+/* --- КАРТИНКА С C.C. --- */
 .bg-image {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     
-    /* Привязываемся к высоте, а ширина подстроится сама (не будет сплющивания) */
     height: 80vh; 
     width: auto; 
     max-width: 90vw;
     
-    /* Говорим браузеру сохранять контрастность краев при масштабировании */
     image-rendering: -webkit-optimize-contrast;
     
     z-index: 2;
-    opacity: 1; /* Убрали прозрачность, чтобы не было эффекта "призрачности" */
-    /* Убрали drop-shadow, так как именно он размывал края */
+    opacity: 1; 
 }
 
 /* --- СЛОЙ С КОНТЕНТОМ --- */
@@ -468,7 +466,7 @@ onMounted(async () => {
 }
 
 /* =========================================
-   ФОРМА ВХОДА (УМЕНЬШЕНА ДО 280PX)
+   ФОРМА ВХОДА С ЭФФЕКТОМ SHIMMER
    ========================================= */
 .login-form-wrapper {
     position: relative; 
