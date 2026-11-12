@@ -4,8 +4,8 @@ import { useScopedI18n } from '@/i18n/app'
 import { useRouter } from 'vue-router'
 import { NewLabelOutlined, EmailOutlined, RedeemOutlined } from '@vicons/material'
 
-// ОБНОВЛЕННЫЙ ИМПОРТ ДЛЯ JPG
-import bgImage from '@/assets/bg.jpg' 
+// ОБНОВЛЕННЫЙ ИМПОРТ (теперь .webp)
+import bgImage from '@/assets/bg.webp' 
 
 import AdminContact from '../common/AdminContact.vue'
 import Turnstile from '../../components/Turnstile.vue'
