@@ -30,10 +30,17 @@ const showSideMargin = computed(() => !isMobile.value && useSideMargin.value);
 const showAd = computed(() => !isMobile.value && adClient && adSlot);
 const gridMaxCols = computed(() => showAd.value ? 8 : 12);
 
-// Надежная проверка на страницу входа
+// СУПЕР-НАДЕЖНАЯ ПРОВЕРКА
 const isLoginPage = computed(() => {
     const path = route.path.toLowerCase();
-    return path === '/' || path === '' || path.includes('login') || path.includes('index');
+    
+    // Если это точно страницы, которые не являются логином
+    if (path.includes('mailbox') || path.includes('user') || path.includes('admin') || path.includes('redeem')) {
+        return false;
+    }
+    
+    // Во всех остальных случаях (включая /, /en/, /#/) считаем, что это логин
+    return true;
 })
 
 watchEffect(() => {
@@ -99,13 +106,13 @@ onMounted(async () => {
       <n-notification-provider container-style="margin-top: 60px;">
         <n-message-provider container-style="margin-top: 20px;">
           
-          <!-- 1. СТРАНИЦА ВХОДА (Только шапка и сама страница) -->
+          <!-- 1. СТРАНИЦА ВХОДА -->
           <div v-if="isLoginPage" style="width: 100%; display: flex; flex-direction: column;">
             <Header />
             <router-view></router-view>
           </div>
 
-          <!-- 2. ОСТАЛЬНЫЕ СТРАНИЦЫ (Шапка + Сетка) -->
+          <!-- 2. ОСТАЛЬНЫЕ СТРАНИЦЫ -->
           <div v-else>
             <Header />
             <n-grid x-gap="12" :cols="gridMaxCols">
@@ -133,7 +140,7 @@ onMounted(async () => {
             </n-grid>
           </div>
 
-          <!-- 3. ФУТЕР (Показываем только если это НЕ страница входа) -->
+          <!-- 3. ФУТЕР (Скрыт на логине) -->
           <Footer v-if="!isLoginPage" />
 
           <n-back-top />
