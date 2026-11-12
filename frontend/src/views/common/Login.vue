@@ -194,7 +194,7 @@ onMounted(async () => {
         <div class="glow-sphere sphere-1"></div>
         <div class="glow-sphere sphere-2"></div>
 
-        <!-- ПРОПОРЦИОНАЛЬНАЯ РАМКА -->
+        <!-- НИЗКАЯ И ШИРОКАЯ РАМКА -->
         <div class="neon-frame">
             
             <!-- C.C. Слева -->
@@ -397,13 +397,14 @@ onMounted(async () => {
 }
 
 /* =========================================
-   РАМКА (УМЕНЬШЕНА И СБАЛАНСИРОВАНА)
+   РАМКА (НИЖЕ, НО ШИРЕ)
    ========================================= */
 .neon-frame {
     position: relative;
-    width: 80vw; /* Уменьшили с 85vw */
-    max-width: 1200px; /* Уменьшили с 1300px */
-    height: 75vh; /* Уменьшили с 80vh */
+    width: 85vw; 
+    max-width: 1300px; 
+    height: 70vh; /* Понизили высоту с 85vh до 70vh */
+    max-height: 700px; /* Ограничитель, чтобы не была гигантской на 4K */
     background-color: rgba(5, 10, 8, 0.5); 
     z-index: 5;
     display: flex;
@@ -412,15 +413,16 @@ onMounted(async () => {
 }
 
 /* =========================================
-   C.C. (ПОДОГНАНЫ ПОД НОВУЮ РАМКУ)
+   C.C. (ИДЕАЛЬНАЯ СИММЕТРИЯ)
    ========================================= */
 .cc-character {
     position: absolute;
     bottom: 0; 
-    height: 90%; /* Теперь они занимают 90% от высоты новой рамки */
-    width: 35%; /* Ограничиваем ширину, чтобы не залезть на центр */
+    /* Высота: занимает всё место под верхней линией, но не залезает на неё */
+    height: calc(100% - 45px); 
+    width: auto; /* Позволяем ширине подстроиться под высоту для сохранения пропорций */
     object-fit: contain;
-    object-position: bottom left;
+    object-position: bottom;
     z-index: 2; 
     pointer-events: none;
 }
@@ -431,8 +433,7 @@ onMounted(async () => {
 
 .cc-character.right {
     right: 0; 
-    transform: scaleX(-1); 
-    object-position: bottom right;
+    transform: scaleX(-1); /* Зеркальное отражение для идеальной симметрии */
 }
 
 /* =========================================
@@ -568,8 +569,8 @@ onMounted(async () => {
     .login-form-wrapper { width: 90%; max-width: 340px; }
     .welcome-text { font-size: 2.2rem; letter-spacing: -1px; }
     .lines { width: 120px; }
-    .cc-character { height: 60%; width: 30%; opacity: 0.15; } 
-    .neon-frame { width: 95vw; height: 85vh; }
+    .cc-character { height: 70%; opacity: 0.15; } 
+    .neon-frame { width: 95vw; height: 80vh; }
 }
 
 /* --- Твои изначальные стили --- */
