@@ -194,7 +194,7 @@ onMounted(async () => {
         <div class="glow-sphere sphere-1"></div>
         <div class="glow-sphere sphere-2"></div>
 
-        <!-- УВЕЛИЧЕННАЯ картинка с C.C. -->
+        <!-- Картинка с C.C. -->
         <img :src="bgImage" class="bg-image" alt="Background" />
 
         <!-- Контент поверх фона -->
@@ -215,7 +215,7 @@ onMounted(async () => {
                 <p class="welcome-subtext">GACHA SUKI MAIL</p>
             </div>
 
-            <!-- УМЕНЬШЕННАЯ форма входа -->
+            <!-- Форма входа -->
             <div class="login-form-wrapper">
                 <n-alert v-if="userSettings.user_email" :show-icon="false" :bordered="false" closable>
                     <span>{{ t('bindUserInfo') }}</span>
@@ -377,7 +377,7 @@ onMounted(async () => {
     bottom: 5%; right: 10%;
 }
 
-/* --- КАРТИНКА С C.C. (ОБНОВЛЕНО) --- */
+/* --- КАРТИНКА С C.C. --- */
 .bg-image {
     position: absolute;
     top: 50%;
