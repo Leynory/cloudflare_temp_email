@@ -188,19 +188,18 @@ onMounted(async () => {
 
 <template>
     <div class="login-layout">
-        <!-- Киберпанк-сетка на фоне -->
-        <div class="cyber-grid"></div>
         
-        <!-- Светящиеся сферы -->
+        <!-- ВСЕ ФОНОВЫЕ ЭЛЕМЕНТЫ ВЫРВАЛИСЬ ИЗ СЕТКИ (position: fixed) -->
+        <div class="ambient-bg" :style="{ backgroundImage: `url(${bgImage})` }"></div>
+        <div class="cyber-grid"></div>
         <div class="glow-sphere sphere-1"></div>
         <div class="glow-sphere sphere-2"></div>
-
-        <!-- КАРТИНКА С C.C. (увеличена, чтобы раздвинуть персонажей) -->
         <img :src="bgImage" class="bg-image" alt="Background" />
+        <div class="hud-line left-hud"></div>
+        <div class="hud-line right-hud"></div>
 
         <!-- Контент поверх фона -->
         <div class="content-wrapper">
-            
             <!-- Баннер -->
             <div class="welcome-banner">
                 <div class="lines top-lines"></div>
@@ -216,7 +215,7 @@ onMounted(async () => {
                 <p class="welcome-subtext">GACHA SUKI MAIL</p>
             </div>
 
-            <!-- Форма входа (сделана чуть уже) -->
+            <!-- Форма входа -->
             <div class="login-form-wrapper">
                 <n-alert v-if="userSettings.user_email" :show-icon="false" :bordered="false" closable>
                     <span>{{ t('bindUserInfo') }}</span>
@@ -332,44 +331,50 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-/* --- ГЛОБАЛЬНЫЙ ФОН И РАЗМЕТКА --- */
+/* --- Контейнер для контента (не мешает фиксированному фону) --- */
 .login-layout {
     position: relative;
-    width: 100vw;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
-    min-height: 100vh;
-    background-color: #07070a; 
-    overflow: hidden;
+    width: 100%;
+    min-height: 80vh;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-/* --- КИБЕРПАНК СЕТКА --- */
-.cyber-grid {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-image: 
-        linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    z-index: 0;
+/* =========================================
+   ВСЕ ФОНЫ ТЕПЕРЬ position: FIXED
+   (Они игнорируют сетку App.vue и растягиваются на весь экран)
+   ========================================= */
+
+.ambient-bg {
+    position: fixed; /* ВЫРВАЛИ ИЗ СЕТКИ */
+    top: -10%; left: -10%; right: -10%; bottom: -10%; 
+    background-size: cover;
+    background-position: center;
+    filter: blur(80px) brightness(0.3); 
+    z-index: -3; /* Уходит на самый задний план */
 }
 
-/* --- СВЕТЯЩИЕСЯ СФЕРЫ --- */
+.cyber-grid {
+    position: fixed; 
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: 
+        linear-gradient(rgba(0, 255, 136, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 136, 0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+    z-index: -2;
+}
+
 .glow-sphere {
-    position: absolute;
+    position: fixed;
     border-radius: 50%;
     filter: blur(80px);
-    z-index: 1;
-    opacity: 0.4;
+    z-index: -1;
+    opacity: 0.3;
 }
 .sphere-1 {
     width: 400px; height: 400px;
-    background: rgba(0, 255, 136, 0.4);
+    background: rgba(0, 255, 136, 0.5);
     top: 10%; left: 10%;
 }
 .sphere-2 {
@@ -378,25 +383,36 @@ onMounted(async () => {
     bottom: 5%; right: 10%;
 }
 
-/* --- КАРТИНКА С C.C. --- */
 .bg-image {
-    position: absolute;
+    position: fixed; /* ВЫРВАЛИ ИЗ СЕТКИ */
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    
-    /* УВЕЛИЧИЛИ КАРТИНКУ, чтобы отодвинуть C.C. от формы */
-    width: 110vw; 
-    max-width: 1600px;
-    height: 95vh;
-    object-fit: contain; 
-    
-    z-index: 2;
-    opacity: 0.85; 
-    filter: drop-shadow(0 0 20px rgba(0, 255, 136, 0.2));
+    width: 100vw; 
+    height: 100vh;
+    object-fit: cover; /* Заполняет экран от края до края */
+    z-index: -1;
+    opacity: 0.7;
+    filter: drop-shadow(0 0 30px rgba(0, 0, 0, 1));
 }
 
-/* --- СЛОЙ С КОНТЕНТОМ --- */
+.hud-line {
+    position: fixed;
+    top: 20%;
+    bottom: 20%;
+    width: 2px;
+    background: linear-gradient(to bottom, transparent, #00ff88, transparent);
+    z-index: 0;
+    opacity: 0.4;
+    box-shadow: 0 0 10px #00ff88;
+}
+.left-hud { left: 5vw; }
+.right-hud { right: 5vw; }
+
+/* =========================================
+   КОНТЕНТ И ФОРМА
+   ========================================= */
+
 .content-wrapper {
     position: relative;
     z-index: 10; 
@@ -470,17 +486,17 @@ onMounted(async () => {
     margin-top: 8px;
 }
 
-/* --- ФОРМА ВХОДА (СУЖЕНА ДЛЯ ВОЗДУХА) --- */
+/* --- ФОРМА ВХОДА --- */
 .login-form-wrapper {
-    width: 340px; /* Было 360, стало 340 (чуть компактнее) */
+    width: 340px; 
     flex-shrink: 0; 
-    background-color: rgba(20, 20, 24, 0.8); /* Чуть плотнее фон для читаемости */
+    background-color: rgba(20, 20, 24, 0.85); 
     backdrop-filter: blur(15px); 
     padding: 25px 20px; 
     border-radius: 16px;
     box-shadow: 
         0 10px 40px rgba(0, 0, 0, 0.9), 
-        inset 0 0 0 1px rgba(144, 238, 144, 0.2); 
+        inset 0 0 0 1px rgba(144, 238, 144, 0.3); 
     z-index: 10;
 }
 
@@ -490,7 +506,7 @@ onMounted(async () => {
     .welcome-text { font-size: 2.5rem; letter-spacing: -1px; }
     .swoosh { display: none; }
     .lines { width: 120px; }
-    .bg-image { width: 150vw; } /* На телефонах картинка еще больше, чтобы раздвинуть их */
+    .hud-line { display: none; }
 }
 
 /* --- Твои изначальные стили --- */
