@@ -198,15 +198,14 @@ onMounted(async () => {
         <!-- Центральный блок -->
         <div class="center-stage">
             
-            <!-- Карточка с картинкой и формой -->
             <div class="main-card">
-                <!-- Картинка -->
+                <!-- Картинка (теперь задает высоту) -->
                 <img :src="bgImage" class="bg-image" alt="Background" />
                 
-                <!-- Градиентная рамка -->
+                <!-- Переливающаяся рамка -->
                 <div class="neon-border"></div>
 
-                <!-- Контент -->
+                <!-- Контент поверх -->
                 <div class="content-overlay">
                     <div class="welcome-banner">
                         <div class="lines top-lines"></div>
@@ -222,6 +221,7 @@ onMounted(async () => {
                         <p class="welcome-subtext">GACHA SUKI MAIL</p>
                     </div>
 
+                    <!-- Форма входа -->
                     <div class="login-form-wrapper">
                         <n-alert v-if="userSettings.user_email" :show-icon="false" :bordered="false" closable>
                             <span>{{ t('bindUserInfo') }}</span>
@@ -403,41 +403,38 @@ onMounted(async () => {
     justify-content: center;
     align-items: center;
     width: 100%;
-    padding: 20px;
+    padding: 40px 20px; /* Отступы по бокам */
 }
 
 .main-card {
     position: relative;
-    width: 85vw; /* Вернули большой размер */
-    max-width: 1200px;
-    aspect-ratio: 16 / 9;
+    width: 85vw; /* Большой размер */
+    max-width: 1300px;
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 16px;
 }
 
+/* Картинка теперь задает высоту всей карточки */
 .bg-image {
-    position: absolute;
-    inset: 0;
     width: 100%;
-    height: 100%;
-    object-fit: contain; 
-    z-index: 1;
+    height: auto; /* Сохраняем пропорции */
     border-radius: 12px;
+    z-index: 1;
+    display: block;
 }
 
 /* =========================================
-   ГРАДИЕНТНАЯ РАМКА (Течет по кругу)
+   ГРАДИЕНТНАЯ РАМКА (Бежит по диагонали)
    ========================================= */
 .neon-border {
     position: absolute;
     inset: -6px;
-    border-radius: 20px;
+    border-radius: 16px;
     pointer-events: none;
     z-index: 2;
     
-    /* Диагональный градиент, который создает эффект движения по кругу */
+    /* Диагональный градиент из темных оттенков */
     background: linear-gradient(
         135deg, 
         #001a09 0%, 
@@ -446,17 +443,16 @@ onMounted(async () => {
         #008f33 75%, 
         #001a09 100%
     );
-    background-size: 300% 300%; /* Растягиваем, чтобы было куда течь */
+    background-size: 300% 300%; /* Растягиваем для движения */
     
-    /* Анимация движения от 0% до 100% по диагонали */
-    animation: travel 4s linear infinite;
+    /* Анимация, которая гонит градиент от левого верхнего к правому нижнему */
+    animation: travel 3s linear infinite;
     
-    /* Маска для создания полой рамки */
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     
-    padding: 4px; /* Толщина линии */
+    padding: 4px; 
     
     filter: drop-shadow(0 0 8px rgba(0, 143, 51, 0.5));
 }
@@ -467,29 +463,30 @@ onMounted(async () => {
 }
 
 /* =========================================
-   КОНТЕНТ ПОВЕРХ
+   КОНТЕНТ ПОВЕРХ (Центрируется абсолютно)
    ========================================= */
 
 .content-overlay {
-    position: relative;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     z-index: 10;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 100%;
-    height: 100%;
 }
 
-/* --- БАННЕР --- */
+/* --- БАННЕР (Сдвинут выше центра формы) --- */
 .welcome-banner {
-    position: relative;
+    position: absolute;
+    top: 15%; /* Поднимаем текст вверх картинки */
     text-align: center;
-    margin-bottom: 25px; 
     display: flex;
     flex-direction: column;
     align-items: center;
-    transform: translateY(10px); /* Чуть опускаем вниз */
 }
 
 .welcome-text {
@@ -546,9 +543,10 @@ onMounted(async () => {
 
 /* --- ФОРМА ВХОДА --- */
 .login-form-wrapper {
-    width: 360px; /* Сделали чуть шире, чтобы соответствовало картинке */
+    width: 340px; /* Оптимальная ширина, чтобы не вылезать за рамки картинки */
+    margin-top: 40px; /* Отталкиваем форму вниз от баннера */
     flex-shrink: 0; 
-    background-color: rgba(10, 12, 10, 0.85); 
+    background-color: rgba(10, 12, 10, 0.9); 
     backdrop-filter: blur(15px); 
     padding: 25px 20px; 
     border-radius: 12px;
@@ -559,11 +557,12 @@ onMounted(async () => {
 
 /* --- Мобильная версия --- */
 @media (max-width: 850px) {
-    .login-form-wrapper { width: 90%; max-width: 360px; }
+    .login-form-wrapper { width: 90%; max-width: 340px; margin-top: 20px; padding: 15px; }
     .welcome-text { font-size: 2.5rem; letter-spacing: -1px; }
+    .welcome-banner { top: 10%; }
     .swoosh { display: none; }
     .lines { width: 120px; }
-    .main-card { width: 95vw; aspect-ratio: auto; min-height: 600px; }
+    .main-card { width: 95vw; }
 }
 
 /* --- Твои изначальные стили --- */
