@@ -194,7 +194,7 @@ onMounted(async () => {
         <div class="glow-sphere sphere-1"></div>
         <div class="glow-sphere sphere-2"></div>
 
-        <!-- РАМКА, ПОДОГНАННАЯ ПОД C.C. -->
+        <!-- РАМКА -->
         <div class="neon-frame">
             
             <!-- C.C. Слева -->
@@ -205,6 +205,7 @@ onMounted(async () => {
 
             <!-- СЛОЙ С ЛИНИЯМИ РАМКИ -->
             <div class="frame-lines-overlay">
+                <!-- ТОЛСТАЯ НЕПРОЗРАЧНАЯ ПАНЕЛЬ СВЕРХУ -->
                 <div class="frame-top-line"></div>
             </div>
 
@@ -397,14 +398,13 @@ onMounted(async () => {
 }
 
 /* =========================================
-   РАМКА (ВЫСОТА ПОДОГНАНА ПОД C.C. + ВЕРХНЯЯ ЛИНИЯ)
+   РАМКА
    ========================================= */
 .neon-frame {
     position: relative;
     width: 85vw; 
     max-width: 1300px; 
-    /* 70vh — это высота C.C., 45px — высота верхней полоски */
-    height: calc(70vh + 45px); 
+    height: 85vh; /* Вернули нормальную высоту */
     background-color: rgba(5, 10, 8, 0.5); 
     z-index: 5;
     display: flex;
@@ -413,12 +413,12 @@ onMounted(async () => {
 }
 
 /* =========================================
-   C.C. (ЗАДАЮТ РАЗМЕР)
+   C.C. (РАСТЯНУТЫ, НО ПРЯЧУТСЯ ПОД ПАНЕЛЬЮ)
    ========================================= */
 .cc-character {
     position: absolute;
     bottom: 0; 
-    height: 70vh; /* Фиксированная высота для персонажей */
+    height: 95%; /* Сделали большими, чтобы скрыть верх под панелью */
     width: auto; 
     object-fit: contain;
     object-position: bottom;
@@ -436,7 +436,7 @@ onMounted(async () => {
 }
 
 /* =========================================
-   ЛИНИИ РАМКИ (ПОВЕРХ ВСЕГО)
+   ЛИНИИ РАМКИ
    ========================================= */
 .frame-lines-overlay {
     position: absolute;
@@ -449,9 +449,11 @@ onMounted(async () => {
     pointer-events: none;
 }
 
+/* ТОЛСТАЯ ПАНЕЛЬ СВЕРХУ, КОТОРАЯ ПРЯЧЕТ ГОЛОВЫ */
 .frame-top-line {
     width: 100%;
-    height: 45px;
+    height: 80px; /* Увеличили высоту до 80px */
+    background-color: #0a0e0c; /* Сделали сплошным (без прозрачности) */
     border-bottom: 2px solid #00ff88;
     box-shadow: 0 2px 10px rgba(0, 255, 136, 0.3);
 }
@@ -467,7 +469,7 @@ onMounted(async () => {
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: calc(100% - 45px); 
+    height: calc(100% - 80px); /* Отнимаем высоту панели */
     padding: 20px;
 }
 
@@ -568,9 +570,10 @@ onMounted(async () => {
     .login-form-wrapper { width: 90%; max-width: 340px; }
     .welcome-text { font-size: 2.2rem; letter-spacing: -1px; }
     .lines { width: 120px; }
-    .cc-character { height: 60vh; opacity: 0.15; } 
-    /* На мобилках высота рамки тоже подстраивается под C.C. */
-    .neon-frame { width: 95vw; height: calc(60vh + 45px); }
+    .cc-character { height: 90%; opacity: 0.15; } 
+    .neon-frame { width: 95vw; height: 85vh; }
+    .frame-top-line { height: 60px; }
+    .content-wrapper { height: calc(100% - 60px); }
 }
 
 /* --- Твои изначальные стили --- */
