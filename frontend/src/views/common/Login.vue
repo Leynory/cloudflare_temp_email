@@ -14,13 +14,22 @@ import { api } from '../../api'
 import { getRouterPathWithLang, hashPassword } from '../../utils'
 
 const props = defineProps({
-    bindUserAddress: { type: Function, default: async () => { await api.bindUserAddress(); }, required: true },
+    bindUserAddress: {
+        type: Function,
+        default: async () => { await api.bindUserAddress(); },
+        required: true
+    },
     newAddressPath: {
         type: Function,
         default: async (address_name, domain, cf_token, enableRandomSubdomain) => {
             return await api.fetch("/api/new_address", {
                 method: "POST",
-                body: JSON.stringify({ name: address_name, domain, cf_token, enableRandomSubdomain }),
+                body: JSON.stringify({
+                    name: address_name,
+                    domain: domain,
+                    cf_token: cf_token,
+                    enableRandomSubdomain: enableRandomSubdomain,
+                }),
             });
         },
         required: true
@@ -32,7 +41,8 @@ const notification = useNotification()
 const router = useRouter()
 
 const {
-    jwt, loading, openSettings, showAddressCredential, userSettings, addressPassword
+    jwt, loading, openSettings,
+    showAddressCredential, userSettings, addressPassword
 } = useGlobalState()
 
 const tabValue = ref('signin')
@@ -65,7 +75,11 @@ const login = async () => {
         try {
             const res = await api.fetch('/api/address_login', {
                 method: 'POST',
-                body: JSON.stringify({ email: loginAddress.value, password: await hashPassword(loginPassword.value), cf_token: loginCfToken.value })
+                body: JSON.stringify({
+                    email: loginAddress.value,
+                    password: await hashPassword(loginPassword.value),
+                    cf_token: loginCfToken.value
+                })
             });
             jwt.value = res.jwt;
             await api.getSettings();
@@ -97,6 +111,7 @@ const login = async () => {
 }
 
 const { locale, t } = useScopedI18n('views.common.Login')
+
 const loginAndBindTag = computed(() => userSettings.value.user_email ? t('loginAndBind') : t('login'))
 
 const addressRegex = computed(() => {
@@ -136,12 +151,14 @@ const newEmail = async () => {
 };
 
 const openRedeemPage = async () => { await router.push(getRouterPathWithLang('/redeem', locale.value)); };
+
 const addressPrefix = computed(() => userSettings.value?.user_role ? userSettings.value.user_role.prefix || "" : openSettings.value.prefix);
 
 const canUseRandomSubdomain = computed(() => {
     if (!emailDomain.value) return false;
     return (openSettings.value.randomSubdomainDomains || []).includes(emailDomain.value);
 });
+
 watch(canUseRandomSubdomain, (enabled) => { if (!enabled) subdomainMode.value = "normal"; });
 
 const domainsOptions = computed(() => {
@@ -170,10 +187,16 @@ onMounted(async () => {
 
 <template>
     <div class="login-layout">
+        
+        <!-- Карточка, размер которой диктует картинка -->
         <div class="main-card">
+            
             <img :src="bgImage" class="bg-image" alt="Background" />
+            
+            <!-- Неоновая рамка -->
             <div class="neon-border"></div>
 
+            <!-- Баннер (сверху) -->
             <div class="welcome-banner">
                 <div class="lines top-lines"></div>
                 <h1 class="welcome-text">
@@ -188,14 +211,15 @@ onMounted(async () => {
                 <p class="welcome-subtext">GACHA SUKI MAIL</p>
             </div>
 
+            <!-- Форма входа (по центру) -->
             <div class="login-form-wrapper">
                 <n-alert v-if="userSettings.user_email" :show-icon="false" :bordered="false" closable>
                     <span>{{ t('bindUserInfo') }}</span>
                 </n-alert>
                 
-                <n-tabs v-if="openSettings.fetched" v-model:value="tabValue" size="medium" justify-content="space-evenly">
+                <n-tabs v-if="openSettings.fetched" v-model:value="tabValue" size="small" justify-content="space-evenly">
                     <n-tab-pane name="signin" :tab="loginAndBindTag">
-                        <n-form size="medium">
+                        <n-form size="small">
                             <div v-if="loginMethod === 'password'">
                                 <n-form-item-row :label="t('email')" required>
                                     <n-input v-model:value="loginAddress" />
@@ -216,23 +240,23 @@ onMounted(async () => {
                             <div class="switch-login-button">
                                 <n-button v-if="openSettings?.enableAddressPassword && !openSettings.addressPasswordLoginOnly"
                                     @click="loginMethod === 'password' ? loginMethod = 'credential' : loginMethod = 'password'"
-                                    type="info" quaternary size="small">
+                                    type="info" quaternary size="tiny">
                                     {{ loginMethod === 'password' ? t('credentialLogin') : t('passwordLogin') }}
                                 </n-button>
                             </div>
 
-                            <n-button @click="login" :loading="loading" type="primary" block secondary strong size="medium">
+                            <n-button @click="login" :loading="loading" type="primary" block secondary strong size="small">
                                 <template #icon><n-icon :component="EmailOutlined" /></template>
                                 {{ loginAndBindTag }}
                             </n-button>
-                            <n-button v-if="showNewAddressTab" @click="tabValue = 'register'" block secondary strong size="medium">
+                            <n-button v-if="showNewAddressTab" @click="tabValue = 'register'" block secondary strong size="small">
                                 <template #icon><n-icon :component="NewLabelOutlined" /></template>
                                 {{ t('getNewEmail') }}
                             </n-button>
                             <div v-if="openSettings.enableRedeemCode" class="redeem-entry-section">
                                 <n-divider />
                                 <n-text type="info" class="redeem-entry-tip">{{ t('redeemEntryTip') }}</n-text>
-                                <n-button data-testid="redeem-entry" block secondary strong size="medium" @click="openRedeemPage">
+                                <n-button data-testid="redeem-entry" block secondary strong size="small" @click="openRedeemPage">
                                     <template #icon><n-icon :component="RedeemOutlined" /></template>
                                     {{ t('useRedeemCode') }}
                                 </n-button>
@@ -242,13 +266,13 @@ onMounted(async () => {
                     
                     <n-tab-pane v-if="showNewAddressTab" name="register" :tab="t('getNewEmail')">
                         <n-spin :show="generateNameLoading">
-                            <n-form size="medium">
+                            <n-form size="small">
                                 <span>
                                     <p v-if="!openSettings.disableCustomAddressName">{{ t("getNewEmailTip1") + addressRegex.source }}</p>
                                     <p v-if="!openSettings.disableCustomAddressName">{{ t("getNewEmailTip2") }}</p>
                                     <p>{{ t("getNewEmailTip3") }}</p>
                                 </span>
-                                <n-button v-if="!openSettings.disableCustomAddressName" @click="generateName" style="margin-bottom: 10px;">
+                                <n-button v-if="!openSettings.disableCustomAddressName" @click="generateName" style="margin-bottom: 10px;" size="small">
                                     {{ t('generateName') }}
                                 </n-button>
                                 <n-input-group>
@@ -275,14 +299,14 @@ onMounted(async () => {
                                     </div>
                                 </n-form-item-row>
                                 <Turnstile v-model:value="cfToken" />
-                                <n-button type="primary" block secondary strong size="medium" @click="newEmail" :loading="loading" :disabled="subdomainMode === 'custom' && !customSubdomain.trim()">
+                                <n-button type="primary" block secondary strong size="small" @click="newEmail" :loading="loading" :disabled="subdomainMode === 'custom' && !customSubdomain.trim()">
                                     <template #icon><n-icon :component="NewLabelOutlined" /></template>
                                     {{ t('getNewEmail') }}
                                 </n-button>
                                 <div v-if="openSettings.enableRedeemCode" class="redeem-entry-section">
                                     <n-divider />
                                     <n-text type="info" class="redeem-entry-tip">{{ t('redeemEntryTip') }}</n-text>
-                                    <n-button data-testid="redeem-entry-register" block secondary strong size="medium" @click="openRedeemPage">
+                                    <n-button data-testid="redeem-entry-register" block secondary strong size="small" @click="openRedeemPage">
                                         <template #icon><n-icon :component="RedeemOutlined" /></template>
                                         {{ t('useRedeemCode') }}
                                     </n-button>
@@ -303,6 +327,7 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+/* --- Черный фон на весь экран --- */
 .login-layout {
     position: relative;
     width: 100%;
@@ -310,42 +335,60 @@ onMounted(async () => {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #0a0a0a;
+    background-color: #0a0a0a; 
     overflow: hidden;
+    padding: 20px 0;
 }
+
+/* =========================================
+   КАРТОЧКА (Высоту диктует картинка)
+   ========================================= */
 
 .main-card {
     position: relative;
-    width: 55vw; /* Сделали чуть больше половины экрана */
-    min-width: 700px;
-    max-width: 1200px;
-    aspect-ratio: 16 / 9; /* Жестко задали пропорции */
+    /* Ширина 65vw — оптимально для десктопа */
+    width: 65vw; 
+    min-width: 600px; 
+    max-width: 1100px; 
+    /* Убрали aspect-ratio, теперь картинка задает высоту */
     display: flex;
     justify-content: center;
-    align-items: center;
+    border-radius: 12px;
 }
 
 .bg-image {
     width: 100%;
-    height: 100%;
-    object-fit: fill;
+    height: auto; /* Сохраняем оригинальные пропорции картинки */
     display: block;
     border-radius: 12px;
     z-index: 1;
 }
 
+/* =========================================
+   НЕОНОВАЯ РАМКА
+   ========================================= */
 .neon-border {
     position: absolute;
     inset: -6px;
     border-radius: 16px;
     pointer-events: none;
     z-index: 2;
-    background: linear-gradient(135deg, #001a09 0%, #008f33 25%, #004d1a 50%, #008f33 75%, #001a09 100%);
+    
+    background: linear-gradient(
+        135deg, 
+        #001a09 0%, 
+        #008f33 25%, 
+        #004d1a 50%, 
+        #008f33 75%, 
+        #001a09 100%
+    );
     background-size: 300% 300%; 
     animation: travel 3s linear infinite;
+    
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
+    
     padding: 4px; 
     filter: drop-shadow(0 0 8px rgba(0, 143, 51, 0.5));
 }
@@ -355,9 +398,12 @@ onMounted(async () => {
     100% { background-position: 100% 100%; }
 }
 
+/* =========================================
+   БАННЕР WELCOME (Позиционируем сверху)
+   ========================================= */
 .welcome-banner {
     position: absolute;
-    top: 10%; 
+    top: 15%; /* Сдвигаем вниз от верхнего края картинки */
     left: 50%;
     transform: translateX(-50%);
     z-index: 10;
@@ -370,7 +416,7 @@ onMounted(async () => {
 
 .welcome-text {
     font-family: 'Playfair Display', 'Times New Roman', serif;
-    font-size: 3.5rem; 
+    font-size: 3rem; 
     font-weight: 900;
     margin: 0;
     color: #ffffff;
@@ -380,11 +426,11 @@ onMounted(async () => {
 }
 
 .lines {
-    width: 180px; 
+    width: 160px; 
     height: 2px;
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
     position: relative;
-    margin: 8px 0;
+    margin: 6px 0;
 }
 .top-lines::before, .top-lines::after,
 .bottom-lines::before, .bottom-lines::after {
@@ -416,44 +462,54 @@ onMounted(async () => {
     font-family: sans-serif;
     letter-spacing: 4px;
     text-transform: uppercase;
-    font-size: 0.7rem;
-    margin-top: 8px;
+    font-size: 0.65rem;
+    margin-top: 6px;
 }
 
+/* =========================================
+   ФОРМА ВХОДА (Компактная, по центру)
+   ========================================= */
 .login-form-wrapper {
     position: absolute;
-    top: 55%; 
+    top: 55%; /* Чуть ниже центра, чтобы не наезжать на WELCOME */
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 10;
-    width: 340px; 
+    
+    width: 300px; /* Сделали компактнее */
     background-color: rgba(10, 12, 10, 0.85); 
     backdrop-filter: blur(15px); 
-    padding: 25px 20px; 
+    padding: 20px 15px; 
     border-radius: 12px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9), inset 0 0 0 1px rgba(0, 143, 51, 0.3); 
+    box-shadow: 
+        0 10px 40px rgba(0, 0, 0, 0.9), 
+        inset 0 0 0 1px rgba(0, 143, 51, 0.3); 
 }
 
+/* --- Мобильная версия --- */
 @media (max-width: 850px) {
     .main-card {
         width: 95vw;
         min-width: unset;
-        aspect-ratio: auto;
-        height: 80vh; /* На мобилках занимаем по высоте больше */
     }
-    .bg-image { object-fit: cover; }
-    .login-form-wrapper { width: 90%; max-width: 340px; padding: 15px; top: 55%; }
-    .welcome-banner { top: 8%; }
-    .welcome-text { font-size: 2.5rem; letter-spacing: -1px; }
+    .login-form-wrapper { 
+        width: 85%; 
+        max-width: 300px; 
+        padding: 15px; 
+        top: 55%; 
+    }
+    .welcome-banner { top: 10%; }
+    .welcome-text { font-size: 2rem; letter-spacing: -1px; }
     .swoosh { display: none; }
-    .lines { width: 120px; }
+    .lines { width: 100px; }
 }
 
+/* --- Твои изначальные стили --- */
 .n-alert { margin-top: 10px; margin-bottom: 10px; text-align: center; }
 .n-form .n-button { margin-top: 8px; }
-.redeem-entry-section { margin-top: 12px; }
-.redeem-entry-section :deep(.n-divider) { margin: 0 0 10px; }
-.redeem-entry-tip { display: block; font-size: 11px; line-height: 1.4; text-align: center; }
+.redeem-entry-section { margin-top: 10px; }
+.redeem-entry-section :deep(.n-divider) { margin: 0 0 8px; }
+.redeem-entry-tip { display: block; font-size: 10px; line-height: 1.4; text-align: center; }
 .switch-login-button { display: flex; justify-content: center; margin: 5px 0; }
 .n-form { text-align: left; }
 </style>
