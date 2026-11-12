@@ -99,13 +99,13 @@ onMounted(async () => {
       <n-notification-provider container-style="margin-top: 60px;">
         <n-message-provider container-style="margin-top: 20px;">
           
-          <!-- СТРАНИЦА ВХОДА: Рендерим просто компонент, БЕЗ сетки и лишних оберток -->
+          <!-- 1. СТРАНИЦА ВХОДА (Только шапка и сама страница) -->
           <div v-if="isLoginPage" style="width: 100%; display: flex; flex-direction: column;">
             <Header />
             <router-view></router-view>
           </div>
 
-          <!-- ОСТАЛЬНЫЕ СТРАНИЦЫ: Со стандартной сеткой и футером -->
+          <!-- 2. ОСТАЛЬНЫЕ СТРАНИЦЫ (Шапка + Сетка) -->
           <div v-else>
             <Header />
             <n-grid x-gap="12" :cols="gridMaxCols">
@@ -131,8 +131,10 @@ onMounted(async () => {
                 </div>
               </n-gi>
             </n-grid>
-            <Footer />
           </div>
+
+          <!-- 3. ФУТЕР (Показываем только если это НЕ страница входа) -->
+          <Footer v-if="!isLoginPage" />
 
           <n-back-top />
         </n-message-provider>
@@ -146,7 +148,6 @@ body {
   background-color: #0f0f13;
   margin: 0;
   padding: 0;
-  /* ВАЖНО: предотвращает появление горизонтального скролла от 100vw в Login.vue */
   overflow-x: hidden; 
 }
 .n-switch { margin-left: 10px; margin-right: 10px; }
