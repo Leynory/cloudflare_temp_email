@@ -5,7 +5,7 @@ import {
 import { computed, onMounted, watchEffect } from 'vue'
 import { useHead } from '@unhead/vue'
 import { useI18n } from 'vue-i18n'
-import { useRoute } from 'vue-router' // ДОБАВИЛИ ИМПОРТ
+import { useRoute } from 'vue-router' 
 import { useGlobalState } from './store'
 import { useIsMobile } from './utils/composables'
 import Header from './views/Header.vue';
@@ -15,7 +15,7 @@ import { getNaiveLocaleConfig } from './i18n/naive-locale'
 import { DEFAULT_LOCALE, isSupportedLocale } from './i18n/utils'
 import { APP_CONFIG } from './config'
 
-const route = useRoute() // ПОЛУЧАЕМ ТЕКУЩИЙ ПУТЬ
+const route = useRoute() 
 
 const {
   isDark, loading, useSideMargin, telegramApp, isTelegram
@@ -30,8 +30,11 @@ const showSideMargin = computed(() => !isMobile.value && useSideMargin.value);
 const showAd = computed(() => !isMobile.value && adClient && adSlot);
 const gridMaxCols = computed(() => showAd.value ? 8 : 12);
 
-// ПРОВЕРКА: если мы на главной (или /login), то мы убираем сетку
-const isLoginPage = computed(() => route.path === '/' || route.path === '/login')
+// БОЛЕЕ НАДЕЖНАЯ ПРОВЕРКА: если путь корневой или содержит 'login' / 'index'
+const isLoginPage = computed(() => {
+    const path = route.path.toLowerCase();
+    return path === '/' || path === '' || path.includes('login') || path.includes('index') || path.includes('register');
+})
 
 watchEffect(() => {
   if (typeof document === 'undefined') return
