@@ -4,7 +4,6 @@ import { useScopedI18n } from '@/i18n/app'
 import { useRouter } from 'vue-router'
 import { NewLabelOutlined, EmailOutlined, RedeemOutlined } from '@vicons/material'
 
-// ИМПОРТ ФОНА
 import bgImage from '@/assets/bg.png' 
 
 import AdminContact from '../common/AdminContact.vue'
@@ -191,17 +190,17 @@ onMounted(async () => {
         <!-- Киберпанк-сетка на фоне -->
         <div class="cyber-grid"></div>
         
-        <!-- Светящиеся сферы (дополняют пустоту) -->
+        <!-- Светящиеся сферы -->
         <div class="glow-sphere sphere-1"></div>
         <div class="glow-sphere sphere-2"></div>
 
-        <!-- УМЕНЬШЕННАЯ картинка с C.C. (теперь она по центру) -->
+        <!-- УВЕЛИЧЕННАЯ картинка с C.C. (чтобы отодвинуть лица от центра) -->
         <img :src="bgImage" class="bg-image" alt="Background" />
 
         <!-- Контент поверх фона -->
         <div class="content-wrapper">
             
-            <!-- УМЕНЬШЕННЫЙ баннер -->
+            <!-- Баннер -->
             <div class="welcome-banner">
                 <div class="lines top-lines"></div>
                 <h1 class="welcome-text">
@@ -222,9 +221,9 @@ onMounted(async () => {
                     <span>{{ t('bindUserInfo') }}</span>
                 </n-alert>
                 
-                <n-tabs v-if="openSettings.fetched" v-model:value="tabValue" size="large" justify-content="space-evenly">
+                <n-tabs v-if="openSettings.fetched" v-model:value="tabValue" size="small" justify-content="space-evenly">
                     <n-tab-pane name="signin" :tab="loginAndBindTag">
-                        <n-form>
+                        <n-form size="small">
                             <div v-if="loginMethod === 'password'">
                                 <n-form-item-row :label="t('email')" required>
                                     <n-input v-model:value="loginAddress" />
@@ -236,7 +235,7 @@ onMounted(async () => {
                             </div>
                             <div v-else>
                                 <n-form-item-row :label="t('credential')" required>
-                                    <n-input v-model:value="credential" type="textarea" :autosize="{ minRows: 3 }" />
+                                    <n-input v-model:value="credential" type="textarea" :autosize="{ minRows: 2 }" />
                                 </n-form-item-row>
                             </div>
 
@@ -250,18 +249,18 @@ onMounted(async () => {
                                 </n-button>
                             </div>
 
-                            <n-button @click="login" :loading="loading" type="primary" block secondary strong>
+                            <n-button @click="login" :loading="loading" type="primary" block secondary strong size="small">
                                 <template #icon><n-icon :component="EmailOutlined" /></template>
                                 {{ loginAndBindTag }}
                             </n-button>
-                            <n-button v-if="showNewAddressTab" @click="tabValue = 'register'" block secondary strong>
+                            <n-button v-if="showNewAddressTab" @click="tabValue = 'register'" block secondary strong size="small">
                                 <template #icon><n-icon :component="NewLabelOutlined" /></template>
                                 {{ t('getNewEmail') }}
                             </n-button>
                             <div v-if="openSettings.enableRedeemCode" class="redeem-entry-section">
                                 <n-divider />
                                 <n-text type="info" class="redeem-entry-tip">{{ t('redeemEntryTip') }}</n-text>
-                                <n-button data-testid="redeem-entry" block secondary strong @click="openRedeemPage">
+                                <n-button data-testid="redeem-entry" block secondary strong size="small" @click="openRedeemPage">
                                     <template #icon><n-icon :component="RedeemOutlined" /></template>
                                     {{ t('useRedeemCode') }}
                                 </n-button>
@@ -271,13 +270,13 @@ onMounted(async () => {
                     
                     <n-tab-pane v-if="showNewAddressTab" name="register" :tab="t('getNewEmail')">
                         <n-spin :show="generateNameLoading">
-                            <n-form>
+                            <n-form size="small">
                                 <span>
                                     <p v-if="!openSettings.disableCustomAddressName">{{ t("getNewEmailTip1") + addressRegex.source }}</p>
                                     <p v-if="!openSettings.disableCustomAddressName">{{ t("getNewEmailTip2") }}</p>
                                     <p>{{ t("getNewEmailTip3") }}</p>
                                 </span>
-                                <n-button v-if="!openSettings.disableCustomAddressName" @click="generateName" style="margin-bottom: 10px;">
+                                <n-button v-if="!openSettings.disableCustomAddressName" @click="generateName" style="margin-bottom: 10px;" size="small">
                                     {{ t('generateName') }}
                                 </n-button>
                                 <n-input-group>
@@ -304,14 +303,14 @@ onMounted(async () => {
                                     </div>
                                 </n-form-item-row>
                                 <Turnstile v-model:value="cfToken" />
-                                <n-button type="primary" block secondary strong @click="newEmail" :loading="loading" :disabled="subdomainMode === 'custom' && !customSubdomain.trim()">
+                                <n-button type="primary" block secondary strong size="small" @click="newEmail" :loading="loading" :disabled="subdomainMode === 'custom' && !customSubdomain.trim()">
                                     <template #icon><n-icon :component="NewLabelOutlined" /></template>
                                     {{ t('getNewEmail') }}
                                 </n-button>
                                 <div v-if="openSettings.enableRedeemCode" class="redeem-entry-section">
                                     <n-divider />
                                     <n-text type="info" class="redeem-entry-tip">{{ t('redeemEntryTip') }}</n-text>
-                                    <n-button data-testid="redeem-entry-register" block secondary strong @click="openRedeemPage">
+                                    <n-button data-testid="redeem-entry-register" block secondary strong size="small" @click="openRedeemPage">
                                         <template #icon><n-icon :component="RedeemOutlined" /></template>
                                         {{ t('useRedeemCode') }}
                                     </n-button>
@@ -341,7 +340,7 @@ onMounted(async () => {
     margin-left: -50vw;
     margin-right: -50vw;
     min-height: 100vh;
-    background-color: #07070a; /* Более глубокий темный фон */
+    background-color: #07070a; 
     overflow: hidden;
     display: flex;
     justify-content: center;
@@ -359,7 +358,7 @@ onMounted(async () => {
     z-index: 0;
 }
 
-/* --- СВЕТЯЩИЕСЯ СФЕРЫ (заполняют пустоту) --- */
+/* --- СВЕТЯЩИЕСЯ СФЕРЫ --- */
 .glow-sphere {
     position: absolute;
     border-radius: 50%;
@@ -374,25 +373,25 @@ onMounted(async () => {
 }
 .sphere-2 {
     width: 500px; height: 500px;
-    background: rgba(255, 105, 180, 0.2); /* Розовый отсвет */
+    background: rgba(255, 105, 180, 0.2); 
     bottom: 5%; right: 10%;
 }
 
-/* --- УМЕНЬШЕННАЯ КАРТИНКА С C.C. --- */
+/* --- КАРТИНКА С C.C. (УВЕЛИЧЕНА, ЧТОБЫ ОТОДВИНУТЬ ЛИЦА) --- */
 .bg-image {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     
-    /* Вот тут мы её уменьшаем */
-    width: 75vw; 
-    max-width: 1100px;
-    height: 80vh;
+    /* УВЕЛИЧИЛИ С 75VW ДО 90VW */
+    width: 90vw; 
+    max-width: 1400px;
+    height: 85vh;
     object-fit: contain; 
     
     z-index: 2;
-    opacity: 0.8; /* Делаем её слегка призрачной, чтобы она не доминировала */
+    opacity: 0.8; 
     filter: drop-shadow(0 0 20px rgba(0, 255, 136, 0.2));
 }
 
@@ -408,7 +407,7 @@ onMounted(async () => {
     padding: 20px;
 }
 
-/* --- УМЕНЬШЕННЫЙ БАННЕР --- */
+/* --- БАННЕР --- */
 .welcome-banner {
     position: relative;
     text-align: center;
@@ -420,17 +419,17 @@ onMounted(async () => {
 
 .welcome-text {
     font-family: 'Playfair Display', 'Times New Roman', serif;
-    font-size: 3.5rem; /* Уменьшили */
+    font-size: 3.5rem; 
     font-weight: 900;
     margin: 0;
     color: #ffffff;
-    letter-spacing: -2px; /* Уменьшили наезд */
+    letter-spacing: -2px; 
     line-height: 1;
     text-shadow: 0 0 15px rgba(0, 255, 136, 0.5); 
 }
 
 .lines {
-    width: 180px; /* Уменьшили */
+    width: 180px; 
     height: 2px;
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
     position: relative;
@@ -472,25 +471,26 @@ onMounted(async () => {
 
 /* --- УМЕНЬШЕННАЯ ФОРМА ВХОДА --- */
 .login-form-wrapper {
-    width: 360px; /* Было 420, стало компактнее */
+    /* УМЕНЬШИЛИ С 360PX ДО 300PX */
+    width: 300px; 
     flex-shrink: 0; 
-    background-color: rgba(20, 20, 24, 0.7); /* Ещё прозрачнее */
-    backdrop-filter: blur(15px); /* Сильнее размытие */
-    padding: 25px 20px; /* Уменьшили отступы */
+    background-color: rgba(20, 20, 24, 0.8); 
+    backdrop-filter: blur(15px); 
+    padding: 20px 15px; /* Уменьшили отступы */
     border-radius: 16px;
     box-shadow: 
         0 10px 40px rgba(0, 0, 0, 0.9), 
-        inset 0 0 0 1px rgba(144, 238, 144, 0.2); /* Внутренняя рамка вместо border */
+        inset 0 0 0 1px rgba(144, 238, 144, 0.2); 
     z-index: 10;
 }
 
 /* --- Мобильная версия --- */
 @media (max-width: 850px) {
-    .login-form-wrapper { width: 90%; max-width: 360px; }
+    .login-form-wrapper { width: 90%; max-width: 300px; }
     .welcome-text { font-size: 2.5rem; letter-spacing: -1px; }
     .swoosh { display: none; }
     .lines { width: 120px; }
-    .bg-image { width: 95vw; } /* На телефонах картинка чуть больше */
+    .bg-image { width: 120vw; } /* На телефонах картинку еще сильнее увеличиваем */
 }
 
 /* --- Твои изначальные стили --- */
@@ -498,7 +498,7 @@ onMounted(async () => {
 .n-form .n-button { margin-top: 10px; }
 .redeem-entry-section { margin-top: 15px; }
 .redeem-entry-section :deep(.n-divider) { margin: 0 0 12px; }
-.redeem-entry-tip { display: block; font-size: 12px; line-height: 1.5; text-align: center; }
-.switch-login-button { display: flex; justify-content: center; margin: 8px 0; }
+.redeem-entry-tip { display: block; font-size: 11px; line-height: 1.4; text-align: center; }
+.switch-login-button { display: flex; justify-content: center; margin: 5px 0; }
 .n-form { text-align: left; }
 </style>
