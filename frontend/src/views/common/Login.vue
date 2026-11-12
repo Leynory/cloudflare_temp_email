@@ -345,9 +345,10 @@ onMounted(async () => {
 
 .main-card {
     position: relative;
-    width: 65vw; 
+    /* УВЕЛИЧИЛИ РАЗМЕР КАРТОЧКИ (было 65vw, стало 95vw) */
+    width: 95vw; 
     min-width: 600px; 
-    max-width: 1100px; 
+    max-width: 1400px; 
     display: flex;
     justify-content: center;
     border-radius: 12px;
@@ -355,9 +356,8 @@ onMounted(async () => {
 
 .bg-image {
     width: 100%;
-    height: auto; 
-    max-height: 80vh; /* Предохранитель: картинка не будет выше экрана */
-    object-fit: contain; /* Если высота ограничена, картинка впишется целиком */
+    height: auto; /* Картинка сама решает свою высоту */
+    /* Убрали max-height и object-fit, чтобы не было сплющивания */
     display: block;
     border-radius: 12px;
     z-index: 1;
@@ -402,7 +402,7 @@ onMounted(async () => {
    ========================================= */
 .welcome-banner {
     position: absolute;
-    top: 15%; 
+    top: 12%; /* Слегка подняли, так как картинка стала больше */
     left: 50%;
     transform: translateX(-50%);
     z-index: 10;
@@ -415,7 +415,7 @@ onMounted(async () => {
 
 .welcome-text {
     font-family: 'Playfair Display', 'Times New Roman', serif;
-    font-size: 3rem; 
+    font-size: 3.5rem; /* Увеличили шрифт под размер картинки */
     font-weight: 900;
     margin: 0;
     color: #ffffff;
@@ -425,7 +425,7 @@ onMounted(async () => {
 }
 
 .lines {
-    width: 160px; 
+    width: 180px; 
     height: 2px;
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
     position: relative;
@@ -461,7 +461,7 @@ onMounted(async () => {
     font-family: sans-serif;
     letter-spacing: 4px;
     text-transform: uppercase;
-    font-size: 0.65rem;
+    font-size: 0.75rem;
     margin-top: 6px;
 }
 
@@ -475,7 +475,7 @@ onMounted(async () => {
     transform: translate(-50%, -50%);
     z-index: 10;
     
-    width: 300px; 
+    width: 320px; /* Чуть шире, так как картинка стала огромной */
     background-color: rgba(10, 12, 10, 0.85); 
     backdrop-filter: blur(15px); 
     padding: 20px 15px; 
@@ -493,12 +493,12 @@ onMounted(async () => {
     }
     .login-form-wrapper { 
         width: 85%; 
-        max-width: 300px; 
+        max-width: 320px; 
         padding: 15px; 
         top: 55%; 
     }
     .welcome-banner { top: 10%; }
-    .welcome-text { font-size: 2rem; letter-spacing: -1px; }
+    .welcome-text { font-size: 2.5rem; letter-spacing: -1px; }
     .swoosh { display: none; }
     .lines { width: 100px; }
 }
