@@ -200,7 +200,7 @@ onMounted(async () => {
         <!-- Контент поверх фона -->
         <div class="content-wrapper">
             
-            <!-- Баннер -->
+            <!-- Баннер (без розовой дуги) -->
             <div class="welcome-banner">
                 <div class="lines top-lines"></div>
                 <h1 class="welcome-text">
@@ -210,12 +210,11 @@ onMounted(async () => {
                     <span class="welcome-o">O</span>
                     <span class="welcome-me">ME</span>
                 </h1>
-                <div class="swoosh"></div>
                 <div class="lines bottom-lines"></div>
                 <p class="welcome-subtext">GACHA SUKI MAIL</p>
             </div>
 
-            <!-- Форма входа (на которую мы и повесили эффект) -->
+            <!-- Форма входа -->
             <div class="login-form-wrapper">
                 <n-alert v-if="userSettings.user_email" :show-icon="false" :bordered="false" closable>
                     <span>{{ t('bindUserInfo') }}</span>
@@ -453,19 +452,6 @@ onMounted(async () => {
 .top-lines::before, .bottom-lines::before { right: 100%; margin-right: 10px; }
 .top-lines::after, .bottom-lines::after { left: 100%; margin-left: 10px; }
 
-.swoosh {
-    position: absolute;
-    top: 40%;
-    left: 20%;
-    width: 60%;
-    height: 30px;
-    border-top: 2px solid #ff69b4; 
-    border-radius: 50%;
-    transform: rotate(-5deg);
-    pointer-events: none;
-    opacity: 0.6;
-}
-
 .welcome-subtext {
     color: #a0a0a0;
     font-family: sans-serif;
@@ -479,27 +465,25 @@ onMounted(async () => {
    ФОРМА ВХОДА С ЭФФЕКТОМ SHIMMER
    ========================================= */
 .login-form-wrapper {
-    position: relative; /* Важно для позиционирования псевдоэлемента */
+    position: relative; 
     width: 300px; 
     flex-shrink: 0; 
     background-color: rgba(20, 20, 24, 0.8); 
     backdrop-filter: blur(15px); 
     padding: 20px 15px; 
     border-radius: 16px;
-    /* Оставляем базовую тень, чтобы форма читалась, когда блик с другой стороны */
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9); 
     z-index: 10;
 }
 
-/* Псевдоэлемент, который и создает бегущий блик */
+/* Псевдоэлемент для бегущего блика */
 .login-form-wrapper::before {
     content: "";
     position: absolute;
-    inset: 0; /* Растягиваем по размеру формы */
-    border-radius: 16px; /* Скругление как у формы */
-    padding: 2px; /* Толщина линии */
+    inset: 0; 
+    border-radius: 16px; 
+    padding: 2px; 
     
-    /* Тот самый крутящийся градиент */
     background: conic-gradient(
         from var(--angle),
         transparent 60%,
@@ -509,14 +493,13 @@ onMounted(async () => {
         transparent 100%
     );
     
-    /* Маска, которая делает центр прозрачным, оставляя только рамку */
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     
     animation: rotate-shimmer 2.5s linear infinite;
     pointer-events: none;
-    z-index: 11; /* Поверх фона формы */
+    z-index: 11; 
 }
 
 @keyframes rotate-shimmer {
@@ -527,7 +510,6 @@ onMounted(async () => {
 @media (max-width: 850px) {
     .login-form-wrapper { width: 90%; max-width: 300px; }
     .welcome-text { font-size: 2.5rem; letter-spacing: -1px; }
-    .swoosh { display: none; }
     .lines { width: 120px; }
     .bg-image { width: 120vw; }
 }
