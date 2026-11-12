@@ -188,7 +188,6 @@ onMounted(async () => {
 <template>
     <div class="login-layout">
         
-        <!-- Карточка (оптимальный размер, как на скриншоте) -->
         <div class="main-card">
             
             <img :src="bgImage" class="bg-image" alt="Background" />
@@ -327,17 +326,16 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-/* --- Черный фон на весь экран (без ограничений сетки) --- */
+/* --- Черный фон (без 100vw) --- */
 .login-layout {
     position: relative;
-    width: 100vw;
+    width: 100%; /* ИСПОЛЬЗУЕМ 100% ВМЕСТО 100VW */
     min-height: 85vh;
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: #0a0a0a; 
     padding: 20px 0;
-    overflow: hidden;
 }
 
 /* =========================================
@@ -346,7 +344,6 @@ onMounted(async () => {
 
 .main-card {
     position: relative;
-    /* Установили 65% ширины экрана, чтобы были черные края */
     width: 65vw; 
     min-width: 600px; 
     max-width: 1100px; 
@@ -357,7 +354,7 @@ onMounted(async () => {
 
 .bg-image {
     width: 100%;
-    height: auto; /* Сохраняем оригинальные пропорции */
+    height: auto; 
     display: block;
     border-radius: 12px;
     z-index: 1;
