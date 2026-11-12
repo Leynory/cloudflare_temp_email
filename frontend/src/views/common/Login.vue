@@ -4,7 +4,6 @@ import { useScopedI18n } from '@/i18n/app'
 import { useRouter } from 'vue-router'
 import { NewLabelOutlined, EmailOutlined, RedeemOutlined } from '@vicons/material'
 
-// ИМПОРТ ВЫРЕЗАННОЙ C.C.
 import ccImage from '@/assets/cc.png' 
 
 import AdminContact from '../common/AdminContact.vue'
@@ -188,22 +187,22 @@ onMounted(async () => {
 
 <template>
     <div class="login-layout">
-        <!-- Киберпанк-сетка на фоне -->
+        <!-- ЯРКАЯ КИБЕРПАНК СЕТКА -->
         <div class="cyber-grid"></div>
         
         <!-- Светящиеся сферы -->
         <div class="glow-sphere sphere-1"></div>
         <div class="glow-sphere sphere-2"></div>
 
-        <!-- ЗЕЛЕНАЯ РАМКА (Нарисована на CSS) -->
+        <!-- УМЕНЬШЕННАЯ РАМКА -->
         <div class="neon-frame">
-            <!-- Верхняя линия-разделитель, как на твоем референсе -->
+            <!-- Верхняя линия-разделитель -->
             <div class="frame-top-line"></div>
 
-            <!-- C.C. Слева -->
+            <!-- C.C. Слева (вылезает за рамку) -->
             <img :src="ccImage" class="cc-character left" alt="C.C." />
             
-            <!-- C.C. Справа (отзеркалена) -->
+            <!-- C.C. Справа (отзеркалена и вылезает) -->
             <img :src="ccImage" class="cc-character right" alt="C.C." />
 
             <!-- Контент (Баннер и Форма) -->
@@ -364,14 +363,15 @@ onMounted(async () => {
     align-items: center;
 }
 
-/* --- КИБЕРПАНК СЕТКА --- */
+/* --- ЯРКАЯ КИБЕРПАНК СЕТКА --- */
 .cyber-grid {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
+    /* Сделали линии заметно ярче (0.15) и меньше размер ячейки (30px) */
     background-image: 
-        linear-gradient(rgba(0, 255, 136, 0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 255, 136, 0.04) 1px, transparent 1px);
-    background-size: 40px 40px;
+        linear-gradient(rgba(0, 255, 136, 0.15) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 136, 0.15) 1px, transparent 1px);
+    background-size: 30px 30px;
     z-index: 0;
 }
 
@@ -395,22 +395,22 @@ onMounted(async () => {
 }
 
 /* =========================================
-   CSS-РАМКА (КАК НА РЕФЕРЕНСЕ)
+   УМЕНЬШЕННАЯ CSS-РАМКА
    ========================================= */
 .neon-frame {
     position: relative;
-    width: 90vw;
-    max-width: 1400px;
-    height: 85vh;
+    width: 65vw; /* Уменьшили с 90vw */
+    max-width: 1000px; 
+    height: 70vh; /* Уменьшили с 85vh */
     border: 3px solid #00ff88;
-    background-color: rgba(5, 10, 8, 0.6); /* Темный полупрозрачный фон внутри */
+    background-color: rgba(5, 10, 8, 0.4); /* Сделали чуть прозрачнее, чтобы вылезающие C.C. смотрелись лучше */
     box-shadow: 
         0 0 20px rgba(0, 255, 136, 0.2), 
         inset 0 0 20px rgba(0, 255, 136, 0.1);
     z-index: 5;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    /* Убрали overflow: hidden, чтобы C.C. могли вылезать */
 }
 
 /* Верхняя линия внутри рамки */
@@ -423,25 +423,25 @@ onMounted(async () => {
 }
 
 /* =========================================
-   C.C. ПО БОКАМ (Вырезанный PNG)
+   C.C. ВЫЛЕЗАЮТ ЗА РАМКУ
    ========================================= */
 .cc-character {
     position: absolute;
-    bottom: 0;
-    height: 85%; /* Занимает 85% высоты рамки */
+    bottom: -5%; /* Спускаем вниз за рамку */
+    height: 100%; /* Увеличиваем, чтобы точно вылезли */
     width: auto;
     object-fit: contain;
-    z-index: 1;
+    z-index: 4; /* Ниже контента (10), но выше фона рамки */
     pointer-events: none;
 }
 
 .cc-character.left {
-    left: 2%;
+    left: -15%; /* Сдвигаем влево за пределы рамки */
 }
 
 .cc-character.right {
-    right: 2%;
-    transform: scaleX(-1); /* Отзеркаливаем правую */
+    right: -15%; /* Сдвигаем вправо за пределы рамки */
+    transform: scaleX(-1); 
 }
 
 /* =========================================
@@ -455,7 +455,7 @@ onMounted(async () => {
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: calc(100% - 45px); /* Вычитаем высоту верхней линии */
+    height: calc(100% - 45px); 
     padding: 20px;
 }
 
@@ -471,7 +471,7 @@ onMounted(async () => {
 
 .welcome-text {
     font-family: 'Playfair Display', 'Times New Roman', serif;
-    font-size: 3rem; 
+    font-size: 2.5rem; /* Чуть уменьшили, так как рамка стала меньше */
     font-weight: 900;
     margin: 0;
     color: #ffffff;
@@ -481,7 +481,7 @@ onMounted(async () => {
 }
 
 .lines {
-    width: 160px; 
+    width: 140px; 
     height: 2px;
     background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.8), transparent);
     position: relative;
@@ -491,7 +491,7 @@ onMounted(async () => {
 .bottom-lines::before, .bottom-lines::after {
     content: '';
     position: absolute;
-    width: 25px;
+    width: 20px;
     height: 1px;
     background: rgba(0, 255, 136, 0.5);
     top: 50%;
@@ -504,12 +504,12 @@ onMounted(async () => {
     font-family: sans-serif;
     letter-spacing: 4px;
     text-transform: uppercase;
-    font-size: 0.65rem; 
+    font-size: 0.6rem; 
     margin-top: 6px;
 }
 
 /* =========================================
-   ФОРМА ВХОДА С ЭФФЕКТОМ SHIMMER
+   ФОРМА ВХОДА
    ========================================= */
 .login-form-wrapper {
     position: relative; 
@@ -518,7 +518,7 @@ onMounted(async () => {
     background-color: rgba(10, 15, 12, 0.9); 
     backdrop-filter: blur(15px); 
     padding: 20px 15px; 
-    border-radius: 8px; /* Чуть меньше скругление, чтобы подходило под стиль рамки */
+    border-radius: 8px; 
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9); 
     z-index: 10;
 }
@@ -555,10 +555,10 @@ onMounted(async () => {
 /* --- Мобильная версия --- */
 @media (max-width: 850px) {
     .login-form-wrapper { width: 90%; max-width: 280px; }
-    .welcome-text { font-size: 2.2rem; letter-spacing: -1px; }
+    .welcome-text { font-size: 2rem; letter-spacing: -1px; }
     .lines { width: 100px; }
-    .cc-character { opacity: 0.3; } /* На телефонах делаем C.C. полупрозрачными, чтобы не мешали */
-    .neon-frame { width: 95vw; height: 90vh; }
+    .cc-character { height: 80%; opacity: 0.2; bottom: 0; left: -5%; right: -5%; } 
+    .neon-frame { width: 90vw; height: 75vh; }
 }
 
 /* --- Твои изначальные стили --- */
@@ -569,4 +569,4 @@ onMounted(async () => {
 .redeem-entry-tip { display: block; font-size: 11px; line-height: 1.4; text-align: center; }
 .switch-login-button { display: flex; justify-content: center; margin: 5px 0; }
 .n-form { text-align: left; }
-</style>ы
+</style>
