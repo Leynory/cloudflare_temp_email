@@ -413,12 +413,12 @@ onMounted(async () => {
 }
 
 /* =========================================
-   C.C. (ПОДНЯТЫ ВЫШЕ И УМЕНЬШЕНЫ)
+   C.C. (УВЕЛИЧЕНЫ)
    ========================================= */
 .cc-character {
     position: absolute;
-    bottom: 8%; /* ПОДНЯЛИ С 0 ДО 8%, ЧТОБЫ НЕ ОБРЕЗАЛИСЬ СНИЗУ */
-    height: 80%; /* УМЕНЬШИЛИ С 90% ДО 80% */
+    bottom: 0; /* Прижали к низу */
+    height: 95%; /* Увеличили с 80% до 95% */
     width: auto; 
     object-fit: contain;
     object-position: bottom;
@@ -568,7 +568,7 @@ onMounted(async () => {
     .login-form-wrapper { width: 90%; max-width: 340px; }
     .welcome-text { font-size: 2.2rem; letter-spacing: -1px; }
     .lines { width: 120px; }
-    .cc-character { height: 70%; opacity: 0.15; bottom: 5%; } 
+    .cc-character { height: 80%; opacity: 0.15; bottom: 0; } 
     .neon-frame { width: 95vw; height: 80vh; }
 }
 
