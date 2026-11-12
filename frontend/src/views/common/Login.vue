@@ -203,7 +203,7 @@ onMounted(async () => {
             <!-- C.C. Справа -->
             <img :src="ccImage" class="cc-character right" alt="C.C." />
 
-            <!-- СЛОЙ С ЛИНИЯМИ РАМКИ -->
+            <!-- СЛОЙ С ЛИНИЯМИ РАМКИ (Z-INDEX ВЫШЕ ВСЕГО) -->
             <div class="frame-lines-overlay">
                 <div class="frame-top-line"></div>
             </div>
@@ -397,14 +397,14 @@ onMounted(async () => {
 }
 
 /* =========================================
-   РАМКА (НИЖЕ, НО ШИРЕ)
+   РАМКА
    ========================================= */
 .neon-frame {
     position: relative;
     width: 85vw; 
     max-width: 1300px; 
-    height: 70vh; /* Понизили высоту с 85vh до 70vh */
-    max-height: 700px; /* Ограничитель, чтобы не была гигантской на 4K */
+    height: 70vh; 
+    max-height: 700px; 
     background-color: rgba(5, 10, 8, 0.5); 
     z-index: 5;
     display: flex;
@@ -413,14 +413,14 @@ onMounted(async () => {
 }
 
 /* =========================================
-   C.C. (ИДЕАЛЬНАЯ СИММЕТРИЯ)
+   C.C. (ОПУЩЕНЫ ВНИЗ, ЧТОБЫ НЕ ЗАДЕВАТЬ ЛИНИЮ)
    ========================================= */
 .cc-character {
     position: absolute;
     bottom: 0; 
-    /* Высота: занимает всё место под верхней линией, но не залезает на неё */
-    height: calc(100% - 45px); 
-    width: auto; /* Позволяем ширине подстроиться под высоту для сохранения пропорций */
+    /* Оставили 90% высоты, чтобы точно был зазор от верхней линии */
+    height: 90%; 
+    width: auto; 
     object-fit: contain;
     object-position: bottom;
     z-index: 2; 
@@ -433,11 +433,11 @@ onMounted(async () => {
 
 .cc-character.right {
     right: 0; 
-    transform: scaleX(-1); /* Зеркальное отражение для идеальной симметрии */
+    transform: scaleX(-1); 
 }
 
 /* =========================================
-   ЛИНИИ РАМКИ
+   ЛИНИИ РАМКИ (Z-INDEX 999, ЧТОБЫ ВСЕГДА БЫЛИ СВЕРХУ)
    ========================================= */
 .frame-lines-overlay {
     position: absolute;
@@ -446,7 +446,7 @@ onMounted(async () => {
     box-shadow: 
         0 0 20px rgba(0, 255, 136, 0.2), 
         inset 0 0 20px rgba(0, 255, 136, 0.1);
-    z-index: 10; 
+    z-index: 999; /* Подняли на самый верх */
     pointer-events: none;
 }
 
