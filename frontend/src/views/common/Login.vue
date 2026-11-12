@@ -203,7 +203,7 @@ onMounted(async () => {
             <!-- C.C. Справа -->
             <img :src="ccImage" class="cc-character right" alt="C.C." />
 
-            <!-- СЛОЙ С ЛИНИЯМИ РАМКИ (Z-INDEX ВЫШЕ ВСЕГО) -->
+            <!-- СЛОЙ С ЛИНИЯМИ РАМКИ -->
             <div class="frame-lines-overlay">
                 <div class="frame-top-line"></div>
             </div>
@@ -413,13 +413,12 @@ onMounted(async () => {
 }
 
 /* =========================================
-   C.C. (ОПУЩЕНЫ ВНИЗ, ЧТОБЫ НЕ ЗАДЕВАТЬ ЛИНИЮ)
+   C.C. (ПОДНЯТЫ ВЫШЕ И УМЕНЬШЕНЫ)
    ========================================= */
 .cc-character {
     position: absolute;
-    bottom: 0; 
-    /* Оставили 90% высоты, чтобы точно был зазор от верхней линии */
-    height: 90%; 
+    bottom: 8%; /* ПОДНЯЛИ С 0 ДО 8%, ЧТОБЫ НЕ ОБРЕЗАЛИСЬ СНИЗУ */
+    height: 80%; /* УМЕНЬШИЛИ С 90% ДО 80% */
     width: auto; 
     object-fit: contain;
     object-position: bottom;
@@ -437,7 +436,7 @@ onMounted(async () => {
 }
 
 /* =========================================
-   ЛИНИИ РАМКИ (Z-INDEX 999, ЧТОБЫ ВСЕГДА БЫЛИ СВЕРХУ)
+   ЛИНИИ РАМКИ (ПОВЕРХ ВСЕГО)
    ========================================= */
 .frame-lines-overlay {
     position: absolute;
@@ -446,7 +445,7 @@ onMounted(async () => {
     box-shadow: 
         0 0 20px rgba(0, 255, 136, 0.2), 
         inset 0 0 20px rgba(0, 255, 136, 0.1);
-    z-index: 999; /* Подняли на самый верх */
+    z-index: 999; 
     pointer-events: none;
 }
 
@@ -569,7 +568,7 @@ onMounted(async () => {
     .login-form-wrapper { width: 90%; max-width: 340px; }
     .welcome-text { font-size: 2.2rem; letter-spacing: -1px; }
     .lines { width: 120px; }
-    .cc-character { height: 70%; opacity: 0.15; } 
+    .cc-character { height: 70%; opacity: 0.15; bottom: 5%; } 
     .neon-frame { width: 95vw; height: 80vh; }
 }
 
