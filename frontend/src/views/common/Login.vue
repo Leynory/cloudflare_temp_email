@@ -194,7 +194,7 @@ onMounted(async () => {
         <div class="glow-sphere sphere-1"></div>
         <div class="glow-sphere sphere-2"></div>
 
-        <!-- Картинка с C.C. (теперь на весь экран) -->
+        <!-- Картинка с C.C. (уменьшена и сделана четкой) -->
         <img :src="bgImage" class="bg-image" alt="Background" />
 
         <!-- Контент поверх фона -->
@@ -214,7 +214,7 @@ onMounted(async () => {
                 <p class="welcome-subtext">GACHA SUKI MAIL</p>
             </div>
 
-            <!-- Форма входа (с эффектом мерцания) -->
+            <!-- Форма входа -->
             <div class="login-form-wrapper">
                 <n-alert v-if="userSettings.user_email" :show-icon="false" :bordered="false" closable>
                     <span>{{ t('bindUserInfo') }}</span>
@@ -346,8 +346,6 @@ onMounted(async () => {
     margin-left: -50vw;
     margin-right: -50vw;
     min-height: 100vh;
-    
-    /* Глубокий черный фон с легким радиальным свечением */
     background-color: #050508; 
     background-image: radial-gradient(circle at center, #11181a 0%, #050508 70%);
     overflow: hidden;
@@ -364,8 +362,6 @@ onMounted(async () => {
         linear-gradient(rgba(0, 255, 136, 0.06) 1px, transparent 1px),
         linear-gradient(90deg, rgba(0, 255, 136, 0.06) 1px, transparent 1px);
     background-size: 50px 50px;
-    
-    /* Маска скрывает сетку в центре, оставляя её по краям */
     mask-image: radial-gradient(circle at center, transparent 30%, black 80%);
     -webkit-mask-image: radial-gradient(circle at center, transparent 30%, black 80%);
     z-index: 0;
@@ -390,22 +386,24 @@ onMounted(async () => {
     bottom: 5%; right: 10%;
 }
 
-/* --- КАРТИНКА С C.C. (АДАПТИВНАЯ ДЛЯ ЛЮБЫХ ЭКРАНОВ) --- */
+/* --- КАРТИНКА С C.C. (ИСПРАВЛЕНО ДЛЯ ЧЕТКОСТИ) --- */
 .bg-image {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     
-    /* Растягиваем на весь экран */
-    width: 100vw; 
-    height: 100vh;
-    /* Contain сохраняет пропорции, даже на ультрашироких мониторах не обрезает C.C. */
-    object-fit: contain; 
+    /* Привязываемся к высоте, а ширина подстроится сама (не будет сплющивания) */
+    height: 80vh; 
+    width: auto; 
+    max-width: 90vw;
+    
+    /* Говорим браузеру сохранять контрастность краев при масштабировании */
+    image-rendering: -webkit-optimize-contrast;
     
     z-index: 2;
-    opacity: 0.9; 
-    filter: drop-shadow(0 0 20px rgba(0, 255, 136, 0.2));
+    opacity: 1; /* Убрали прозрачность, чтобы не было эффекта "призрачности" */
+    /* Убрали drop-shadow, так как именно он размывал края */
 }
 
 /* --- СЛОЙ С КОНТЕНТОМ --- */
@@ -424,7 +422,7 @@ onMounted(async () => {
 .welcome-banner {
     position: relative;
     text-align: center;
-    margin-bottom: 20px; 
+    margin-bottom: 15px; 
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -432,7 +430,7 @@ onMounted(async () => {
 
 .welcome-text {
     font-family: 'Playfair Display', 'Times New Roman', serif;
-    font-size: 3.5rem; 
+    font-size: 3rem; 
     font-weight: 900;
     margin: 0;
     color: #ffffff;
@@ -442,39 +440,39 @@ onMounted(async () => {
 }
 
 .lines {
-    width: 180px; 
+    width: 160px; 
     height: 2px;
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
     position: relative;
-    margin: 8px 0;
+    margin: 6px 0;
 }
 .top-lines::before, .top-lines::after,
 .bottom-lines::before, .bottom-lines::after {
     content: '';
     position: absolute;
-    width: 30px;
+    width: 25px;
     height: 1px;
     background: rgba(255, 255, 255, 0.5);
     top: 50%;
 }
-.top-lines::before, .bottom-lines::before { right: 100%; margin-right: 10px; }
-.top-lines::after, .bottom-lines::after { left: 100%; margin-left: 10px; }
+.top-lines::before, .bottom-lines::before { right: 100%; margin-right: 8px; }
+.top-lines::after, .bottom-lines::after { left: 100%; margin-left: 8px; }
 
 .welcome-subtext {
     color: #a0a0a0;
     font-family: sans-serif;
     letter-spacing: 4px;
     text-transform: uppercase;
-    font-size: 0.7rem;
-    margin-top: 8px;
+    font-size: 0.65rem; 
+    margin-top: 6px;
 }
 
 /* =========================================
-   ФОРМА ВХОДА С ЭФФЕКТОМ SHIMMER
+   ФОРМА ВХОДА (УМЕНЬШЕНА ДО 280PX)
    ========================================= */
 .login-form-wrapper {
     position: relative; 
-    width: 300px; 
+    width: 280px; 
     flex-shrink: 0; 
     background-color: rgba(20, 20, 24, 0.8); 
     backdrop-filter: blur(15px); 
@@ -515,10 +513,10 @@ onMounted(async () => {
 
 /* --- Мобильная версия --- */
 @media (max-width: 850px) {
-    .login-form-wrapper { width: 90%; max-width: 300px; }
-    .welcome-text { font-size: 2.5rem; letter-spacing: -1px; }
-    .lines { width: 120px; }
-    .bg-image { width: 150vw; object-fit: cover; } /* На телефонах чуть обрезаем края для заполнения */
+    .login-form-wrapper { width: 90%; max-width: 280px; }
+    .welcome-text { font-size: 2.2rem; letter-spacing: -1px; }
+    .lines { width: 100px; }
+    .bg-image { height: 70vh; width: auto; max-width: 150vw; }
 }
 
 /* --- Твои изначальные стили --- */
