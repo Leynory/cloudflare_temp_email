@@ -199,7 +199,7 @@ onMounted(async () => {
         <!-- Контейнер с картинкой и неоновой рамкой -->
         <div class="image-container">
             <img :src="bgImage" class="bg-image" alt="Background" />
-            <!-- Переливающаяся неоновая рамка (ЗЕЛЕНЫЕ ОТТЕНКИ) -->
+            <!-- Переливающаяся неоновая рамка -->
             <div class="neon-border"></div>
         </div>
 
@@ -222,14 +222,15 @@ onMounted(async () => {
                 <p class="welcome-subtext">GACHA SUKI MAIL</p>
             </div>
 
+            <!-- Форма входа (стала меньше) -->
             <div class="login-form-wrapper">
                 <n-alert v-if="userSettings.user_email" :show-icon="false" :bordered="false" closable>
                     <span>{{ t('bindUserInfo') }}</span>
                 </n-alert>
                 
-                <n-tabs v-if="openSettings.fetched" v-model:value="tabValue" size="large" justify-content="space-evenly">
+                <n-tabs v-if="openSettings.fetched" v-model:value="tabValue" size="medium" justify-content="space-evenly">
                     <n-tab-pane name="signin" :tab="loginAndBindTag">
-                        <n-form>
+                        <n-form size="medium">
                             <div v-if="loginMethod === 'password'">
                                 <n-form-item-row :label="t('email')" required>
                                     <n-input v-model:value="loginAddress" />
@@ -241,7 +242,7 @@ onMounted(async () => {
                             </div>
                             <div v-else>
                                 <n-form-item-row :label="t('credential')" required>
-                                    <n-input v-model:value="credential" type="textarea" :autosize="{ minRows: 3 }" />
+                                    <n-input v-model:value="credential" type="textarea" :autosize="{ minRows: 2 }" />
                                 </n-form-item-row>
                             </div>
 
@@ -250,23 +251,23 @@ onMounted(async () => {
                             <div class="switch-login-button">
                                 <n-button v-if="openSettings?.enableAddressPassword && !openSettings.addressPasswordLoginOnly"
                                     @click="loginMethod === 'password' ? loginMethod = 'credential' : loginMethod = 'password'"
-                                    type="info" quaternary size="tiny">
+                                    type="info" quaternary size="small">
                                     {{ loginMethod === 'password' ? t('credentialLogin') : t('passwordLogin') }}
                                 </n-button>
                             </div>
 
-                            <n-button @click="login" :loading="loading" type="primary" block secondary strong>
+                            <n-button @click="login" :loading="loading" type="primary" block secondary strong size="medium">
                                 <template #icon><n-icon :component="EmailOutlined" /></template>
                                 {{ loginAndBindTag }}
                             </n-button>
-                            <n-button v-if="showNewAddressTab" @click="tabValue = 'register'" block secondary strong>
+                            <n-button v-if="showNewAddressTab" @click="tabValue = 'register'" block secondary strong size="medium">
                                 <template #icon><n-icon :component="NewLabelOutlined" /></template>
                                 {{ t('getNewEmail') }}
                             </n-button>
                             <div v-if="openSettings.enableRedeemCode" class="redeem-entry-section">
                                 <n-divider />
                                 <n-text type="info" class="redeem-entry-tip">{{ t('redeemEntryTip') }}</n-text>
-                                <n-button data-testid="redeem-entry" block secondary strong @click="openRedeemPage">
+                                <n-button data-testid="redeem-entry" block secondary strong size="medium" @click="openRedeemPage">
                                     <template #icon><n-icon :component="RedeemOutlined" /></template>
                                     {{ t('useRedeemCode') }}
                                 </n-button>
@@ -276,7 +277,7 @@ onMounted(async () => {
                     
                     <n-tab-pane v-if="showNewAddressTab" name="register" :tab="t('getNewEmail')">
                         <n-spin :show="generateNameLoading">
-                            <n-form>
+                            <n-form size="medium">
                                 <span>
                                     <p v-if="!openSettings.disableCustomAddressName">{{ t("getNewEmailTip1") + addressRegex.source }}</p>
                                     <p v-if="!openSettings.disableCustomAddressName">{{ t("getNewEmailTip2") }}</p>
@@ -309,14 +310,14 @@ onMounted(async () => {
                                     </div>
                                 </n-form-item-row>
                                 <Turnstile v-model:value="cfToken" />
-                                <n-button type="primary" block secondary strong @click="newEmail" :loading="loading" :disabled="subdomainMode === 'custom' && !customSubdomain.trim()">
+                                <n-button type="primary" block secondary strong size="medium" @click="newEmail" :loading="loading" :disabled="subdomainMode === 'custom' && !customSubdomain.trim()">
                                     <template #icon><n-icon :component="NewLabelOutlined" /></template>
                                     {{ t('getNewEmail') }}
                                 </n-button>
                                 <div v-if="openSettings.enableRedeemCode" class="redeem-entry-section">
                                     <n-divider />
                                     <n-text type="info" class="redeem-entry-tip">{{ t('redeemEntryTip') }}</n-text>
-                                    <n-button data-testid="redeem-entry-register" block secondary strong @click="openRedeemPage">
+                                    <n-button data-testid="redeem-entry-register" block secondary strong size="medium" @click="openRedeemPage">
                                         <template #icon><n-icon :component="RedeemOutlined" /></template>
                                         {{ t('useRedeemCode') }}
                                     </n-button>
@@ -404,16 +405,18 @@ onMounted(async () => {
     object-fit: contain; 
 }
 
-/* --- НЕОНОВАЯ РАМКА (ТОЛЬКО ЗЕЛЕНЫЕ ОТТЕНКИ) --- */
+/* --- НЕОНОВАЯ РАМКА (ПЕРЕЛИВАНИЕ) --- */
 .neon-border {
     position: absolute;
     top: -8px; left: -8px; right: -8px; bottom: -8px; 
     
-    /* Градиент из разных оттенков зеленого:
-       #00ff88 (яркий), #008f4c (темный), #33ffaa (светлый), #005c26 (глубокий) */
-    background: linear-gradient(45deg, #00ff88, #005c26, #33ffaa, #008f4c, #00ff88);
-    background-size: 300% 300%;
-    animation: neon-anim 4s linear infinite;
+    /* Градиент из зеленых оттенков */
+    background: linear-gradient(90deg, #00ff88, #005c26, #33ffaa, #008f4c, #00ff88);
+    /* Делаем фон в 2 раза шире, чтобы было куда течь */
+    background-size: 200% 100%; 
+    
+    /* Анимация переливания (линейная, без остановок) */
+    animation: flow-anim 3s linear infinite;
     
     z-index: 5;
     border-radius: 16px; 
@@ -425,14 +428,13 @@ onMounted(async () => {
     
     padding: 5px; 
     
-    /* Зеленое свечение */
     filter: drop-shadow(0 0 10px #00ff88) drop-shadow(0 0 20px #008f4c);
 }
 
-@keyframes neon-anim {
+/* КЛЮЧЕВОЕ ИЗМЕНЕНИЕ: Едем только в одну сторону (от 0 до 200%) */
+@keyframes flow-anim {
     0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+    100% { background-position: -200% 50%; }
 }
 
 /* =========================================
@@ -523,14 +525,14 @@ onMounted(async () => {
     margin-top: 8px;
 }
 
-/* --- ФОРМА ВХОДА --- */
+/* --- ФОРМА ВХОДА (УМЕНЬШЕНА) --- */
 .login-form-wrapper {
-    width: 340px; 
+    width: 280px; /* Было 340, стало 280 (значительно компактнее) */
     flex-shrink: 0; 
     background-color: rgba(15, 15, 20, 0.85); 
     backdrop-filter: blur(15px); 
-    padding: 25px 20px; 
-    border-radius: 16px;
+    padding: 20px 15px; /* Уменьшили отступы внутри */
+    border-radius: 12px;
     box-shadow: 
         0 10px 40px rgba(0, 0, 0, 0.9), 
         inset 0 0 0 1px rgba(144, 238, 144, 0.3); 
@@ -539,7 +541,7 @@ onMounted(async () => {
 
 /* --- Мобильная версия --- */
 @media (max-width: 850px) {
-    .login-form-wrapper { width: 90%; max-width: 340px; }
+    .login-form-wrapper { width: 90%; max-width: 300px; }
     .welcome-text { font-size: 2.5rem; letter-spacing: -1px; }
     .swoosh { display: none; }
     .lines { width: 120px; }
@@ -548,10 +550,10 @@ onMounted(async () => {
 
 /* --- Твои изначальные стили --- */
 .n-alert { margin-top: 10px; margin-bottom: 10px; text-align: center; }
-.n-form .n-button { margin-top: 10px; }
-.redeem-entry-section { margin-top: 15px; }
-.redeem-entry-section :deep(.n-divider) { margin: 0 0 12px; }
-.redeem-entry-tip { display: block; font-size: 12px; line-height: 1.5; text-align: center; }
-.switch-login-button { display: flex; justify-content: center; margin: 8px 0; }
+.n-form .n-button { margin-top: 8px; }
+.redeem-entry-section { margin-top: 12px; }
+.redeem-entry-section :deep(.n-divider) { margin: 0 0 10px; }
+.redeem-entry-tip { display: block; font-size: 11px; line-height: 1.4; text-align: center; }
+.switch-login-button { display: flex; justify-content: center; margin: 5px 0; }
 .n-form { text-align: left; }
 </style>
