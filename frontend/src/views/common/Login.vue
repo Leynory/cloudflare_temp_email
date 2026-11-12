@@ -196,11 +196,15 @@ onMounted(async () => {
         <div class="glow-sphere sphere-1"></div>
         <div class="glow-sphere sphere-2"></div>
 
-        <!-- Контейнер с картинкой и неоновой рамкой -->
-        <div class="image-container">
+        <!-- Контейнер с картинкой и неоновыми линиями -->
+        <div class="image-wrapper">
             <img :src="bgImage" class="bg-image" alt="Background" />
-            <!-- Переливающаяся неоновая рамка -->
+            
+            <!-- Базовая темная рамка -->
             <div class="neon-border"></div>
+            <!-- Две переливающиеся линии -->
+            <div class="line-1"></div>
+            <div class="line-2"></div>
         </div>
 
         <!-- Киберпанк-сетка -->
@@ -222,7 +226,7 @@ onMounted(async () => {
                 <p class="welcome-subtext">GACHA SUKI MAIL</p>
             </div>
 
-            <!-- Форма входа (стала меньше) -->
+            <!-- Форма входа (уменьшена) -->
             <div class="login-form-wrapper">
                 <n-alert v-if="userSettings.user_email" :show-icon="false" :bordered="false" closable>
                     <span>{{ t('bindUserInfo') }}</span>
@@ -357,7 +361,7 @@ onMounted(async () => {
     top: -10%; left: -10%; right: -10%; bottom: -10%; 
     background-size: cover;
     background-position: center;
-    filter: blur(60px) brightness(0.25); 
+    filter: blur(60px) brightness(0.2); 
     z-index: -3; 
 }
 
@@ -366,34 +370,29 @@ onMounted(async () => {
     border-radius: 50%;
     filter: blur(80px);
     z-index: -2;
-    opacity: 0.3;
+    opacity: 0.2;
 }
 .sphere-1 {
     width: 400px; height: 400px;
-    background: rgba(0, 255, 136, 0.4);
+    background: rgba(0, 255, 136, 0.3);
     top: 10%; left: 10%;
 }
 .sphere-2 {
     width: 500px; height: 500px;
-    background: rgba(255, 105, 180, 0.15);
+    background: rgba(0, 100, 50, 0.2); /* Темно-зеленый */
     bottom: 5%; right: 10%;
 }
 
 /* =========================================
-   КАРТИНКА И НЕОНОВАЯ РАМКА
+   КАРТИНКА (ЦЕНТРИРОВАНА)
    ========================================= */
-.image-container {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    
-    width: 75vw; 
-    height: 75vh; 
-    max-width: 1200px;
-    max-height: 700px;
-    
-    z-index: -1;
+.image-wrapper {
+    position: relative;
+    width: 95vw;
+    max-width: 1100px;
+    aspect-ratio: 16 / 9;
+    z-index: 1;
+    border-radius: 16px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -403,57 +402,69 @@ onMounted(async () => {
     width: 100%;
     height: 100%;
     object-fit: contain; 
-}
-
-/* --- НЕОНОВАЯ РАМКА (ПЕРЕЛИВАНИЕ) --- */
-.neon-border {
-    position: absolute;
-    top: -8px; left: -8px; right: -8px; bottom: -8px; 
-    
-    /* Градиент из зеленых оттенков */
-    background: linear-gradient(90deg, #00ff88, #005c26, #33ffaa, #008f4c, #00ff88);
-    /* Делаем фон в 2 раза шире, чтобы было куда течь */
-    background-size: 200% 100%; 
-    
-    /* Анимация переливания (линейная, без остановок) */
-    animation: flow-anim 3s linear infinite;
-    
-    z-index: 5;
-    border-radius: 16px; 
-    pointer-events: none;
-    
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    
-    padding: 5px; 
-    
-    filter: drop-shadow(0 0 10px #00ff88) drop-shadow(0 0 20px #008f4c);
-}
-
-/* КЛЮЧЕВОЕ ИЗМЕНЕНИЕ: Едем только в одну сторону (от 0 до 200%) */
-@keyframes flow-anim {
-    0% { background-position: 0% 50%; }
-    100% { background-position: -200% 50%; }
+    border-radius: 16px;
 }
 
 /* =========================================
-   ОСТАЛЬНЫЕ ЭЛЕМЕНТЫ
+   НЕОНОВАЯ РАМКА И ДВЕ ЛИНИИ (ТЕМНЫЕ ОТТЕНКИ)
+   ========================================= */
+.neon-border {
+    position: absolute;
+    inset: -4px;
+    border-radius: 20px;
+    pointer-events: none;
+    border: 2px solid #003311; /* Очень темный зеленый (база) */
+    box-shadow: 0 0 15px rgba(0, 51, 17, 0.8), inset 0 0 15px rgba(0, 51, 17, 0.8);
+}
+
+/* Две бегущие линии */
+.line-1, .line-2 {
+    position: absolute;
+    inset: -4px;
+    border-radius: 20px;
+    pointer-events: none;
+    padding: 2px; /* Толщина линии */
+    
+    /* Маска, превращающая заливку в рамку */
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+}
+
+/* Линия 1 (Светло-изумрудный) */
+.line-1 {
+    background: conic-gradient(from 0deg, transparent 0%, #008833 15%, transparent 25%);
+    animation: rotate-line 4s linear infinite;
+}
+
+/* Линия 2 (Темно-зеленый, летит с другой стороны) */
+.line-2 {
+    background: conic-gradient(from 180deg, transparent 0%, #004d20 15%, transparent 25%);
+    animation: rotate-line 4s linear infinite;
+}
+
+@keyframes rotate-line {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* =========================================
+   СЕТКА И КОНТЕНТ
    ========================================= */
 
 .cyber-grid {
     position: fixed; 
     top: 0; left: 0; right: 0; bottom: 0;
     background-image: 
-        linear-gradient(rgba(0, 255, 136, 0.07) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 255, 136, 0.07) 1px, transparent 1px);
+        linear-gradient(rgba(0, 100, 50, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 100, 50, 0.05) 1px, transparent 1px);
     background-size: 40px 40px;
-    z-index: 1; 
+    z-index: 2; 
     pointer-events: none; 
 }
 
 .content-wrapper {
-    position: relative;
+    position: absolute; /* Позволяет стоять ровно по центру поверх картинки */
     z-index: 10; 
     display: flex;
     flex-direction: column;
@@ -475,13 +486,13 @@ onMounted(async () => {
 
 .welcome-text {
     font-family: 'Playfair Display', 'Times New Roman', serif;
-    font-size: 3.5rem; 
+    font-size: 3rem; 
     font-weight: 900;
     margin: 0;
     color: #ffffff;
     letter-spacing: -2px; 
     line-height: 1;
-    text-shadow: 0 0 15px rgba(0, 255, 136, 0.5); 
+    text-shadow: 0 0 15px rgba(0, 136, 51, 0.5); 
 }
 
 .lines {
@@ -509,7 +520,7 @@ onMounted(async () => {
     left: 20%;
     width: 60%;
     height: 30px;
-    border-top: 2px solid #ff69b4; 
+    border-top: 2px solid #004d20; /* Темная линия */
     border-radius: 50%;
     transform: rotate(-5deg);
     pointer-events: none;
@@ -527,25 +538,25 @@ onMounted(async () => {
 
 /* --- ФОРМА ВХОДА (УМЕНЬШЕНА) --- */
 .login-form-wrapper {
-    width: 280px; /* Было 340, стало 280 (значительно компактнее) */
+    width: 280px; 
     flex-shrink: 0; 
-    background-color: rgba(15, 15, 20, 0.85); 
-    backdrop-filter: blur(15px); 
-    padding: 20px 15px; /* Уменьшили отступы внутри */
+    background-color: rgba(10, 15, 12, 0.9); /* Чуть темнее */
+    backdrop-filter: blur(10px); 
+    padding: 20px 15px; 
     border-radius: 12px;
     box-shadow: 
         0 10px 40px rgba(0, 0, 0, 0.9), 
-        inset 0 0 0 1px rgba(144, 238, 144, 0.3); 
+        inset 0 0 0 1px rgba(0, 100, 50, 0.4); 
     z-index: 10;
 }
 
 /* --- Мобильная версия --- */
 @media (max-width: 850px) {
-    .login-form-wrapper { width: 90%; max-width: 300px; }
+    .login-form-wrapper { width: 90%; max-width: 280px; }
     .welcome-text { font-size: 2.5rem; letter-spacing: -1px; }
     .swoosh { display: none; }
     .lines { width: 120px; }
-    .image-container { width: 90vw; height: 90vh; }
+    .image-wrapper { width: 100vw; aspect-ratio: auto; max-height: 100vh; }
 }
 
 /* --- Твои изначальные стили --- */
