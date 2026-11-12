@@ -189,25 +189,19 @@ onMounted(async () => {
 <template>
     <div class="login-layout">
         
-        <!-- Фоновые слои (Заполняют пустые края) -->
-        <div class="ambient-bg" :style="{ backgroundImage: `url(${bgImage})` }"></div>
-        <div class="glow-sphere sphere-1"></div>
-        <div class="glow-sphere sphere-2"></div>
-        <div class="cyber-grid"></div>
-
         <!-- Центральный блок -->
         <div class="center-stage">
             
-            <!-- Карточка (размер которой задает картинка) -->
+            <!-- Карточка с картинкой и формой -->
             <div class="main-card">
                 
-                <!-- Картинка с C.C. -->
+                <!-- Картинка с C.C. (задает размер) -->
                 <img :src="bgImage" class="bg-image" alt="Background" />
                 
-                <!-- Переливающаяся рамка -->
+                <!-- Переливающаяся неоновая рамка -->
                 <div class="neon-border"></div>
 
-                <!-- Баннер (абсолютно по центру сверху) -->
+                <!-- Баннер сверху -->
                 <div class="welcome-banner">
                     <div class="lines top-lines"></div>
                     <h1 class="welcome-text">
@@ -222,7 +216,7 @@ onMounted(async () => {
                     <p class="welcome-subtext">GACHA SUKI MAIL</p>
                 </div>
 
-                <!-- Форма входа (абсолютно по центру) -->
+                <!-- Форма входа по центру -->
                 <div class="login-form-wrapper">
                     <n-alert v-if="userSettings.user_email" :show-icon="false" :bordered="false" closable>
                         <span>{{ t('bindUserInfo') }}</span>
@@ -339,7 +333,7 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-/* --- Общий контейнер --- */
+/* --- Контейнер (Чистый черный фон, без сетки и свечения) --- */
 .login-layout {
     position: relative;
     width: 100%;
@@ -347,53 +341,12 @@ onMounted(async () => {
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: #050505; /* Глубокий черный цвет для краев */
     overflow: hidden;
 }
 
 /* =========================================
-   ФОНОВЫЕ СЛОИ (Возвращаем красоту по краям)
-   ========================================= */
-
-.ambient-bg {
-    position: fixed; 
-    top: -10%; left: -10%; right: -10%; bottom: -10%; 
-    background-size: cover;
-    background-position: center;
-    filter: blur(60px) brightness(0.15); 
-    z-index: 0; 
-}
-
-.glow-sphere {
-    position: fixed;
-    border-radius: 50%;
-    filter: blur(80px);
-    z-index: 1;
-    opacity: 0.15;
-}
-.sphere-1 {
-    width: 400px; height: 400px;
-    background: rgba(0, 255, 136, 0.3);
-    top: 10%; left: 10%;
-}
-.sphere-2 {
-    width: 500px; height: 500px;
-    background: rgba(0, 100, 50, 0.2); 
-    bottom: 5%; right: 10%;
-}
-
-.cyber-grid {
-    position: fixed; 
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-image: 
-        linear-gradient(rgba(0, 150, 70, 0.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 150, 70, 0.05) 1px, transparent 1px);
-    background-size: 40px 40px;
-    z-index: 2; 
-    pointer-events: none; 
-}
-
-/* =========================================
-   ЦЕНТРАЛЬНАЯ КАРТОЧКА (Строго по картинке)
+   ЦЕНТРАЛЬНАЯ КАРТОЧКА
    ========================================= */
 
 .center-stage {
@@ -403,19 +356,20 @@ onMounted(async () => {
     justify-content: center;
     align-items: center;
     width: 100%;
-    padding: 40px 20px;
+    padding: 20px;
 }
 
 .main-card {
     position: relative;
-    /* 85vw оставляет красивые края по бокам */
-    width: 85vw; 
-    max-width: 1100px;
+    /* Ширина 80vw гарантирует, что картинка не растянется на весь экран */
+    width: 80vw; 
+    max-width: 1200px;
     display: flex;
     justify-content: center;
+    align-items: center;
 }
 
-/* Картинка задает высоту и пропорции всей карточки */
+/* Картинка (всегда сохраняет пропорции) */
 .bg-image {
     width: 100%;
     height: auto; 
@@ -425,7 +379,7 @@ onMounted(async () => {
 }
 
 /* =========================================
-   ГРАДИЕНТНАЯ РАМКА (Бежит по диагонали)
+   ГРАДИЕНТНАЯ РАМКА
    ========================================= */
 .neon-border {
     position: absolute;
@@ -459,13 +413,13 @@ onMounted(async () => {
 }
 
 /* =========================================
-   БАННЕР И ФОРМА (ПРИВЯЗАНЫ К ЦЕНТРУ)
+   БАННЕР И ФОРМА (ПОВЕРХ КАРТИНКИ)
    ========================================= */
 
 /* --- Баннер --- */
 .welcome-banner {
     position: absolute;
-    top: 12%; /* Поднимаем над формой */
+    top: 10%; 
     left: 50%;
     transform: translateX(-50%);
     z-index: 10;
@@ -473,7 +427,7 @@ onMounted(async () => {
     display: flex;
     flex-direction: column;
     align-items: center;
-    pointer-events: none; /* Чтобы не перекрывать клики */
+    pointer-events: none; 
 }
 
 .welcome-text {
@@ -531,32 +485,25 @@ onMounted(async () => {
 /* --- Форма входа --- */
 .login-form-wrapper {
     position: absolute;
-    top: 55%; /* Сдвигаем чуть ниже центра, чтобы освободить место баннеру */
+    top: 55%; 
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 10;
     
-    width: 340px; 
-    background-color: rgba(10, 12, 10, 0.9); 
+    width: 320px; 
+    background-color: rgba(10, 12, 10, 0.85); 
     backdrop-filter: blur(15px); 
-    padding: 25px 20px; 
+    padding: 20px; 
     border-radius: 12px;
     box-shadow: 
         0 10px 40px rgba(0, 0, 0, 0.9), 
         inset 0 0 0 1px rgba(0, 143, 51, 0.3); 
 }
 
-/* --- Мобильная версия (если экран слишком узкий) --- */
+/* --- Мобильная версия --- */
 @media (max-width: 850px) {
-    .login-form-wrapper { 
-        width: 90%; 
-        max-width: 340px; 
-        padding: 15px; 
-        top: 58%; /* На мобилках опускаем форму чуть ниже */
-    }
-    .welcome-banner {
-        top: 8%;
-    }
+    .login-form-wrapper { width: 90%; max-width: 320px; padding: 15px; top: 58%; }
+    .welcome-banner { top: 8%; }
     .welcome-text { font-size: 2.5rem; letter-spacing: -1px; }
     .swoosh { display: none; }
     .lines { width: 120px; }
