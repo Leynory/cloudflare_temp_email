@@ -189,12 +189,20 @@ onMounted(async () => {
 <template>
     <div class="login-layout">
         
-        <!-- ВСЕ ФОНОВЫЕ ЭЛЕМЕНТЫ ВЫРВАЛИСЬ ИЗ СЕТКИ (position: fixed) -->
+        <!-- Размытый фон (Ambient) для заполнения пустых краев -->
         <div class="ambient-bg" :style="{ backgroundImage: `url(${bgImage})` }"></div>
-        <div class="cyber-grid"></div>
+        
+        <!-- Светящиеся сферы -->
         <div class="glow-sphere sphere-1"></div>
         <div class="glow-sphere sphere-2"></div>
+
+        <!-- Четкая картинка с C.C. (теперь по центру, без искажений) -->
         <img :src="bgImage" class="bg-image" alt="Background" />
+
+        <!-- Киберпанк-сетка (теперь ПОВЕРХ картинки, чтобы ее было видно) -->
+        <div class="cyber-grid"></div>
+
+        <!-- Декоративные HUD-линии по краям -->
         <div class="hud-line left-hud"></div>
         <div class="hud-line right-hud"></div>
 
@@ -331,7 +339,7 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-/* --- Контейнер для контента (не мешает фиксированному фону) --- */
+/* --- Контейнер --- */
 .login-layout {
     position: relative;
     width: 100%;
@@ -342,69 +350,77 @@ onMounted(async () => {
 }
 
 /* =========================================
-   ВСЕ ФОНЫ ТЕПЕРЬ position: FIXED
-   (Они игнорируют сетку App.vue и растягиваются на весь экран)
+   ФОНОВЫЕ СЛОИ (ВСЕ FIXED, ЧТОБЫ ЗАПОЛНИТЬ ЭКРАН)
    ========================================= */
 
+/* 1. Самый нижний слой: размытая копия для краев */
 .ambient-bg {
-    position: fixed; /* ВЫРВАЛИ ИЗ СЕТКИ */
+    position: fixed; 
     top: -10%; left: -10%; right: -10%; bottom: -10%; 
     background-size: cover;
     background-position: center;
-    filter: blur(80px) brightness(0.3); 
-    z-index: -3; /* Уходит на самый задний план */
+    filter: blur(60px) brightness(0.25); 
+    z-index: -3; 
 }
 
-.cyber-grid {
-    position: fixed; 
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-image: 
-        linear-gradient(rgba(0, 255, 136, 0.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 255, 136, 0.05) 1px, transparent 1px);
-    background-size: 40px 40px;
-    z-index: -2;
-}
-
+/* 2. Сферы свечения */
 .glow-sphere {
     position: fixed;
     border-radius: 50%;
     filter: blur(80px);
-    z-index: -1;
+    z-index: -2;
     opacity: 0.3;
 }
 .sphere-1 {
     width: 400px; height: 400px;
-    background: rgba(0, 255, 136, 0.5);
+    background: rgba(0, 255, 136, 0.4);
     top: 10%; left: 10%;
 }
 .sphere-2 {
     width: 500px; height: 500px;
-    background: rgba(255, 105, 180, 0.2);
+    background: rgba(255, 105, 180, 0.15);
     bottom: 5%; right: 10%;
 }
 
+/* 3. ОСНОВНАЯ КАРТИНКА (Четкая, с сохранением пропорций) */
 .bg-image {
-    position: fixed; /* ВЫРВАЛИ ИЗ СЕТКИ */
+    position: fixed; 
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    
+    /* Используем contain, чтобы картинка не искажалась */
     width: 100vw; 
     height: 100vh;
-    object-fit: cover; /* Заполняет экран от края до края */
+    object-fit: contain; 
+    
     z-index: -1;
-    opacity: 0.7;
-    filter: drop-shadow(0 0 30px rgba(0, 0, 0, 1));
+    /* Никакой прозрачности и размытия */
 }
 
+/* 4. КИБЕРПАНК СЕТКА (ПОВЕРХ КАРТИНКИ) */
+.cyber-grid {
+    position: fixed; 
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: 
+        linear-gradient(rgba(0, 255, 136, 0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 136, 0.07) 1px, transparent 1px);
+    background-size: 40px 40px;
+    z-index: 1; /* Ставим выше картинки, чтобы сетка ложилась поверх C.C. */
+    pointer-events: none; /* Клики проходят сквозь сетку */
+}
+
+/* 5. Боковые линии HUD */
 .hud-line {
     position: fixed;
     top: 20%;
     bottom: 20%;
     width: 2px;
     background: linear-gradient(to bottom, transparent, #00ff88, transparent);
-    z-index: 0;
+    z-index: 2;
     opacity: 0.4;
     box-shadow: 0 0 10px #00ff88;
+    pointer-events: none;
 }
 .left-hud { left: 5vw; }
 .right-hud { right: 5vw; }
@@ -415,7 +431,7 @@ onMounted(async () => {
 
 .content-wrapper {
     position: relative;
-    z-index: 10; 
+    z-index: 10; /* Форма всегда выше всех фонов */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -490,7 +506,7 @@ onMounted(async () => {
 .login-form-wrapper {
     width: 340px; 
     flex-shrink: 0; 
-    background-color: rgba(20, 20, 24, 0.85); 
+    background-color: rgba(15, 15, 20, 0.85); 
     backdrop-filter: blur(15px); 
     padding: 25px 20px; 
     border-radius: 16px;
