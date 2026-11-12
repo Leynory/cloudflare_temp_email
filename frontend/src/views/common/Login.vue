@@ -188,7 +188,7 @@ onMounted(async () => {
 <template>
     <div class="login-layout">
         
-        <!-- Карточка, размер которой диктует картинка -->
+        <!-- Карточка (оптимальный размер, как на скриншоте) -->
         <div class="main-card">
             
             <img :src="bgImage" class="bg-image" alt="Background" />
@@ -217,9 +217,9 @@ onMounted(async () => {
                     <span>{{ t('bindUserInfo') }}</span>
                 </n-alert>
                 
-                <n-tabs v-if="openSettings.fetched" v-model:value="tabValue" size="small" justify-content="space-evenly">
+                <n-tabs v-if="openSettings.fetched" v-model:value="tabValue" size="medium" justify-content="space-evenly">
                     <n-tab-pane name="signin" :tab="loginAndBindTag">
-                        <n-form size="small">
+                        <n-form size="medium">
                             <div v-if="loginMethod === 'password'">
                                 <n-form-item-row :label="t('email')" required>
                                     <n-input v-model:value="loginAddress" />
@@ -240,23 +240,23 @@ onMounted(async () => {
                             <div class="switch-login-button">
                                 <n-button v-if="openSettings?.enableAddressPassword && !openSettings.addressPasswordLoginOnly"
                                     @click="loginMethod === 'password' ? loginMethod = 'credential' : loginMethod = 'password'"
-                                    type="info" quaternary size="tiny">
+                                    type="info" quaternary size="small">
                                     {{ loginMethod === 'password' ? t('credentialLogin') : t('passwordLogin') }}
                                 </n-button>
                             </div>
 
-                            <n-button @click="login" :loading="loading" type="primary" block secondary strong size="small">
+                            <n-button @click="login" :loading="loading" type="primary" block secondary strong size="medium">
                                 <template #icon><n-icon :component="EmailOutlined" /></template>
                                 {{ loginAndBindTag }}
                             </n-button>
-                            <n-button v-if="showNewAddressTab" @click="tabValue = 'register'" block secondary strong size="small">
+                            <n-button v-if="showNewAddressTab" @click="tabValue = 'register'" block secondary strong size="medium">
                                 <template #icon><n-icon :component="NewLabelOutlined" /></template>
                                 {{ t('getNewEmail') }}
                             </n-button>
                             <div v-if="openSettings.enableRedeemCode" class="redeem-entry-section">
                                 <n-divider />
                                 <n-text type="info" class="redeem-entry-tip">{{ t('redeemEntryTip') }}</n-text>
-                                <n-button data-testid="redeem-entry" block secondary strong size="small" @click="openRedeemPage">
+                                <n-button data-testid="redeem-entry" block secondary strong size="medium" @click="openRedeemPage">
                                     <template #icon><n-icon :component="RedeemOutlined" /></template>
                                     {{ t('useRedeemCode') }}
                                 </n-button>
@@ -266,13 +266,13 @@ onMounted(async () => {
                     
                     <n-tab-pane v-if="showNewAddressTab" name="register" :tab="t('getNewEmail')">
                         <n-spin :show="generateNameLoading">
-                            <n-form size="small">
+                            <n-form size="medium">
                                 <span>
                                     <p v-if="!openSettings.disableCustomAddressName">{{ t("getNewEmailTip1") + addressRegex.source }}</p>
                                     <p v-if="!openSettings.disableCustomAddressName">{{ t("getNewEmailTip2") }}</p>
                                     <p>{{ t("getNewEmailTip3") }}</p>
                                 </span>
-                                <n-button v-if="!openSettings.disableCustomAddressName" @click="generateName" style="margin-bottom: 10px;" size="small">
+                                <n-button v-if="!openSettings.disableCustomAddressName" @click="generateName" style="margin-bottom: 10px;">
                                     {{ t('generateName') }}
                                 </n-button>
                                 <n-input-group>
@@ -299,14 +299,14 @@ onMounted(async () => {
                                     </div>
                                 </n-form-item-row>
                                 <Turnstile v-model:value="cfToken" />
-                                <n-button type="primary" block secondary strong size="small" @click="newEmail" :loading="loading" :disabled="subdomainMode === 'custom' && !customSubdomain.trim()">
+                                <n-button type="primary" block secondary strong size="medium" @click="newEmail" :loading="loading" :disabled="subdomainMode === 'custom' && !customSubdomain.trim()">
                                     <template #icon><n-icon :component="NewLabelOutlined" /></template>
                                     {{ t('getNewEmail') }}
                                 </n-button>
                                 <div v-if="openSettings.enableRedeemCode" class="redeem-entry-section">
                                     <n-divider />
                                     <n-text type="info" class="redeem-entry-tip">{{ t('redeemEntryTip') }}</n-text>
-                                    <n-button data-testid="redeem-entry-register" block secondary strong size="small" @click="openRedeemPage">
+                                    <n-button data-testid="redeem-entry-register" block secondary strong size="medium" @click="openRedeemPage">
                                         <template #icon><n-icon :component="RedeemOutlined" /></template>
                                         {{ t('useRedeemCode') }}
                                     </n-button>
@@ -327,28 +327,29 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-/* --- Черный фон на весь экран --- */
+/* --- Черный фон на весь экран (без ограничений сетки) --- */
 .login-layout {
     position: relative;
-    width: 100%;
+    width: 100vw;
     min-height: 85vh;
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: #0a0a0a; 
     padding: 20px 0;
+    overflow: hidden;
 }
 
 /* =========================================
-   КАРТОЧКА (Высоту диктует картинка)
+   КАРТОЧКА (Размер как на скриншоте — 65% ширины)
    ========================================= */
 
 .main-card {
     position: relative;
-    /* УВЕЛИЧИЛИ РАЗМЕР КАРТОЧКИ (было 65vw, стало 95vw) */
-    width: 95vw; 
+    /* Установили 65% ширины экрана, чтобы были черные края */
+    width: 65vw; 
     min-width: 600px; 
-    max-width: 1400px; 
+    max-width: 1100px; 
     display: flex;
     justify-content: center;
     border-radius: 12px;
@@ -356,8 +357,7 @@ onMounted(async () => {
 
 .bg-image {
     width: 100%;
-    height: auto; /* Картинка сама решает свою высоту */
-    /* Убрали max-height и object-fit, чтобы не было сплющивания */
+    height: auto; /* Сохраняем оригинальные пропорции */
     display: block;
     border-radius: 12px;
     z-index: 1;
@@ -402,7 +402,7 @@ onMounted(async () => {
    ========================================= */
 .welcome-banner {
     position: absolute;
-    top: 12%; /* Слегка подняли, так как картинка стала больше */
+    top: 12%; 
     left: 50%;
     transform: translateX(-50%);
     z-index: 10;
@@ -415,7 +415,7 @@ onMounted(async () => {
 
 .welcome-text {
     font-family: 'Playfair Display', 'Times New Roman', serif;
-    font-size: 3.5rem; /* Увеличили шрифт под размер картинки */
+    font-size: 3.5rem; 
     font-weight: 900;
     margin: 0;
     color: #ffffff;
@@ -475,7 +475,7 @@ onMounted(async () => {
     transform: translate(-50%, -50%);
     z-index: 10;
     
-    width: 320px; /* Чуть шире, так как картинка стала огромной */
+    width: 320px; 
     background-color: rgba(10, 12, 10, 0.85); 
     backdrop-filter: blur(15px); 
     padding: 20px 15px; 
