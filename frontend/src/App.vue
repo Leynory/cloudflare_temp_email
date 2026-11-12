@@ -30,6 +30,7 @@ const showSideMargin = computed(() => !isMobile.value && useSideMargin.value);
 const showAd = computed(() => !isMobile.value && adClient && adSlot);
 const gridMaxCols = computed(() => showAd.value ? 8 : 12);
 
+// Надежная проверка на страницу входа
 const isLoginPage = computed(() => {
     const path = route.path.toLowerCase();
     return path === '/' || path === '' || path.includes('login') || path.includes('index');
@@ -98,39 +99,41 @@ onMounted(async () => {
       <n-notification-provider container-style="margin-top: 60px;">
         <n-message-provider container-style="margin-top: 20px;">
           
-          <Header />
-
-          <!-- Если это страница входа, рендерим её на всю ширину без сетки -->
-          <div v-if="isLoginPage" style="width: 100%; display: flex; justify-content: center; background-color: #0a0a0a;">
+          <!-- СТРАНИЦА ВХОДА: Рендерим просто компонент, БЕЗ сетки и лишних оберток -->
+          <div v-if="isLoginPage" style="width: 100%; display: flex; flex-direction: column;">
+            <Header />
             <router-view></router-view>
           </div>
 
-          <!-- Для остальных страниц используем старую сетку -->
-          <n-grid v-else x-gap="12" :cols="gridMaxCols">
-            <n-gi v-if="showSideMargin" span="1">
-              <div class="side" v-if="showAd">
-                <ins class="adsbygoogle" style="display:block" :data-ad-client="adClient" :data-ad-slot="adSlot"
-                  data-ad-format="auto" data-full-width-responsive="true"></ins>
-              </div>
-            </n-gi>
-            <n-gi :span="!showSideMargin ? gridMaxCols : (gridMaxCols - 2)">
-              <div class="main">
-                <n-space vertical>
-                  <n-layout style="min-height: 80vh; background-color: transparent;">
-                    <router-view></router-view>
-                  </n-layout>
-                </n-space>
-              </div>
-            </n-gi>
-            <n-gi v-if="showSideMargin" span="1">
-              <div class="side" v-if="showAd">
-                <ins class="adsbygoogle" style="display:block" :data-ad-client="adClient" :data-ad-slot="adSlot"
-                  data-ad-format="auto" data-full-width-responsive="true"></ins>
-              </div>
-            </n-gi>
-          </n-grid>
+          <!-- ОСТАЛЬНЫЕ СТРАНИЦЫ: Со стандартной сеткой и футером -->
+          <div v-else>
+            <Header />
+            <n-grid x-gap="12" :cols="gridMaxCols">
+              <n-gi v-if="showSideMargin" span="1">
+                <div class="side" v-if="showAd">
+                  <ins class="adsbygoogle" style="display:block" :data-ad-client="adClient" :data-ad-slot="adSlot"
+                    data-ad-format="auto" data-full-width-responsive="true"></ins>
+                </div>
+              </n-gi>
+              <n-gi :span="!showSideMargin ? gridMaxCols : (gridMaxCols - 2)">
+                <div class="main">
+                  <n-space vertical>
+                    <n-layout style="min-height: 80vh; background-color: transparent;">
+                      <router-view></router-view>
+                    </n-layout>
+                  </n-space>
+                </div>
+              </n-gi>
+              <n-gi v-if="showSideMargin" span="1">
+                <div class="side" v-if="showAd">
+                  <ins class="adsbygoogle" style="display:block" :data-ad-client="adClient" :data-ad-slot="adSlot"
+                    data-ad-format="auto" data-full-width-responsive="true"></ins>
+                </div>
+              </n-gi>
+            </n-grid>
+            <Footer />
+          </div>
 
-          <Footer />
           <n-back-top />
         </n-message-provider>
       </n-notification-provider>
@@ -143,6 +146,8 @@ body {
   background-color: #0f0f13;
   margin: 0;
   padding: 0;
+  /* ВАЖНО: предотвращает появление горизонтального скролла от 100vw в Login.vue */
+  overflow-x: hidden; 
 }
 .n-switch { margin-left: 10px; margin-right: 10px; }
 @media (hover: none) and (pointer: coarse) and (max-width: 1024px) {
