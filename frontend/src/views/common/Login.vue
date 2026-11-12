@@ -194,7 +194,7 @@ onMounted(async () => {
         <div class="glow-sphere sphere-1"></div>
         <div class="glow-sphere sphere-2"></div>
 
-        <!-- Картинка с C.C. -->
+        <!-- Картинка с C.C. (теперь на весь экран) -->
         <img :src="bgImage" class="bg-image" alt="Background" />
 
         <!-- Контент поверх фона -->
@@ -347,7 +347,7 @@ onMounted(async () => {
     margin-right: -50vw;
     min-height: 100vh;
     
-    /* УЛУЧШЕННЫЙ ФОН: Глубокий черный с легким радиальным свечением в центре */
+    /* Глубокий черный фон с легким радиальным свечением */
     background-color: #050508; 
     background-image: radial-gradient(circle at center, #11181a 0%, #050508 70%);
     overflow: hidden;
@@ -360,18 +360,14 @@ onMounted(async () => {
 .cyber-grid {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    
-    /* Сделали сетку чуть ярче (0.06) и крупнее (50px) */
     background-image: 
         linear-gradient(rgba(0, 255, 136, 0.06) 1px, transparent 1px),
         linear-gradient(90deg, rgba(0, 255, 136, 0.06) 1px, transparent 1px);
     background-size: 50px 50px;
     
-    /* МАСКА: Скрываем сетку в центре, чтобы она не мешала картинке, 
-       и делаем её видимой только по краям */
+    /* Маска скрывает сетку в центре, оставляя её по краям */
     mask-image: radial-gradient(circle at center, transparent 30%, black 80%);
     -webkit-mask-image: radial-gradient(circle at center, transparent 30%, black 80%);
-    
     z-index: 0;
 }
 
@@ -394,16 +390,17 @@ onMounted(async () => {
     bottom: 5%; right: 10%;
 }
 
-/* --- КАРТИНКА С C.C. --- */
+/* --- КАРТИНКА С C.C. (АДАПТИВНАЯ ДЛЯ ЛЮБЫХ ЭКРАНОВ) --- */
 .bg-image {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     
-    width: 85vw; 
-    max-width: 1600px;
-    height: 85vh;
+    /* Растягиваем на весь экран */
+    width: 100vw; 
+    height: 100vh;
+    /* Contain сохраняет пропорции, даже на ультрашироких мониторах не обрезает C.C. */
     object-fit: contain; 
     
     z-index: 2;
@@ -521,7 +518,7 @@ onMounted(async () => {
     .login-form-wrapper { width: 90%; max-width: 300px; }
     .welcome-text { font-size: 2.5rem; letter-spacing: -1px; }
     .lines { width: 120px; }
-    .bg-image { width: 120vw; }
+    .bg-image { width: 150vw; object-fit: cover; } /* На телефонах чуть обрезаем края для заполнения */
 }
 
 /* --- Твои изначальные стили --- */
