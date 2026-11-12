@@ -189,7 +189,7 @@ onMounted(async () => {
 <template>
     <div class="login-layout">
         
-        <!-- Фоновые слои -->
+        <!-- Фоновые слои (Заполняют пустые края) -->
         <div class="ambient-bg" :style="{ backgroundImage: `url(${bgImage})` }"></div>
         <div class="glow-sphere sphere-1"></div>
         <div class="glow-sphere sphere-2"></div>
@@ -198,140 +198,140 @@ onMounted(async () => {
         <!-- Центральный блок -->
         <div class="center-stage">
             
+            <!-- Карточка (размер которой задает картинка) -->
             <div class="main-card">
-                <!-- Картинка (теперь задает высоту) -->
+                
+                <!-- Картинка с C.C. -->
                 <img :src="bgImage" class="bg-image" alt="Background" />
                 
                 <!-- Переливающаяся рамка -->
                 <div class="neon-border"></div>
 
-                <!-- Контент поверх -->
-                <div class="content-overlay">
-                    <div class="welcome-banner">
-                        <div class="lines top-lines"></div>
-                        <h1 class="welcome-text">
-                            <span class="welcome-w">W</span>
-                            <span class="welcome-el">EL</span>
-                            <span class="welcome-c">C</span>
-                            <span class="welcome-o">O</span>
-                            <span class="welcome-me">ME</span>
-                        </h1>
-                        <div class="swoosh"></div>
-                        <div class="lines bottom-lines"></div>
-                        <p class="welcome-subtext">GACHA SUKI MAIL</p>
-                    </div>
+                <!-- Баннер (абсолютно по центру сверху) -->
+                <div class="welcome-banner">
+                    <div class="lines top-lines"></div>
+                    <h1 class="welcome-text">
+                        <span class="welcome-w">W</span>
+                        <span class="welcome-el">EL</span>
+                        <span class="welcome-c">C</span>
+                        <span class="welcome-o">O</span>
+                        <span class="welcome-me">ME</span>
+                    </h1>
+                    <div class="swoosh"></div>
+                    <div class="lines bottom-lines"></div>
+                    <p class="welcome-subtext">GACHA SUKI MAIL</p>
+                </div>
 
-                    <!-- Форма входа -->
-                    <div class="login-form-wrapper">
-                        <n-alert v-if="userSettings.user_email" :show-icon="false" :bordered="false" closable>
-                            <span>{{ t('bindUserInfo') }}</span>
-                        </n-alert>
-                        
-                        <n-tabs v-if="openSettings.fetched" v-model:value="tabValue" size="medium" justify-content="space-evenly">
-                            <n-tab-pane name="signin" :tab="loginAndBindTag">
-                                <n-form size="medium">
-                                    <div v-if="loginMethod === 'password'">
-                                        <n-form-item-row :label="t('email')" required>
-                                            <n-input v-model:value="loginAddress" />
-                                        </n-form-item-row>
-                                        <n-form-item-row :label="t('password')" required>
-                                            <n-input v-model:value="loginPassword" type="password" show-password-on="click"
-                                                @keyup.enter="login" />
-                                        </n-form-item-row>
-                                    </div>
-                                    <div v-else>
-                                        <n-form-item-row :label="t('credential')" required>
-                                            <n-input v-model:value="credential" type="textarea" :autosize="{ minRows: 2 }" />
-                                        </n-form-item-row>
-                                    </div>
+                <!-- Форма входа (абсолютно по центру) -->
+                <div class="login-form-wrapper">
+                    <n-alert v-if="userSettings.user_email" :show-icon="false" :bordered="false" closable>
+                        <span>{{ t('bindUserInfo') }}</span>
+                    </n-alert>
+                    
+                    <n-tabs v-if="openSettings.fetched" v-model:value="tabValue" size="medium" justify-content="space-evenly">
+                        <n-tab-pane name="signin" :tab="loginAndBindTag">
+                            <n-form size="medium">
+                                <div v-if="loginMethod === 'password'">
+                                    <n-form-item-row :label="t('email')" required>
+                                        <n-input v-model:value="loginAddress" />
+                                    </n-form-item-row>
+                                    <n-form-item-row :label="t('password')" required>
+                                        <n-input v-model:value="loginPassword" type="password" show-password-on="click"
+                                            @keyup.enter="login" />
+                                    </n-form-item-row>
+                                </div>
+                                <div v-else>
+                                    <n-form-item-row :label="t('credential')" required>
+                                        <n-input v-model:value="credential" type="textarea" :autosize="{ minRows: 2 }" />
+                                    </n-form-item-row>
+                                </div>
 
-                                    <Turnstile ref="loginTurnstileRef" v-if="openSettings.enableGlobalTurnstileCheck" v-model:value="loginCfToken" />
+                                <Turnstile ref="loginTurnstileRef" v-if="openSettings.enableGlobalTurnstileCheck" v-model:value="loginCfToken" />
 
-                                    <div class="switch-login-button">
-                                        <n-button v-if="openSettings?.enableAddressPassword && !openSettings.addressPasswordLoginOnly"
-                                            @click="loginMethod === 'password' ? loginMethod = 'credential' : loginMethod = 'password'"
-                                            type="info" quaternary size="small">
-                                            {{ loginMethod === 'password' ? t('credentialLogin') : t('passwordLogin') }}
-                                        </n-button>
-                                    </div>
-
-                                    <n-button @click="login" :loading="loading" type="primary" block secondary strong size="medium">
-                                        <template #icon><n-icon :component="EmailOutlined" /></template>
-                                        {{ loginAndBindTag }}
+                                <div class="switch-login-button">
+                                    <n-button v-if="openSettings?.enableAddressPassword && !openSettings.addressPasswordLoginOnly"
+                                        @click="loginMethod === 'password' ? loginMethod = 'credential' : loginMethod = 'password'"
+                                        type="info" quaternary size="small">
+                                        {{ loginMethod === 'password' ? t('credentialLogin') : t('passwordLogin') }}
                                     </n-button>
-                                    <n-button v-if="showNewAddressTab" @click="tabValue = 'register'" block secondary strong size="medium">
+                                </div>
+
+                                <n-button @click="login" :loading="loading" type="primary" block secondary strong size="medium">
+                                    <template #icon><n-icon :component="EmailOutlined" /></template>
+                                    {{ loginAndBindTag }}
+                                </n-button>
+                                <n-button v-if="showNewAddressTab" @click="tabValue = 'register'" block secondary strong size="medium">
+                                    <template #icon><n-icon :component="NewLabelOutlined" /></template>
+                                    {{ t('getNewEmail') }}
+                                </n-button>
+                                <div v-if="openSettings.enableRedeemCode" class="redeem-entry-section">
+                                    <n-divider />
+                                    <n-text type="info" class="redeem-entry-tip">{{ t('redeemEntryTip') }}</n-text>
+                                    <n-button data-testid="redeem-entry" block secondary strong size="medium" @click="openRedeemPage">
+                                        <template #icon><n-icon :component="RedeemOutlined" /></template>
+                                        {{ t('useRedeemCode') }}
+                                    </n-button>
+                                </div>
+                            </n-form>
+                        </n-tab-pane>
+                        
+                        <n-tab-pane v-if="showNewAddressTab" name="register" :tab="t('getNewEmail')">
+                            <n-spin :show="generateNameLoading">
+                                <n-form size="medium">
+                                    <span>
+                                        <p v-if="!openSettings.disableCustomAddressName">{{ t("getNewEmailTip1") + addressRegex.source }}</p>
+                                        <p v-if="!openSettings.disableCustomAddressName">{{ t("getNewEmailTip2") }}</p>
+                                        <p>{{ t("getNewEmailTip3") }}</p>
+                                    </span>
+                                    <n-button v-if="!openSettings.disableCustomAddressName" @click="generateName" style="margin-bottom: 10px;">
+                                        {{ t('generateName') }}
+                                    </n-button>
+                                    <n-input-group>
+                                        <n-input-group-label v-if="addressPrefix">{{ addressPrefix }}</n-input-group-label>
+                                        <n-input v-if="!openSettings.disableCustomAddressName" v-model:value="emailName" show-count :minlength="openSettings.minAddressLen" :maxlength="openSettings.maxAddressLen" />
+                                        <n-input v-else :value="t('autoGeneratedName')" disabled />
+                                        <n-input-group-label>@</n-input-group-label>
+                                        <n-select v-model:value="emailDomain" :consistent-menu-width="false" :options="domainsOptions" />
+                                    </n-input-group>
+                                    <n-form-item-row v-if="canUseRandomSubdomain">
+                                        <div style="width: 100%;">
+                                            <n-radio-group v-model:value="subdomainMode">
+                                                <n-space vertical>
+                                                    <n-radio value="normal">{{ t('normalSubdomain') }}</n-radio>
+                                                    <n-radio value="random">{{ t('enableRandomSubdomain') }}</n-radio>
+                                                    <n-radio value="custom">{{ t('enableCustomSubdomain') }}</n-radio>
+                                                </n-space>
+                                            </n-radio-group>
+                                            <p v-if="subdomainMode === 'random'" style="margin: 8px 0 0; opacity: 0.75;">{{ t('randomSubdomainTip') }}</p>
+                                            <n-input-group v-if="subdomainMode === 'custom'" style="margin-top: 8px;">
+                                                <n-input v-model:value="customSubdomain" />
+                                                <n-input-group-label>.{{ emailDomain }}</n-input-group-label>
+                                            </n-input-group>
+                                        </div>
+                                    </n-form-item-row>
+                                    <Turnstile v-model:value="cfToken" />
+                                    <n-button type="primary" block secondary strong size="medium" @click="newEmail" :loading="loading" :disabled="subdomainMode === 'custom' && !customSubdomain.trim()">
                                         <template #icon><n-icon :component="NewLabelOutlined" /></template>
                                         {{ t('getNewEmail') }}
                                     </n-button>
                                     <div v-if="openSettings.enableRedeemCode" class="redeem-entry-section">
                                         <n-divider />
                                         <n-text type="info" class="redeem-entry-tip">{{ t('redeemEntryTip') }}</n-text>
-                                        <n-button data-testid="redeem-entry" block secondary strong size="medium" @click="openRedeemPage">
+                                        <n-button data-testid="redeem-entry-register" block secondary strong size="medium" @click="openRedeemPage">
                                             <template #icon><n-icon :component="RedeemOutlined" /></template>
                                             {{ t('useRedeemCode') }}
                                         </n-button>
                                     </div>
                                 </n-form>
-                            </n-tab-pane>
-                            
-                            <n-tab-pane v-if="showNewAddressTab" name="register" :tab="t('getNewEmail')">
-                                <n-spin :show="generateNameLoading">
-                                    <n-form size="medium">
-                                        <span>
-                                            <p v-if="!openSettings.disableCustomAddressName">{{ t("getNewEmailTip1") + addressRegex.source }}</p>
-                                            <p v-if="!openSettings.disableCustomAddressName">{{ t("getNewEmailTip2") }}</p>
-                                            <p>{{ t("getNewEmailTip3") }}</p>
-                                        </span>
-                                        <n-button v-if="!openSettings.disableCustomAddressName" @click="generateName" style="margin-bottom: 10px;">
-                                            {{ t('generateName') }}
-                                        </n-button>
-                                        <n-input-group>
-                                            <n-input-group-label v-if="addressPrefix">{{ addressPrefix }}</n-input-group-label>
-                                            <n-input v-if="!openSettings.disableCustomAddressName" v-model:value="emailName" show-count :minlength="openSettings.minAddressLen" :maxlength="openSettings.maxAddressLen" />
-                                            <n-input v-else :value="t('autoGeneratedName')" disabled />
-                                            <n-input-group-label>@</n-input-group-label>
-                                            <n-select v-model:value="emailDomain" :consistent-menu-width="false" :options="domainsOptions" />
-                                        </n-input-group>
-                                        <n-form-item-row v-if="canUseRandomSubdomain">
-                                            <div style="width: 100%;">
-                                                <n-radio-group v-model:value="subdomainMode">
-                                                    <n-space vertical>
-                                                        <n-radio value="normal">{{ t('normalSubdomain') }}</n-radio>
-                                                        <n-radio value="random">{{ t('enableRandomSubdomain') }}</n-radio>
-                                                        <n-radio value="custom">{{ t('enableCustomSubdomain') }}</n-radio>
-                                                    </n-space>
-                                                </n-radio-group>
-                                                <p v-if="subdomainMode === 'random'" style="margin: 8px 0 0; opacity: 0.75;">{{ t('randomSubdomainTip') }}</p>
-                                                <n-input-group v-if="subdomainMode === 'custom'" style="margin-top: 8px;">
-                                                    <n-input v-model:value="customSubdomain" />
-                                                    <n-input-group-label>.{{ emailDomain }}</n-input-group-label>
-                                                </n-input-group>
-                                            </div>
-                                        </n-form-item-row>
-                                        <Turnstile v-model:value="cfToken" />
-                                        <n-button type="primary" block secondary strong size="medium" @click="newEmail" :loading="loading" :disabled="subdomainMode === 'custom' && !customSubdomain.trim()">
-                                            <template #icon><n-icon :component="NewLabelOutlined" /></template>
-                                            {{ t('getNewEmail') }}
-                                        </n-button>
-                                        <div v-if="openSettings.enableRedeemCode" class="redeem-entry-section">
-                                            <n-divider />
-                                            <n-text type="info" class="redeem-entry-tip">{{ t('redeemEntryTip') }}</n-text>
-                                            <n-button data-testid="redeem-entry-register" block secondary strong size="medium" @click="openRedeemPage">
-                                                <template #icon><n-icon :component="RedeemOutlined" /></template>
-                                                {{ t('useRedeemCode') }}
-                                            </n-button>
-                                        </div>
-                                    </n-form>
-                                </n-spin>
-                            </n-tab-pane>
-                            <n-tab-pane name="help" :tab="t('help')">
-                                <n-alert :show-icon="false" :bordered="false">
-                                    <span>{{ t('pleaseGetNewEmail') }}</span>
-                                </n-alert>
-                                <AdminContact />
-                            </n-tab-pane>
-                        </n-tabs>
-                    </div>
+                            </n-spin>
+                        </n-tab-pane>
+                        <n-tab-pane name="help" :tab="t('help')">
+                            <n-alert :show-icon="false" :bordered="false">
+                                <span>{{ t('pleaseGetNewEmail') }}</span>
+                            </n-alert>
+                            <AdminContact />
+                        </n-tab-pane>
+                    </n-tabs>
                 </div>
             </div>
         </div>
@@ -339,7 +339,7 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-/* --- Контейнер --- */
+/* --- Общий контейнер --- */
 .login-layout {
     position: relative;
     width: 100%;
@@ -351,7 +351,7 @@ onMounted(async () => {
 }
 
 /* =========================================
-   ФОНОВЫЕ СЛОИ
+   ФОНОВЫЕ СЛОИ (Возвращаем красоту по краям)
    ========================================= */
 
 .ambient-bg {
@@ -393,7 +393,7 @@ onMounted(async () => {
 }
 
 /* =========================================
-   ЦЕНТРАЛЬНАЯ КАРТОЧКА
+   ЦЕНТРАЛЬНАЯ КАРТОЧКА (Строго по картинке)
    ========================================= */
 
 .center-stage {
@@ -403,25 +403,25 @@ onMounted(async () => {
     justify-content: center;
     align-items: center;
     width: 100%;
-    padding: 40px 20px; /* Отступы по бокам */
+    padding: 40px 20px;
 }
 
 .main-card {
     position: relative;
-    width: 85vw; /* Большой размер */
-    max-width: 1300px;
+    /* 85vw оставляет красивые края по бокам */
+    width: 85vw; 
+    max-width: 1100px;
     display: flex;
     justify-content: center;
-    align-items: center;
 }
 
-/* Картинка теперь задает высоту всей карточки */
+/* Картинка задает высоту и пропорции всей карточки */
 .bg-image {
     width: 100%;
-    height: auto; /* Сохраняем пропорции */
+    height: auto; 
+    display: block;
     border-radius: 12px;
     z-index: 1;
-    display: block;
 }
 
 /* =========================================
@@ -434,7 +434,6 @@ onMounted(async () => {
     pointer-events: none;
     z-index: 2;
     
-    /* Диагональный градиент из темных оттенков */
     background: linear-gradient(
         135deg, 
         #001a09 0%, 
@@ -443,9 +442,7 @@ onMounted(async () => {
         #008f33 75%, 
         #001a09 100%
     );
-    background-size: 300% 300%; /* Растягиваем для движения */
-    
-    /* Анимация, которая гонит градиент от левого верхнего к правому нижнему */
+    background-size: 300% 300%; 
     animation: travel 3s linear infinite;
     
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -453,7 +450,6 @@ onMounted(async () => {
     mask-composite: exclude;
     
     padding: 4px; 
-    
     filter: drop-shadow(0 0 8px rgba(0, 143, 51, 0.5));
 }
 
@@ -463,30 +459,21 @@ onMounted(async () => {
 }
 
 /* =========================================
-   КОНТЕНТ ПОВЕРХ (Центрируется абсолютно)
+   БАННЕР И ФОРМА (ПРИВЯЗАНЫ К ЦЕНТРУ)
    ========================================= */
 
-.content-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-/* --- БАННЕР (Сдвинут выше центра формы) --- */
+/* --- Баннер --- */
 .welcome-banner {
     position: absolute;
-    top: 15%; /* Поднимаем текст вверх картинки */
+    top: 12%; /* Поднимаем над формой */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
+    pointer-events: none; /* Чтобы не перекрывать клики */
 }
 
 .welcome-text {
@@ -541,11 +528,15 @@ onMounted(async () => {
     margin-top: 8px;
 }
 
-/* --- ФОРМА ВХОДА --- */
+/* --- Форма входа --- */
 .login-form-wrapper {
-    width: 340px; /* Оптимальная ширина, чтобы не вылезать за рамки картинки */
-    margin-top: 40px; /* Отталкиваем форму вниз от баннера */
-    flex-shrink: 0; 
+    position: absolute;
+    top: 55%; /* Сдвигаем чуть ниже центра, чтобы освободить место баннеру */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    
+    width: 340px; 
     background-color: rgba(10, 12, 10, 0.9); 
     backdrop-filter: blur(15px); 
     padding: 25px 20px; 
@@ -555,11 +546,18 @@ onMounted(async () => {
         inset 0 0 0 1px rgba(0, 143, 51, 0.3); 
 }
 
-/* --- Мобильная версия --- */
+/* --- Мобильная версия (если экран слишком узкий) --- */
 @media (max-width: 850px) {
-    .login-form-wrapper { width: 90%; max-width: 340px; margin-top: 20px; padding: 15px; }
+    .login-form-wrapper { 
+        width: 90%; 
+        max-width: 340px; 
+        padding: 15px; 
+        top: 58%; /* На мобилках опускаем форму чуть ниже */
+    }
+    .welcome-banner {
+        top: 8%;
+    }
     .welcome-text { font-size: 2.5rem; letter-spacing: -1px; }
-    .welcome-banner { top: 10%; }
     .swoosh { display: none; }
     .lines { width: 120px; }
     .main-card { width: 95vw; }
