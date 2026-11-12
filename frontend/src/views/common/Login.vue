@@ -194,7 +194,7 @@ onMounted(async () => {
         <div class="glow-sphere sphere-1"></div>
         <div class="glow-sphere sphere-2"></div>
 
-        <!-- НИЗКАЯ И ШИРОКАЯ РАМКА -->
+        <!-- РАМКА, ПОДОГНАННАЯ ПОД C.C. -->
         <div class="neon-frame">
             
             <!-- C.C. Слева -->
@@ -397,14 +397,14 @@ onMounted(async () => {
 }
 
 /* =========================================
-   РАМКА
+   РАМКА (ВЫСОТА ПОДОГНАНА ПОД C.C. + ВЕРХНЯЯ ЛИНИЯ)
    ========================================= */
 .neon-frame {
     position: relative;
     width: 85vw; 
     max-width: 1300px; 
-    height: 70vh; 
-    max-height: 700px; 
+    /* 70vh — это высота C.C., 45px — высота верхней полоски */
+    height: calc(70vh + 45px); 
     background-color: rgba(5, 10, 8, 0.5); 
     z-index: 5;
     display: flex;
@@ -413,12 +413,12 @@ onMounted(async () => {
 }
 
 /* =========================================
-   C.C. (УВЕЛИЧЕНЫ)
+   C.C. (ЗАДАЮТ РАЗМЕР)
    ========================================= */
 .cc-character {
     position: absolute;
-    bottom: 0; /* Прижали к низу */
-    height: 95%; /* Увеличили с 80% до 95% */
+    bottom: 0; 
+    height: 70vh; /* Фиксированная высота для персонажей */
     width: auto; 
     object-fit: contain;
     object-position: bottom;
@@ -568,8 +568,9 @@ onMounted(async () => {
     .login-form-wrapper { width: 90%; max-width: 340px; }
     .welcome-text { font-size: 2.2rem; letter-spacing: -1px; }
     .lines { width: 120px; }
-    .cc-character { height: 80%; opacity: 0.15; bottom: 0; } 
-    .neon-frame { width: 95vw; height: 80vh; }
+    .cc-character { height: 60vh; opacity: 0.15; } 
+    /* На мобилках высота рамки тоже подстраивается под C.C. */
+    .neon-frame { width: 95vw; height: calc(60vh + 45px); }
 }
 
 /* --- Твои изначальные стили --- */
