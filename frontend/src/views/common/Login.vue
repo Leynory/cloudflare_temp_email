@@ -194,7 +194,7 @@ onMounted(async () => {
         <div class="glow-sphere sphere-1"></div>
         <div class="glow-sphere sphere-2"></div>
 
-        <!-- УВЕЛИЧЕННАЯ РАМКА -->
+        <!-- ПРОПОРЦИОНАЛЬНАЯ РАМКА -->
         <div class="neon-frame">
             
             <!-- C.C. Слева -->
@@ -397,30 +397,30 @@ onMounted(async () => {
 }
 
 /* =========================================
-   УВЕЛИЧЕННАЯ РАМКА
+   РАМКА (УМЕНЬШЕНА И СБАЛАНСИРОВАНА)
    ========================================= */
 .neon-frame {
     position: relative;
-    width: 85vw; 
-    max-width: 1300px; 
-    height: 80vh; 
+    width: 80vw; /* Уменьшили с 85vw */
+    max-width: 1200px; /* Уменьшили с 1300px */
+    height: 75vh; /* Уменьшили с 80vh */
     background-color: rgba(5, 10, 8, 0.5); 
     z-index: 5;
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* ВОТ ЭТО НЕ ДАСТ C.C. ВЫЛЕЗТИ ЗА РАМКУ */
+    overflow: hidden; 
 }
 
 /* =========================================
-   C.C. (СТРОГО ВНУТРИ РАМКИ)
+   C.C. (ПОДОГНАНЫ ПОД НОВУЮ РАМКУ)
    ========================================= */
 .cc-character {
     position: absolute;
-    bottom: 0; /* Прижали к самому низу */
-    height: calc(100% - 45px); /* Занимают всю высоту, кроме верхней линии */
-    width: 45%; /* Ограничили ширину, чтобы не залезали на форму */
+    bottom: 0; 
+    height: 90%; /* Теперь они занимают 90% от высоты новой рамки */
+    width: 35%; /* Ограничиваем ширину, чтобы не залезть на центр */
     object-fit: contain;
-    object-position: bottom;
+    object-position: bottom left;
     z-index: 2; 
     pointer-events: none;
 }
@@ -432,6 +432,7 @@ onMounted(async () => {
 .cc-character.right {
     right: 0; 
     transform: scaleX(-1); 
+    object-position: bottom right;
 }
 
 /* =========================================
@@ -567,7 +568,7 @@ onMounted(async () => {
     .login-form-wrapper { width: 90%; max-width: 340px; }
     .welcome-text { font-size: 2.2rem; letter-spacing: -1px; }
     .lines { width: 120px; }
-    .cc-character { height: 60%; opacity: 0.2; width: 30%; } 
+    .cc-character { height: 60%; width: 30%; opacity: 0.15; } 
     .neon-frame { width: 95vw; height: 85vh; }
 }
 
