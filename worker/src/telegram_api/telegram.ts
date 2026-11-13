@@ -1,4 +1,3 @@
-
 import { Context } from "hono";
 import { Telegraf, Context as TgContext, Markup } from "telegraf";
 import { callbackQuery } from "telegraf/filters";
@@ -15,6 +14,61 @@ import i18n from "../i18n";
 import { LocaleMessages } from "../i18n/type";
 import type { ExtractResult, RawMailRow } from "../models";
 
+// === НАСТРОЙКА ССЫЛОК НА КАРТИНКИ ===
+// Убедись, что эти файлы лежат у тебя на сайте (например, в папке public) 
+// и имеют правильное расширение (.jpg или .png)
+const BASE_URL = "https://gachadevsuki.com";
+const TG_IMAGES = {
+    start: `${BASE_URL}/tgassets1.jpg`,
+    new: `${BASE_URL}/tgassets2.jpg`,
+    address: `${BASE_URL}/tgassets3.jpg`,
+    bind: `${BASE_URL}/tgassets4.jpg`,
+    unbind: `${BASE_URL}/tgassets5.jpg`,
+    delete: `${BASE_URL}/tgassets6.jpg`,
+    mails: `${BASE_URL}/tgassets7.jpg`,
+    cleaninvalidaddress: `${BASE_URL}/tgassets8.jpg`,
+    lang: `${BASE_URL}/tgassets9.jpg`,
+};
+
+// Bilingual command descriptions (RU/EN)
+const COMMANDS = [
+    {
+        command: "start",
+        description: "Начать | Get started"
+    },
+    {
+        command: "new",
+        description: "Новый ящик, /new <name>@<domain> | Create address, /new <name>@<domain>"
+    },
+    {
+        command: "address",
+        description: "Список ящиков | View address list"
+    },
+    {
+        command: "bind",
+        description: "Привязать ящик, /bind <credential> | Bind address, /bind <credential>"
+    },
+    {
+        command: "unbind",
+        description: "Отвязать ящик, /unbind <address> | Unbind address, /unbind <address>"
+    },
+    {
+        command: "delete",
+        description: "Удалить ящик, /delete <address> | Delete address, /delete <address>"
+    },
+    {
+        command: "mails",
+        description: "Почта, /mails <address> | View mails, /mails <address>"
+    },
+    {
+        command: "cleaninvalidaddress",
+        description: "Очистить недействительные | Clean invalid addresses"
+    },
+    {
+        command: "lang",
+        description: "Язык /lang <ru|en> | Set language /lang <ru|en>"
+    },
+]
 
 // Helper to get messages by userId
 const getTgMessages = async (
@@ -22,58 +76,23 @@ const getTgMessages = async (
     ctx?: TgContext,
     userId?: string | null
 ): Promise<LocaleMessages> => {
-    // Check if user language config is enabled (default false)
+    // Если переключение языка выключено, всегда используем русский
     if (!getBooleanValue(c.env.TG_ALLOW_USER_LANG)) {
-        return i18n.getMessages(c.env.DEFAULT_LANG || 'zh');
+        return i18n.getMessages(c.env.DEFAULT_LANG === 'en' ? 'en' : 'ru');
     }
 
     const uid = userId || ctx?.message?.from?.id?.toString() || ctx?.callbackQuery?.from?.id?.toString();
     if (uid) {
         const savedLang = await c.env.KV.get(`${CONSTANTS.TG_KV_PREFIX}:lang:${uid}`);
-        if (savedLang) { return i18n.getMessages(savedLang); }
+        // Разрешаем только ru и en
+        if (savedLang === 'ru' || savedLang === 'en') { 
+            return i18n.getMessages(savedLang); 
+        }
     }
-    return i18n.getMessages(c.env.DEFAULT_LANG || 'zh');
+    
+    // По умолчанию ставим русский (или английский, если так указано в конфиге)
+    return i18n.getMessages(c.env.DEFAULT_LANG === 'en' ? 'en' : 'ru');
 };
-
-// Bilingual command descriptions with full usage instructions
-const COMMANDS = [
-    {
-        command: "start",
-        description: "开始使用 | Get started"
-    },
-    {
-        command: "new",
-        description: "新建邮箱, /new <name>@<domain>, name[a-z0-9]有效, 为空随机生成, @domain可选 | Create address, /new <name>@<domain>, name[a-z0-9] valid, empty=random, @domain optional"
-    },
-    {
-        command: "address",
-        description: "查看邮箱地址列表 | View address list"
-    },
-    {
-        command: "bind",
-        description: "绑定邮箱, /bind <邮箱地址凭证> | Bind address, /bind <credential>"
-    },
-    {
-        command: "unbind",
-        description: "解绑邮箱, /unbind <邮箱地址> | Unbind address, /unbind <address>"
-    },
-    {
-        command: "delete",
-        description: "删除邮箱, /delete <邮箱地址> | Delete address, /delete <address>"
-    },
-    {
-        command: "mails",
-        description: "查看邮件, /mails <邮箱地址>, 不输入地址默认第一个 | View mails, /mails <address>, default first if empty"
-    },
-    {
-        command: "cleaninvalidaddress",
-        description: "清理无效地址 | Clean invalid addresses"
-    },
-    {
-        command: "lang",
-        description: "设置语言 /lang <zh|en> | Set language /lang <zh|en>"
-    },
-]
 
 const formatAiExtractForTelegram = (
     msgs: LocaleMessages,
@@ -144,7 +163,7 @@ export function newTelegramBot(c: Context<HonoCustomType>, token: string): Teleg
             return;
         }
 
-        const userId = ctx?.message?.from?.id || ctx.callbackQuery?.message?.chat?.id;
+        const userId = ctx?.message?.from?.id || ctx?.callbackQuery?.message?.chat?.id;
         if (!userId) {
             const msgs = await getTgMessages(c, ctx);
             return await ctx.reply(msgs.TgUnableGetUserInfoMsg);
@@ -170,13 +189,16 @@ export function newTelegramBot(c: Context<HonoCustomType>, token: string): Teleg
         const prefix = trimLower(c.env.PREFIX)
         const domains = getDomains(c);
         const commands = getTelegramCommands(c);
-        return await ctx.reply(
-            `${msgs.TgWelcomeMsg}\n\n`
+        
+        const text = `${msgs.TgWelcomeMsg}\n\n`
             + (prefix ? `${msgs.TgCurrentPrefixMsg} ${prefix}\n` : '')
             + `${msgs.TgCurrentDomainsMsg} ${JSON.stringify(domains)}\n`
             + `${msgs.TgAvailableCommandsMsg}\n`
-            + commands.map(cmd => `/${cmd.command}: ${cmd.description}`).join("\n")
-        );
+            + commands.map(cmd => `/${cmd.command}: ${cmd.description}`).join("\n");
+
+        return await ctx.replyWithPhoto(TG_IMAGES.start, {
+            caption: text
+        });
     });
 
     bot.command("new", async (ctx: TgContext) => {
@@ -189,14 +211,15 @@ export function newTelegramBot(c: Context<HonoCustomType>, token: string): Teleg
             // @ts-ignore
             const address = ctx?.message?.text.slice("/new".length).trim();
             const res = await tgUserNewAddress(c, userId.toString(), address, msgs);
-            return await ctx.reply(`${msgs.TgCreateSuccessMsg}\n`
+            const text = `${msgs.TgCreateSuccessMsg}\n`
                 + `${msgs.TgAddressMsg} ${res.address}\n`
                 + (res.password ? `${msgs.TgPasswordMsg} \`${res.password}\`\n` : '')
-                + `${msgs.TgCredentialMsg} \`${res.jwt}\`\n`,
-                {
-                    parse_mode: "Markdown"
-                }
-            );
+                + `${msgs.TgCredentialMsg} \`${res.jwt}\`\n`;
+
+            return await ctx.replyWithPhoto(TG_IMAGES.new, {
+                caption: text,
+                parse_mode: "Markdown"
+            });
         } catch (e) {
             return await ctx.reply(`${msgs.TgCreateFailedMsg} ${(e as Error).message}`);
         }
@@ -215,9 +238,12 @@ export function newTelegramBot(c: Context<HonoCustomType>, token: string): Teleg
                 return await ctx.reply(msgs.TgPleaseInputCredentialMsg);
             }
             const address = await bindTelegramAddress(c, userId.toString(), jwt, msgs);
-            return await ctx.reply(`${msgs.TgBindSuccessMsg}\n`
-                + `${msgs.TgAddressMsg} ${address}`
-            );
+            const text = `${msgs.TgBindSuccessMsg}\n`
+                + `${msgs.TgAddressMsg} ${address}`;
+                
+            return await ctx.replyWithPhoto(TG_IMAGES.bind, {
+                caption: text
+            });
         }
         catch (e) {
             return await ctx.reply(`${msgs.TgBindFailedMsg} ${(e as Error).message}`);
@@ -237,8 +263,11 @@ export function newTelegramBot(c: Context<HonoCustomType>, token: string): Teleg
                 return await ctx.reply(msgs.TgPleaseInputAddressMsg);
             }
             await unbindTelegramAddress(c, userId.toString(), address);
-            return await ctx.reply(`${msgs.TgUnbindSuccessMsg}\n${msgs.TgAddressMsg} ${address}`
-            );
+            const text = `${msgs.TgUnbindSuccessMsg}\n${msgs.TgAddressMsg} ${address}`;
+            
+            return await ctx.replyWithPhoto(TG_IMAGES.unbind, {
+                caption: text
+            });
         }
         catch (e) {
             return await ctx.reply(`${msgs.TgUnbindFailedMsg} ${(e as Error).message}`);
@@ -258,7 +287,10 @@ export function newTelegramBot(c: Context<HonoCustomType>, token: string): Teleg
                 return await ctx.reply(msgs.TgPleaseInputAddressMsg);
             }
             await deleteTelegramAddress(c, userId.toString(), address, msgs);
-            return await ctx.reply(`${msgs.TgDeleteSuccessMsg} ${address}`);
+            
+            return await ctx.replyWithPhoto(TG_IMAGES.delete, {
+                caption: `${msgs.TgDeleteSuccessMsg} ${address}`
+            });
         } catch (e) {
             return await ctx.reply(`${msgs.TgDeleteFailedMsg} ${(e as Error).message}`);
         }
@@ -273,9 +305,12 @@ export function newTelegramBot(c: Context<HonoCustomType>, token: string): Teleg
         try {
             const jwtList = await c.env.KV.get<string[]>(`${CONSTANTS.TG_KV_PREFIX}:${userId}`, 'json') || [];
             const { addressList } = await jwtListToAddressData(c, jwtList, msgs);
-            return await ctx.reply(`${msgs.TgAddressListMsg}\n\n`
-                + addressList.map(a => `${msgs.TgAddressMsg} ${a}`).join("\n")
-            );
+            const text = `${msgs.TgAddressListMsg}\n\n`
+                + addressList.map(a => `${msgs.TgAddressMsg} ${a}`).join("\n");
+                
+            return await ctx.replyWithPhoto(TG_IMAGES.address, {
+                caption: text
+            });
         } catch (e) {
             return await ctx.reply(`${msgs.TgGetAddressFailedMsg} ${(e as Error).message}`);
         }
@@ -293,10 +328,14 @@ export function newTelegramBot(c: Context<HonoCustomType>, token: string): Teleg
             const newJwtList = jwtList.filter(jwt => !invalidJwtList.includes(jwt));
             await c.env.KV.put(`${CONSTANTS.TG_KV_PREFIX}:${userId}`, JSON.stringify(newJwtList));
             const { addressList } = await jwtListToAddressData(c, newJwtList, msgs);
-            return await ctx.reply(`${msgs.TgCleanSuccessMsg}\n\n`
+            
+            const text = `${msgs.TgCleanSuccessMsg}\n\n`
                 + `${msgs.TgCurrentAddressListMsg}\n\n`
-                + addressList.map(a => `${msgs.TgAddressMsg} ${a}`).join("\n")
-            );
+                + addressList.map(a => `${msgs.TgAddressMsg} ${a}`).join("\n");
+
+            return await ctx.replyWithPhoto(TG_IMAGES.cleaninvalidaddress, {
+                caption: text
+            });
         } catch (e) {
             return await ctx.reply(`${msgs.TgCleanFailedMsg} ${(e as Error).message}`);
         }
@@ -311,25 +350,26 @@ export function newTelegramBot(c: Context<HonoCustomType>, token: string): Teleg
 
         const msgs = await getTgMessages(c, ctx);
 
-        // Check if user language config is enabled
         if (!getBooleanValue(c.env.TG_ALLOW_USER_LANG)) {
             return await ctx.reply(msgs.TgLangFeatureDisabledMsg);
         }
 
         // @ts-ignore
         const lang = ctx?.message?.text.slice("/lang".length).trim().toLowerCase();
-        if (lang === 'zh' || lang === 'en') {
+        if (lang === 'ru' || lang === 'en') {
             await c.env.KV.put(`${CONSTANTS.TG_KV_PREFIX}:lang:${userId}`, lang);
-            return await ctx.reply(`${msgs.TgLangSetSuccessMsg} ${lang === 'zh' ? '中文' : 'English'}`);
+            return await ctx.reply(`${msgs.TgLangSetSuccessMsg} ${lang === 'ru' ? 'Русский' : 'English'}`);
         }
 
         const currentLang = await c.env.KV.get(`${CONSTANTS.TG_KV_PREFIX}:lang:${userId}`);
-        return await ctx.reply(
-            `${msgs.TgCurrentLangMsg} ${currentLang || 'auto'}\n`
+        const text = `${msgs.TgCurrentLangMsg} ${currentLang || 'auto'}\n`
             + `${msgs.TgSelectLangMsg}\n`
-            + `/lang zh - 中文\n`
-            + `/lang en - English`
-        );
+            + `/lang ru - Русский\n`
+            + `/lang en - English`;
+
+        return await ctx.replyWithPhoto(TG_IMAGES.lang, {
+            caption: text
+        });
     });
 
     const queryMail = async (ctx: TgContext, queryAddress: string, mailIndex: number, edit: boolean) => {
@@ -373,26 +413,21 @@ export function newTelegramBot(c: Context<HonoCustomType>, token: string): Teleg
             url.searchParams.set("mail_id", mailId);
             miniAppButtons.push(Markup.button.webApp(msgs.TgViewMailBtnMsg, url.toString()));
         }
+        
+        const keyboard = Markup.inlineKeyboard([
+            Markup.button.callback(msgs.TgPrevBtnMsg, `mail_${queryAddress}_${mailIndex - 1}`, mailIndex <= 0),
+            ...miniAppButtons,
+            Markup.button.callback(msgs.TgNextBtnMsg, `mail_${queryAddress}_${mailIndex + 1}`, !raw),
+        ]);
+
         if (edit) {
-            return await ctx.editMessageText(mail || msgs.TgNoMailMsg,
-                {
-                    ...Markup.inlineKeyboard([
-                        Markup.button.callback(msgs.TgPrevBtnMsg, `mail_${queryAddress}_${mailIndex - 1}`, mailIndex <= 0),
-                        ...miniAppButtons,
-                        Markup.button.callback(msgs.TgNextBtnMsg, `mail_${queryAddress}_${mailIndex + 1}`, !raw),
-                    ])
-                },
-            );
+            return await ctx.editMessageText(mail || msgs.TgNoMailMsg, { reply_markup: keyboard.reply_markup });
         }
-        return await ctx.reply(mail || msgs.TgNoMailMsg,
-            {
-                ...Markup.inlineKeyboard([
-                    Markup.button.callback(msgs.TgPrevBtnMsg, `mail_${queryAddress}_${mailIndex - 1}`, mailIndex <= 0),
-                    ...miniAppButtons,
-                    Markup.button.callback(msgs.TgNextBtnMsg, `mail_${queryAddress}_${mailIndex + 1}`, !raw),
-                ])
-            },
-        );
+        
+        // Сначала отправляем картинку для почты (без текста)
+        await ctx.replyWithPhoto(TG_IMAGES.mails);
+        // Затем отправляем сам текст письма с кнопками
+        return await ctx.reply(mail || msgs.TgNoMailMsg, { reply_markup: keyboard.reply_markup });
     }
 
     bot.command("mails", async ctx => {
@@ -508,7 +543,7 @@ export async function sendMailToTelegram(
     };
 
     if (globalPush) {
-        const globalMsgs = i18n.getMessages(c.env.DEFAULT_LANG || 'zh');
+        const globalMsgs = i18n.getMessages(c.env.DEFAULT_LANG === 'en' ? 'en' : 'ru');
         for (const pushId of settings.globalMailPushList) {
             await buildAndSend(pushId, globalMsgs);
         }
