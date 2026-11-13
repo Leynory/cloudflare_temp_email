@@ -14,8 +14,8 @@ import i18n from "../i18n";
 import { LocaleMessages } from "../i18n/type";
 import type { ExtractResult, RawMailRow } from "../models";
 
-// === ЕДИНСТВЕННАЯ КАРТИНКА ДЛЯ КОМАНДЫ /start ===
-const TG_START_IMAGE = "https://gachadevsuki.com/tgassets1.png";
+// === ЕДИНСТВЕННАЯ КАРТИНКА ДЛЯ КОМАНДЫ /start (JPG) ===
+const TG_START_IMAGE = "https://gachadevsuki.com/tgassets1.jpg";
 
 // Bilingual command descriptions (RU/EN)
 const COMMANDS = [
@@ -183,10 +183,23 @@ export function newTelegramBot(c: Context<HonoCustomType>, token: string): Teleg
             + `${msgs.TgAvailableCommandsMsg}\n`
             + commands.map(cmd => `/${cmd.command}: ${cmd.description}`).join("\n");
 
-        // ЕДИНСТВЕННАЯ КАРТИНКА ЗДЕСЬ
-        return await ctx.replyWithPhoto(TG_START_IMAGE, {
-            caption: text
-        });
+        try {
+            // Бот сам скачивает картинку JPG
+            const response = await fetch(TG_START_IMAGE);
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            
+            const arrayBuffer = await response.arrayBuffer();
+            const buffer = Buffer.from(arrayBuffer);
+
+            // Отправляем загруженный файл в Telegram
+            return await ctx.replyWithPhoto({ source: buffer }, {
+                caption: text
+            });
+        } catch (e) {
+            console.error("Failed to load or send photo:", e);
+            // Если картинка не загрузилась, отправляем хотя бы текст
+            return await ctx.reply(text);
+        }
     });
 
     bot.command("new", async (ctx: TgContext) => {
