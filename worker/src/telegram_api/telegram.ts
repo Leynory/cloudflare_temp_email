@@ -184,20 +184,34 @@ export function newTelegramBot(c: Context<HonoCustomType>, token: string): Teleg
             + commands.map(cmd => `/${cmd.command}: ${cmd.description}`).join("\n");
 
         try {
-            // Бот сам скачивает картинку JPG
-            const response = await fetch(TG_START_IMAGE);
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            // 1. Скачиваем картинку
+            const imageResponse = await fetch(TG_START_IMAGE);
+            if (!imageResponse.ok) throw new Error(`HTTP error! status: ${imageResponse.status}`);
             
-            const arrayBuffer = await response.arrayBuffer();
-            const buffer = Buffer.from(arrayBuffer);
+            const imageBlob = await imageResponse.blob();
 
-            // Отправляем загруженный файл в Telegram
-            return await ctx.replyWithPhoto({ source: buffer }, {
-                caption: text
+            // 2. Формируем данные для прямой отправки в Telegram API
+            const formData = new FormData();
+            formData.append("chat_id", ctx.chat!.id.toString());
+            formData.append("caption", text);
+            formData.append("photo", imageBlob, "tgassets1.jpg");
+
+            // 3. Отправляем напрямую через API Telegram
+            const tgResponse = await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
+                method: "POST",
+                body: formData,
             });
+
+            const tgResult = await tgResponse.json();
+            if (!tgResult.ok) {
+                throw new Error(tgResult.description || "Telegram API error");
+            }
+
+            return; // Успешно отправлено
+
         } catch (e) {
             console.error("Failed to load or send photo:", e);
-            // Если картинка не загрузилась, отправляем хотя бы текст
+            // Если картинка не загрузилась или не отправилась, отправляем хотя бы текст
             return await ctx.reply(text);
         }
     });
