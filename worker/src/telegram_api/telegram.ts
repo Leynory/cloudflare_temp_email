@@ -15,7 +15,7 @@ import { LocaleMessages } from "../i18n/type";
 import type { ExtractResult, RawMailRow } from "../models";
 
 // === ЕДИНСТВЕННАЯ КАРТИНКА ДЛЯ КОМАНДЫ /start (JPG) ===
-const TG_START_IMAGE = "https://i.postimg.cc/BbdQPzfq/tgassets1.jpg";
+const TG_START_IMAGE = "https://leynory.gachadevsuki.com/tgassets1.jpg";
 
 // Bilingual command descriptions (RU/EN)
 const COMMANDS = [
