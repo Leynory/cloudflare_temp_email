@@ -14,21 +14,8 @@ import i18n from "../i18n";
 import { LocaleMessages } from "../i18n/type";
 import type { ExtractResult, RawMailRow } from "../models";
 
-// === НАСТРОЙКА ССЫЛОК НА КАРТИНКИ ===
-// Убедись, что эти файлы лежат у тебя на сайте (например, в папке public) 
-// и имеют правильное расширение (.jpg или .png)
-const BASE_URL = "https://gachadevsuki.com";
-const TG_IMAGES = {
-    start: `${BASE_URL}/tgassets1.jpg`,
-    new: `${BASE_URL}/tgassets2.jpg`,
-    address: `${BASE_URL}/tgassets3.jpg`,
-    bind: `${BASE_URL}/tgassets4.jpg`,
-    unbind: `${BASE_URL}/tgassets5.jpg`,
-    delete: `${BASE_URL}/tgassets6.jpg`,
-    mails: `${BASE_URL}/tgassets7.jpg`,
-    cleaninvalidaddress: `${BASE_URL}/tgassets8.jpg`,
-    lang: `${BASE_URL}/tgassets9.jpg`,
-};
+// === ЕДИНСТВЕННАЯ КАРТИНКА ДЛЯ КОМАНДЫ /start ===
+const TG_START_IMAGE = "https://gachadevsuki.com/tgassets1.png";
 
 // Bilingual command descriptions (RU/EN)
 const COMMANDS = [
@@ -196,7 +183,8 @@ export function newTelegramBot(c: Context<HonoCustomType>, token: string): Teleg
             + `${msgs.TgAvailableCommandsMsg}\n`
             + commands.map(cmd => `/${cmd.command}: ${cmd.description}`).join("\n");
 
-        return await ctx.replyWithPhoto(TG_IMAGES.start, {
+        // ЕДИНСТВЕННАЯ КАРТИНКА ЗДЕСЬ
+        return await ctx.replyWithPhoto(TG_START_IMAGE, {
             caption: text
         });
     });
@@ -216,10 +204,7 @@ export function newTelegramBot(c: Context<HonoCustomType>, token: string): Teleg
                 + (res.password ? `${msgs.TgPasswordMsg} \`${res.password}\`\n` : '')
                 + `${msgs.TgCredentialMsg} \`${res.jwt}\`\n`;
 
-            return await ctx.replyWithPhoto(TG_IMAGES.new, {
-                caption: text,
-                parse_mode: "Markdown"
-            });
+            return await ctx.reply(text, { parse_mode: "Markdown" });
         } catch (e) {
             return await ctx.reply(`${msgs.TgCreateFailedMsg} ${(e as Error).message}`);
         }
@@ -241,9 +226,7 @@ export function newTelegramBot(c: Context<HonoCustomType>, token: string): Teleg
             const text = `${msgs.TgBindSuccessMsg}\n`
                 + `${msgs.TgAddressMsg} ${address}`;
                 
-            return await ctx.replyWithPhoto(TG_IMAGES.bind, {
-                caption: text
-            });
+            return await ctx.reply(text);
         }
         catch (e) {
             return await ctx.reply(`${msgs.TgBindFailedMsg} ${(e as Error).message}`);
@@ -265,9 +248,7 @@ export function newTelegramBot(c: Context<HonoCustomType>, token: string): Teleg
             await unbindTelegramAddress(c, userId.toString(), address);
             const text = `${msgs.TgUnbindSuccessMsg}\n${msgs.TgAddressMsg} ${address}`;
             
-            return await ctx.replyWithPhoto(TG_IMAGES.unbind, {
-                caption: text
-            });
+            return await ctx.reply(text);
         }
         catch (e) {
             return await ctx.reply(`${msgs.TgUnbindFailedMsg} ${(e as Error).message}`);
@@ -288,9 +269,7 @@ export function newTelegramBot(c: Context<HonoCustomType>, token: string): Teleg
             }
             await deleteTelegramAddress(c, userId.toString(), address, msgs);
             
-            return await ctx.replyWithPhoto(TG_IMAGES.delete, {
-                caption: `${msgs.TgDeleteSuccessMsg} ${address}`
-            });
+            return await ctx.reply(`${msgs.TgDeleteSuccessMsg} ${address}`);
         } catch (e) {
             return await ctx.reply(`${msgs.TgDeleteFailedMsg} ${(e as Error).message}`);
         }
@@ -308,9 +287,7 @@ export function newTelegramBot(c: Context<HonoCustomType>, token: string): Teleg
             const text = `${msgs.TgAddressListMsg}\n\n`
                 + addressList.map(a => `${msgs.TgAddressMsg} ${a}`).join("\n");
                 
-            return await ctx.replyWithPhoto(TG_IMAGES.address, {
-                caption: text
-            });
+            return await ctx.reply(text);
         } catch (e) {
             return await ctx.reply(`${msgs.TgGetAddressFailedMsg} ${(e as Error).message}`);
         }
@@ -333,9 +310,7 @@ export function newTelegramBot(c: Context<HonoCustomType>, token: string): Teleg
                 + `${msgs.TgCurrentAddressListMsg}\n\n`
                 + addressList.map(a => `${msgs.TgAddressMsg} ${a}`).join("\n");
 
-            return await ctx.replyWithPhoto(TG_IMAGES.cleaninvalidaddress, {
-                caption: text
-            });
+            return await ctx.reply(text);
         } catch (e) {
             return await ctx.reply(`${msgs.TgCleanFailedMsg} ${(e as Error).message}`);
         }
@@ -367,9 +342,7 @@ export function newTelegramBot(c: Context<HonoCustomType>, token: string): Teleg
             + `/lang ru - Русский\n`
             + `/lang en - English`;
 
-        return await ctx.replyWithPhoto(TG_IMAGES.lang, {
-            caption: text
-        });
+        return await ctx.reply(text);
     });
 
     const queryMail = async (ctx: TgContext, queryAddress: string, mailIndex: number, edit: boolean) => {
@@ -424,9 +397,6 @@ export function newTelegramBot(c: Context<HonoCustomType>, token: string): Teleg
             return await ctx.editMessageText(mail || msgs.TgNoMailMsg, { reply_markup: keyboard.reply_markup });
         }
         
-        // Сначала отправляем картинку для почты (без текста)
-        await ctx.replyWithPhoto(TG_IMAGES.mails);
-        // Затем отправляем сам текст письма с кнопками
         return await ctx.reply(mail || msgs.TgNoMailMsg, { reply_markup: keyboard.reply_markup });
     }
 
